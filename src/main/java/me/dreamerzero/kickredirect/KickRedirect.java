@@ -25,11 +25,12 @@ import me.dreamerzero.kickredirect.utils.Constants;
         "4drian3d"
     }
 )
-public class KickRedirect {
-    private ProxyServer proxy;
-    private Path pluginPath;
-    private Logger logger;
-	@Inject
+public final class KickRedirect {
+    private final ProxyServer proxy;
+    private final Path pluginPath;
+    private final Logger logger;
+
+    @Inject
     public KickRedirect(ProxyServer proxy, @DataDirectory Path pluginPath, Logger logger){
         this.pluginPath = pluginPath;
         this.proxy = proxy;
@@ -38,8 +39,8 @@ public class KickRedirect {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event){
-        proxy.getEventManager().register(this, new KickListener(this));
         Configuration.loadMainConfig(pluginPath, logger);
+        proxy.getEventManager().register(this, new KickListener(this));
     }
 
     public ProxyServer getProxy(){
