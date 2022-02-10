@@ -3,6 +3,7 @@ package me.dreamerzero.kickredirect.listener;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
@@ -10,6 +11,7 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 
 import me.dreamerzero.kickredirect.KickRedirect;
 import me.dreamerzero.kickredirect.configuration.Configuration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class KickListener {
@@ -24,14 +26,19 @@ public class KickListener {
     }
 
     private static final PlainTextComponentSerializer SERIALIZER = PlainTextComponentSerializer.plainText();
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder().character('&').hexColors().build();
 
     @Subscribe
     public void onKickFromServer(KickedFromServerEvent event){
         event.getServerKickReason().map(SERIALIZER::serialize).ifPresent(reason -> {
-            if(reason.contains(config.getKickMessage())){
+            Stream<String> stream = config.getMessagesToCheck().stream();
+            if(config.isWhitelist() ? stream.anyMatch(reason::contains) : stream.noneMatch(reason::contains)){
                 RegisteredServer server = this.getConfigServer();
                 if(server == null) {
                     plugin.getLogger().error("No servers were found to redirect the player to");
+                    String kickMessage = config.getKickMessage();
+                    if(!kickMessage.isBlank())
+                        event.setResult(KickedFromServerEvent.DisconnectPlayer.create(LEGACY_SERIALIZER.deserialize(kickMessage)));
                     return;
                 }
                 event.setResult(KickedFromServerEvent.RedirectPlayer.create(server));
