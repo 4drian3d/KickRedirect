@@ -43,7 +43,7 @@ public class Configuration {
         @Comment("Sets the kick message to be checked to verify that the kick corresponds to a shutdown or shutdown of the server from which the player is being kicked")
         private String kickMessage = "Kicked from Server";
 
-        @Comment("Sets the sending mode\nAvailable options:\nTO_FIRST | It will send the player to the first available server configured in serversToRedirect\nTO_EMPTIEST_SERVER | Send the player to the emptiest server that is available according to the serversToRedirect configuration")
+        @Comment("Sets the sending mode\nAvailable options:\nTO_FIRST | It will send the player to the first available server configured in serversToRedirect\nTO_EMPTIEST_SERVER | Send the player to the emptiest server that is available according to the serversToRedirect configuration\nRANDOM | Send to a random server from the configured servers")
         private SendMode sendMode = SendMode.TO_FIRST;
 
         public List<String> getServersToRedirect(){
