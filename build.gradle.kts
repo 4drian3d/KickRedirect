@@ -19,7 +19,7 @@ dependencies {
 }
 
 group = "me.dreamerzero.kickredirect"
-version = "1.2.0"
+version = "1.2.1"
 description = "Set the redirect result of your servers shutdown"
 val url = "https://github.com/4drian3d/KickRedirect"
 val id = "kickredirect"

@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import com.velocitypowered.api.event.Continuation;
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
@@ -28,8 +30,12 @@ public class KickListener {
     private static final PlainTextComponentSerializer SERIALIZER = PlainTextComponentSerializer.plainText();
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder().character('&').hexColors().build();
 
-    @Subscribe
-    public void onKickFromServer(KickedFromServerEvent event){
+    @Subscribe(order = PostOrder.LAST)
+    public void onKickFromServer(KickedFromServerEvent event, Continuation continuation){
+        if(!event.getResult().isAllowed()){
+            continuation.resume();
+            return;
+        }
         event.getServerKickReason().map(SERIALIZER::serialize).ifPresent(reason -> {
             Stream<String> stream = config.getMessagesToCheck().stream();
             if(config.isWhitelist() ? stream.anyMatch(reason::contains) : stream.noneMatch(reason::contains)){
@@ -44,6 +50,7 @@ public class KickListener {
                 event.setResult(KickedFromServerEvent.RedirectPlayer.create(server));
             }
         });
+        continuation.resume();
     }
 
     private RegisteredServer getConfigServer(){

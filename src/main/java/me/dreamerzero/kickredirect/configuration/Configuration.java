@@ -21,7 +21,7 @@ public class Configuration {
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
-                .header("KickResult | by 4drian3d\n")
+                .header("KickRedirect | by 4drian3d\n")
             )
             .path(configPath)
             .build();
