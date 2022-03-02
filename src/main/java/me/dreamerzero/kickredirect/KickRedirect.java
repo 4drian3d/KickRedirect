@@ -10,6 +10,7 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import me.dreamerzero.kickredirect.configuration.Configuration;
@@ -45,15 +46,15 @@ public final class KickRedirect {
         proxy.getEventManager().register(this, new KickListener(this));
     }
 
-    public ProxyServer getProxy(){
+    public @NotNull ProxyServer getProxy(){
         return this.proxy;
     }
 
-    public Path getPluginPath(){
+    public @NotNull Path getPluginPath(){
         return this.pluginPath;
     }
 
-    public Logger getLogger(){
+    public @NotNull Logger getLogger(){
         return this.logger;
     }
 }

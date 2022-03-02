@@ -53,6 +53,9 @@ public class Configuration {
         @Comment("Sets the sending mode\nAvailable options:\nTO_FIRST | It will send the player to the first available server configured in serversToRedirect\nTO_EMPTIEST_SERVER | Send the player to the emptiest server that is available according to the serversToRedirect configuration\nRANDOM | Send to a random server from the configured servers")
         private SendMode sendMode = SendMode.TO_FIRST;
 
+        @Comment("Sets the limit of times the random server will be calculated to send in case the sending mode is RANDOM")
+        private int randomAttempts = 5;
+
         public List<String> getServersToRedirect(){
             return this.serversToRedirect;
         }
@@ -71,6 +74,10 @@ public class Configuration {
 
         public SendMode getSendMode(){
             return this.sendMode;
+        }
+
+        public int getRandomAttempts(){
+            return this.randomAttempts;
         }
     }
 
