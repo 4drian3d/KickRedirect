@@ -1,7 +1,6 @@
 package me.dreamerzero.kickredirect;
 
 import java.nio.file.Path;
-import java.util.Objects;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
@@ -31,9 +30,14 @@ public final class KickRedirect {
     private final ProxyServer proxy;
     private final Path pluginPath;
     private final Logger logger;
+    private Configuration.Config config;
 
     @Inject
-    public KickRedirect(ProxyServer proxy, @DataDirectory Path pluginPath, Logger logger){
+    public KickRedirect(
+        final ProxyServer proxy,
+        final @DataDirectory Path pluginPath,
+        final Logger logger
+    ) {
         this.pluginPath = pluginPath;
         this.proxy = proxy;
         this.logger = logger;
@@ -41,8 +45,10 @@ public final class KickRedirect {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event){
-        Configuration.loadMainConfig(pluginPath, logger);
-        Objects.requireNonNull(Configuration.getConfig(), "configuration cannot be null");
+        this.config = Configuration.loadMainConfig(pluginPath, logger);
+        if(this.config == null) {
+            return;
+        }
         proxy.getEventManager().register(this, new KickListener(this));
     }
 
@@ -56,5 +62,9 @@ public final class KickRedirect {
 
     public @NotNull Logger getLogger(){
         return this.logger;
+    }
+
+    public Configuration.Config config() {
+        return this.config;
     }
 }

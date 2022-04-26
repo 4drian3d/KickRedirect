@@ -9,23 +9,35 @@ import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 
 import me.dreamerzero.kickredirect.KickRedirect;
-import me.dreamerzero.kickredirect.configuration.Configuration;
 import me.dreamerzero.kickredirect.enums.CheckMode;
 import me.dreamerzero.kickredirect.utils.ServerUtils;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public final class KickListener {
     private final KickRedirect plugin;
-    private final Configuration.Config config;
 
     public KickListener(KickRedirect plugin){
         this.plugin = plugin;
-        this.config = Configuration.getConfig();
     }
 
     private static final PlainTextComponentSerializer SERIALIZER = PlainTextComponentSerializer.plainText();
-    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder().character('&').hexColors().build();
+    private static final MiniMessage MINIMESSAGE = MiniMessage.builder().tags(
+        TagResolver.builder()
+            .resolvers(
+                StandardTags.color(),
+                StandardTags.decorations(),
+                StandardTags.font(),
+                StandardTags.gradient(),
+                StandardTags.keybind(),
+                StandardTags.newline(),
+                StandardTags.reset(),
+                StandardTags.transition(),
+                StandardTags.translatable()
+            ).build()
+        ).build();
 
     @Subscribe(order = PostOrder.LAST)
     public void onKickFromServer(KickedFromServerEvent event, Continuation continuation){
@@ -34,17 +46,21 @@ public final class KickListener {
             return;
         }
         event.getServerKickReason().map(SERIALIZER::serialize).ifPresent(reason -> {
-            Stream<String> stream = config.getMessagesToCheck().stream();
-            if(config.checkMode() == CheckMode.WHITELIST
+            Stream<String> stream = plugin.config().getMessagesToCheck().stream();
+            if(plugin.config().checkMode() == CheckMode.WHITELIST
                 ? stream.anyMatch(reason::contains)
                 : stream.noneMatch(reason::contains)
             ) {
-                RegisteredServer server = ServerUtils.getConfigServer(plugin);
+                final RegisteredServer server = ServerUtils.getConfigServer(plugin);
                 if(server == null) {
                     plugin.getLogger().error("No servers were found to redirect the player to");
-                    String kickMessage = config.getKickMessage();
+                    final String kickMessage = plugin.config().getKickMessage();
                     if(!kickMessage.isBlank())
-                        event.setResult(KickedFromServerEvent.DisconnectPlayer.create(LEGACY_SERIALIZER.deserialize(kickMessage)));
+                        event.setResult(
+                            KickedFromServerEvent.DisconnectPlayer.create(
+                                MINIMESSAGE.deserialize(plugin.config().getKickMessage())
+                            )
+                        );
                     return;
                 }
                 event.setResult(KickedFromServerEvent.RedirectPlayer.create(server));
