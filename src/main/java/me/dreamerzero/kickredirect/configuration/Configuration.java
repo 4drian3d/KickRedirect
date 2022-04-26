@@ -11,6 +11,7 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
+import me.dreamerzero.kickredirect.enums.CheckMode;
 import me.dreamerzero.kickredirect.enums.SendMode;
 
 public class Configuration {
@@ -42,7 +43,7 @@ public class Configuration {
         private List<String> serversToRedirect = List.of("lobby1", "lobby2");
 
         @Comment("Sets whether to perform whitelist or blacklist detection")
-        private boolean whitelist = true;
+        private CheckMode checkMode = CheckMode.WHITELIST;
 
         @Comment("Set the messages to be checked by blacklist or whitelist in case they are present in the expulsion message")
         private Set<String> messagesToCheck = Set.of("kicked from server", "shutdown");
@@ -60,8 +61,8 @@ public class Configuration {
             return this.serversToRedirect;
         }
 
-        public boolean isWhitelist(){
-            return this.whitelist;
+        public CheckMode checkMode() {
+            return this.checkMode;
         }
 
         public Set<String> getMessagesToCheck(){

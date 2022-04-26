@@ -13,13 +13,14 @@ repositories {
 
 dependencies {
     shadow("org.spongepowered:configurate-hocon:4.1.2")
+    compileOnly("io.leangen.geantyref:geantyref:1.3.13")
 
-    compileOnly("com.velocitypowered:velocity-api:3.1.1")
-    annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
+    compileOnly("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
+    annotationProcessor("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
 }
 
 group = "me.dreamerzero.kickredirect"
-version = "1.2.1"
+version = "1.3.0-SNAPSHOT"
 description = "Set the redirect result of your servers shutdown"
 val url = "https://github.com/4drian3d/KickRedirect"
 val id = "kickredirect"
@@ -27,12 +28,12 @@ val id = "kickredirect"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 blossom{
-	val constants = "src/main/java/me/dreamerzero/kickredirect/utils/Constants.java"
-	replaceToken("{name}", rootProject.name, constants)
-    replaceToken("{id}", id, constants)
-	replaceToken("{version}", version, constants)
-	replaceToken("{description}", description, constants)
-    replaceToken("{url}", url, constants)
+    replaceTokenIn("src/main/java/me/dreamerzero/kickredirect/utils/Constants.java")
+	replaceToken("{name}", rootProject.name)
+    replaceToken("{id}", id)
+	replaceToken("{version}", version)
+	replaceToken("{description}", description)
+    replaceToken("{url}", url)
 }
 
 tasks {

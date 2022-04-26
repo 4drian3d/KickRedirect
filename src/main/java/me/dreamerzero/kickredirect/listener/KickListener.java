@@ -10,6 +10,7 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 
 import me.dreamerzero.kickredirect.KickRedirect;
 import me.dreamerzero.kickredirect.configuration.Configuration;
+import me.dreamerzero.kickredirect.enums.CheckMode;
 import me.dreamerzero.kickredirect.utils.ServerUtils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -34,7 +35,10 @@ public final class KickListener {
         }
         event.getServerKickReason().map(SERIALIZER::serialize).ifPresent(reason -> {
             Stream<String> stream = config.getMessagesToCheck().stream();
-            if(config.isWhitelist() ? stream.anyMatch(reason::contains) : stream.noneMatch(reason::contains)){
+            if(config.checkMode() == CheckMode.WHITELIST
+                ? stream.anyMatch(reason::contains)
+                : stream.noneMatch(reason::contains)
+            ) {
                 RegisteredServer server = ServerUtils.getConfigServer(plugin);
                 if(server == null) {
                     plugin.getLogger().error("No servers were found to redirect the player to");
