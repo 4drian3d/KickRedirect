@@ -66,6 +66,9 @@ public class Configuration {
         @Comment("Sets the list of available servers to forward to the player\nDepending on the configuration of sendMode it will be sent to one server or another")
         private String[] serversToRedirect = {"lobby1", "lobby2"};
 
+        @Comment("Redirect the player if the expulsion message is null or empty?")
+        private boolean redirectOnNullMessage = true;
+
         @Comment("Sets whether to perform whitelist or blacklist detection\nAvailable options:\nWHITELIST: It will check if the expulsion string contains any of this strings\nBLACKLIST: It will check if the expulsion string not contains any of this strings")
         private CheckMode checkMode = CheckMode.WHITELIST;
 
@@ -84,6 +87,10 @@ public class Configuration {
 
         public CheckMode checkMode() {
             return this.checkMode;
+        }
+
+        public boolean redirectOnNullMessage() {
+            return this.redirectOnNullMessage;
         }
 
         public Set<String> getMessagesToCheck(){
@@ -107,12 +114,19 @@ public class Configuration {
         @Comment("Message to send in plugin reload")
         private String reloadmessage = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Reloaded Configuration";
 
+        @Comment("Error message to be sent in case no server is available to send to player")
+        private String noServersFoundToRedirect = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#b82e00:#ff4000>No servers were found to redirect the player to. <gray>SendMode: <sendmode>";
+
         public String kickMessage(){
             return this.kickMessage;
         }
 
         public String reloadMessage() {
             return this.reloadmessage;
+        }
+
+        public String noServersFoundToRedirect() {
+            return this.noServersFoundToRedirect;
         }
     }
 }
