@@ -10,12 +10,14 @@ repositories {
     mavenLocal()
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://repo.alessiodp.com/releases/")
+    maven("https://jitpack.io")
 }
 
 dependencies {
     shadow("net.byteflux:libby-velocity:1.1.5")
     compileOnly("org.spongepowered:configurate-hocon:4.1.2")
     compileOnly("io.leangen.geantyref:geantyref:1.3.13")
+    compileOnly("com.github.4drian3d:MiniPlaceholders:1.1.1")
 
     compileOnly("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")

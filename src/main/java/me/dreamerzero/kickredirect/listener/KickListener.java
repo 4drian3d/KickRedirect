@@ -41,7 +41,7 @@ public final class KickListener {
                     if(!kickMessage.isBlank())
                         event.setResult(
                             KickedFromServerEvent.DisconnectPlayer.create(
-                                KickRedirect.MINIMESSAGE.deserialize(kickMessage)
+                                plugin.formatter().format(kickMessage, event.getPlayer())
                             )
                         );
                     return;

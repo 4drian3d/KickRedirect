@@ -7,7 +7,6 @@ import com.velocitypowered.api.command.BrigadierCommand;
 import com.velocitypowered.api.command.CommandSource;
 
 import me.dreamerzero.kickredirect.KickRedirect;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public final class KickRedirectCommand {
     private KickRedirectCommand(){}
@@ -17,7 +16,12 @@ public final class KickRedirectCommand {
             .requires(src -> src.hasPermission("kickredirect.command"))
             .then(LiteralArgumentBuilder.<CommandSource>literal("reload")
                 .executes(cmd -> {
-                    cmd.getSource().sendMessage(MiniMessage.miniMessage().deserialize(plugin.messages().reloadMessage()));
+                    cmd.getSource().sendMessage(
+                        plugin.formatter().format(
+                            plugin.messages().reloadMessage(),
+                            cmd.getSource()
+                        )
+                    );
                     return plugin.loadConfig() ? Command.SINGLE_SUCCESS : BrigadierCommand.FORWARD;
                 })
             ).build();
