@@ -11,9 +11,6 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import me.dreamerzero.kickredirect.KickRedirect;
 import me.dreamerzero.kickredirect.enums.CheckMode;
 import me.dreamerzero.kickredirect.utils.ServerUtils;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public final class KickListener {
@@ -24,20 +21,6 @@ public final class KickListener {
     }
 
     private static final PlainTextComponentSerializer SERIALIZER = PlainTextComponentSerializer.plainText();
-    private static final MiniMessage MINIMESSAGE = MiniMessage.builder().tags(
-        TagResolver.builder()
-            .resolvers(
-                StandardTags.color(),
-                StandardTags.decorations(),
-                StandardTags.font(),
-                StandardTags.gradient(),
-                StandardTags.keybind(),
-                StandardTags.newline(),
-                StandardTags.reset(),
-                StandardTags.transition(),
-                StandardTags.translatable()
-            ).build()
-        ).build();
 
     @Subscribe(order = PostOrder.LAST)
     public void onKickFromServer(KickedFromServerEvent event, Continuation continuation){
@@ -54,11 +37,11 @@ public final class KickListener {
                 final RegisteredServer server = ServerUtils.getConfigServer(plugin);
                 if(server == null) {
                     plugin.getLogger().error("No servers were found to redirect the player to");
-                    final String kickMessage = plugin.config().getKickMessage();
+                    final String kickMessage = plugin.messages().kickMessage();
                     if(!kickMessage.isBlank())
                         event.setResult(
                             KickedFromServerEvent.DisconnectPlayer.create(
-                                MINIMESSAGE.deserialize(plugin.config().getKickMessage())
+                                KickRedirect.MINIMESSAGE.deserialize(kickMessage)
                             )
                         );
                     return;

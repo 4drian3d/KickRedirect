@@ -1,6 +1,8 @@
 package me.dreamerzero.kickredirect;
 
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
@@ -13,11 +15,15 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
+import me.dreamerzero.kickredirect.commands.KickRedirectCommand;
 import me.dreamerzero.kickredirect.configuration.Configuration;
 import me.dreamerzero.kickredirect.listener.KickListener;
 import me.dreamerzero.kickredirect.utils.Constants;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 
 @Plugin(
     id = Constants.ID,
@@ -35,6 +41,21 @@ public final class KickRedirect {
     private final Logger logger;
     private final PluginManager pluginManager;
     private Configuration.Config config;
+    private Configuration.Messages messages;
+    public static final MiniMessage MINIMESSAGE = MiniMessage.builder().tags(
+        TagResolver.builder()
+            .resolvers(
+                StandardTags.color(),
+                StandardTags.decorations(),
+                StandardTags.font(),
+                StandardTags.gradient(),
+                StandardTags.keybind(),
+                StandardTags.newline(),
+                StandardTags.reset(),
+                StandardTags.transition(),
+                StandardTags.translatable()
+            ).build()
+        ).build();
 
     @Inject
     public KickRedirect(
@@ -51,12 +72,22 @@ public final class KickRedirect {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event){
+        long start = System.currentTimeMillis();
+        this.proxy.getConsoleCommandSource().sendMessage(
+            MINIMESSAGE.deserialize("<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Starting plugin...")
+        );
         this.loadDependencies();
-        this.config = Configuration.loadMainConfig(pluginPath, logger);
-        if(this.config == null) {
+        if(!this.loadConfig()) {
             return;
         }
+        KickRedirectCommand.command(this);
         proxy.getEventManager().register(this, new KickListener(this));
+
+        long duration = System.currentTimeMillis() - start;
+
+        this.proxy.getConsoleCommandSource().sendMessage(
+            MINIMESSAGE.deserialize("<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff> Fully started plugin in" + duration + "ms")
+        );
     }
 
     public @NotNull ProxyServer getProxy(){
@@ -73,6 +104,10 @@ public final class KickRedirect {
 
     public Configuration.Config config() {
         return this.config;
+    }
+
+    public Configuration.Messages messages() {
+        return this.messages;
     }
 
     private void loadDependencies() {
@@ -101,5 +136,11 @@ public final class KickRedirect {
         libraryManager.loadLibrary(hocon);
         libraryManager.loadLibrary(confCore);
         libraryManager.loadLibrary(geantyref);
+    }
+
+    public boolean loadConfig() {
+        this.config = Configuration.loadMainConfig(pluginPath, logger);
+        this.messages = Configuration.loadMessages(pluginPath, logger);
+        return this.config != null && this.messages != null;
     }
 }

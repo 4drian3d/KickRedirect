@@ -38,6 +38,29 @@ public class Configuration {
         return config;
     }
 
+    public static Messages loadMessages(Path path, Logger logger){
+        final Path configPath = path.resolve("messages.conf");
+        final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
+            .defaultOptions(opts -> opts
+                .shouldCopyDefaults(true)
+                .header("KickRedirect | by 4drian3d\n")
+            )
+            .path(configPath)
+            .build();
+
+        final Messages config;
+        try {
+            final CommentedConfigurationNode node = loader.load();
+            config = node.get(Messages.class);
+            node.set(Config.class, config);
+            loader.save(node);
+        } catch (ConfigurateException exception){
+            logger.error("Could not load messages.conf file, error: {}", exception.getMessage());
+            return null;
+        }
+        return config;
+    }
+
     @ConfigSerializable
     public static class Config {
         @Comment("Sets the list of available servers to forward to the player\nDepending on the configuration of sendMode it will be sent to one server or another")
@@ -48,9 +71,6 @@ public class Configuration {
 
         @Comment("Set the messages to be checked by blacklist or whitelist in case they are present in the expulsion message")
         private Set<String> messagesToCheck = Set.of("kicked from server", "shutdown");
-
-        @Comment("Sets the message to send if no server is found to which to send the player")
-        private String kickMessage = "<#FF0000>You could not be sent to a backup server";
 
         @Comment("Sets the sending mode\nAvailable options:\nTO_FIRST | It will send the player to the first available server configured in serversToRedirect\nTO_EMPTIEST_SERVER | Send the player to the emptiest server that is available according to the serversToRedirect configuration\nRANDOM | Send to a random server from the configured servers")
         private SendMode sendMode = SendMode.TO_FIRST;
@@ -70,16 +90,29 @@ public class Configuration {
             return this.messagesToCheck;
         }
 
-        public String getKickMessage(){
-            return this.kickMessage;
-        }
-
         public SendMode getSendMode(){
             return this.sendMode;
         }
 
         public int getRandomAttempts(){
             return this.randomAttempts;
+        }
+    }
+
+    @ConfigSerializable
+    public static class Messages {
+        @Comment("Sets the message to send if no server is found to which to send the player")
+        private String kickMessage = "<gradient:#FF0000:dark_red>You could not be sent to a backup server";
+
+        @Comment("Message to send in plugin reload")
+        private String reloadmessage = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Reloaded Configuration";
+
+        public String kickMessage(){
+            return this.kickMessage;
+        }
+
+        public String reloadMessage() {
+            return this.reloadmessage;
         }
     }
 }
