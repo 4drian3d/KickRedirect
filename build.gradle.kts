@@ -21,6 +21,12 @@ dependencies {
 
     compileOnly("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
+
+    testImplementation("org.spongepowered:configurate-hocon:4.1.2")
+    testImplementation(platform("org.junit:junit-bom:5.8.1"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
+    testImplementation("org.slf4j:slf4j-api:1.7.32")
 }
 
 group = "me.dreamerzero.kickredirect"
@@ -33,10 +39,10 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 blossom{
     replaceTokenIn("src/main/java/me/dreamerzero/kickredirect/utils/Constants.java")
-	replaceToken("{name}", rootProject.name)
+    replaceToken("{name}", rootProject.name)
     replaceToken("{id}", id)
-	replaceToken("{version}", version)
-	replaceToken("{description}", description)
+    replaceToken("{version}", version)
+    replaceToken("{description}", description)
     replaceToken("{url}", url)
 }
 
@@ -54,6 +60,13 @@ tasks {
     create<ConfigureShadowRelocation>("relocateShadowJar") {
         target = shadowJar.get()
         prefix = "me.dreamerzero.kickredirect.libs"
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+		    events("passed", "skipped", "failed")
+	    }
     }
 }
 

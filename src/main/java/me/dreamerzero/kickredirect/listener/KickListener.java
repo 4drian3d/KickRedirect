@@ -33,9 +33,9 @@ public final class KickListener {
         final Collection<String> messagesToCheck = plugin.config().getMessagesToCheck();
         final Optional<String> optional = event.getServerKickReason().map(SERIALIZER::serialize);
         if (
-            (optional.isPresent() && plugin.config().checkMode() == CheckMode.WHITELIST
+            (optional.isPresent() && (plugin.config().checkMode() == CheckMode.WHITELIST
                 ? messagesToCheck.stream().anyMatch(optional.get()::contains)
-                : messagesToCheck.stream().noneMatch(optional.get()::contains)
+                : messagesToCheck.stream().noneMatch(optional.get()::contains))
             ) || optional.isEmpty() && plugin.config().redirectOnNullMessage()
         ) {
             final RegisteredServer server = ServerUtils.getConfigServer(plugin);

@@ -48,17 +48,17 @@ public class Configuration {
             .path(configPath)
             .build();
 
-        final Messages config;
+        final Messages messages;
         try {
             final CommentedConfigurationNode node = loader.load();
-            config = node.get(Messages.class);
-            node.set(Config.class, config);
+            messages = node.get(Messages.class);
+            node.set(Messages.class, messages);
             loader.save(node);
         } catch (ConfigurateException exception){
             logger.error("Could not load messages.conf file, error: {}", exception.getMessage());
             return null;
         }
-        return config;
+        return messages;
     }
 
     @ConfigSerializable
