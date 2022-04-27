@@ -12,5 +12,12 @@ public class Constants {
     /**Plugin ID */
     public static final String ID = "{id}";
 
+    /**Caffeine Version */
+    public static final String CAFFEINE = "{caffeine}";
+    /**Configurate Version */
+    public static final String CONFIGURATE = "{configurate}";
+    /**Geantyref Version (Configurate Dependency)*/
+    public static final String GEANTYREF = "{geantyref}";
+
     private Constants(){}
 }
