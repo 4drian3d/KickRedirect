@@ -15,6 +15,7 @@ public final class KickRedirectCommand {
         final LiteralCommandNode<CommandSource> command = LiteralArgumentBuilder.<CommandSource>literal("kickredirect")
             .requires(src -> src.hasPermission("kickredirect.command"))
             .then(LiteralArgumentBuilder.<CommandSource>literal("reload")
+                //TODO: Improve reload messages pre reload, correctly reloaded and failed reload
                 .executes(cmd -> {
                     cmd.getSource().sendMessage(
                         plugin.formatter().format(

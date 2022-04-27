@@ -22,6 +22,7 @@ import me.dreamerzero.kickredirect.listener.KickListener;
 import me.dreamerzero.kickredirect.utils.Constants;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
+import net.byteflux.libby.relocation.Relocation;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 @Plugin(
@@ -63,7 +64,7 @@ public final class KickRedirect {
             MiniMessage.miniMessage().deserialize("<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Starting plugin...")
         );
         this.loadDependencies();
-        if(!this.loadConfig()) {
+        if (!this.loadConfig()) {
             return;
         }
         this.formatter = proxy.getPluginManager().isLoaded("miniplaceholders")
@@ -105,24 +106,27 @@ public final class KickRedirect {
 
     private void loadDependencies() {
         final VelocityLibraryManager<KickRedirect> libraryManager = new VelocityLibraryManager<>(this.logger, this.pluginPath, pluginManager, this, "libs");
-
+        final Relocation configurateRelocation = new Relocation("org{}spongepowered", "me.dreamerzero.kickredirect.libs.sponge");
         final Library hocon = Library.builder()
             .groupId("org{}spongepowered")
             .artifactId("configurate-hocon")
             .version("4.1.2")
             .id("configurate-hocon")
+            .relocate(configurateRelocation)
             .build();
         final Library confCore = Library.builder()
             .groupId("org{}spongepowered")
             .artifactId("configurate-core")
             .version("4.1.2")
             .id("configurate-core")
+            .relocate(configurateRelocation)
             .build();
         final Library geantyref = Library.builder()
             .groupId("io{}leangen{}geantyref")
             .artifactId("geantyref")
             .version("1.3.13")
             .id("geantyref")
+            .relocate("io{}leangen{}geantyref", "me.dreamerzero.kickredirect.libs.geantyref")
             .build();
 
         libraryManager.addMavenCentral();

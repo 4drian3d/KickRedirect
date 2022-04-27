@@ -1,5 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
-
 plugins {
     java
     id("net.kyori.blossom") version "1.3.0"
@@ -14,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    shadow("net.byteflux:libby-velocity:1.1.5")
+    implementation("net.byteflux:libby-velocity:1.1.5")
     compileOnly("org.spongepowered:configurate-hocon:4.1.2")
     compileOnly("io.leangen.geantyref:geantyref:1.3.13")
     compileOnly("com.github.4drian3d:MiniPlaceholders:1.1.1")
@@ -51,15 +49,9 @@ tasks {
         dependsOn(shadowJar)
     }
     shadowJar {
-        dependsOn(getByName("relocateShadowJar") as ConfigureShadowRelocation)
-        minimize()
-        archiveFileName.set("KickRedirect.jar")
-        configurations = listOf(project.configurations.shadow.get())
-    }
-
-    create<ConfigureShadowRelocation>("relocateShadowJar") {
-        target = shadowJar.get()
-        prefix = "me.dreamerzero.kickredirect.libs"
+        relocate("org.spongepowered", "me.dreamerzero.kickredirect.libs.sponge")
+        relocate("net.byteflux", "me.dreamerzero.kickredirect.libs.byteflux")
+        relocate("io.leangen.geantyref", "me.dreamerzero.kickredirect.libs.geantyref")
     }
 
     test {
