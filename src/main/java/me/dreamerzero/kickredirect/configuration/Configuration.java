@@ -114,6 +114,9 @@ public class Configuration {
         @Comment("Message to send in plugin reload")
         private String reloadmessage = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Reloaded Configuration";
 
+        @Comment("Message to send in player correctly redirect")
+        private String redirectMessage = "";
+
         @Comment("Error message to be sent in case no server is available to send to player")
         private String noServersFoundToRedirect = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#b82e00:#ff4000>No servers were found to redirect the player to. <gray>SendMode: <sendmode>";
 
@@ -123,6 +126,10 @@ public class Configuration {
 
         public String reloadMessage() {
             return this.reloadmessage;
+        }
+
+        public String redirectMessage() {
+            return this.redirectMessage;
         }
 
         public String noServersFoundToRedirect() {

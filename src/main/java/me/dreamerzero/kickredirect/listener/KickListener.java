@@ -18,7 +18,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 public final class KickListener {
     private final KickRedirect plugin;
 
-    public KickListener(KickRedirect plugin){
+    public KickListener(final KickRedirect plugin){
         this.plugin = plugin;
     }
 
@@ -61,7 +61,11 @@ public final class KickListener {
                 continuation.resume();
                 return;
             }
-            event.setResult(KickedFromServerEvent.RedirectPlayer.create(server));
+            final String redirectMessage = plugin.messages().redirectMessage();
+            event.setResult(redirectMessage.isBlank()
+                ? KickedFromServerEvent.RedirectPlayer.create(server)
+                : KickedFromServerEvent.RedirectPlayer.create(
+                    server, plugin.formatter().format(redirectMessage, event.getPlayer())));
         }
         continuation.resume();
     }
