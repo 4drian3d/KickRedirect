@@ -15,15 +15,21 @@ public final class KickRedirectCommand {
         final LiteralCommandNode<CommandSource> command = LiteralArgumentBuilder.<CommandSource>literal("kickredirect")
             .requires(src -> src.hasPermission("kickredirect.command"))
             .then(LiteralArgumentBuilder.<CommandSource>literal("reload")
-                //TODO: Improve reload messages pre reload, correctly reloaded and failed reload
                 .executes(cmd -> {
-                    cmd.getSource().sendMessage(
+                    final var source = cmd.getSource();
+                    source.sendMessage(
                         plugin.formatter().format(
-                            plugin.messages().reloadMessage(),
-                            cmd.getSource()
-                        )
-                    );
-                    return plugin.loadConfig() ? Command.SINGLE_SUCCESS : BrigadierCommand.FORWARD;
+                            plugin.messages().reloadingMessage(),
+                            source
+                    ));
+                    source.sendMessage(
+                        plugin.formatter().format(
+                            plugin.loadConfig()
+                                ? plugin.messages().reloadMessage()
+                                : plugin.messages().failedReload(),
+                            source
+                    ));
+                    return Command.SINGLE_SUCCESS;
                 })
             ).build();
 

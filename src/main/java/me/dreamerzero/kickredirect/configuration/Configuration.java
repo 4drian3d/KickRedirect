@@ -111,8 +111,14 @@ public class Configuration {
         @Comment("Sets the message to send if no server is found to which to send the player")
         private String kickMessage = "<gradient:#FF0000:dark_red>You could not be sent to a backup server";
 
+        @Comment("Message to send in plugin reload start")
+        private String reloadingMessage = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Reloading Configuration...";
+
         @Comment("Message to send in plugin reload")
-        private String reloadmessage = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Reloaded Configuration";
+        private String reloadMessage = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Correctly Reloaded Configuration";
+
+        @Comment("Message to send in failed plugin reload")
+        private String failedReload = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>An error ocurred in configuration reload, check your console logs";;
 
         @Comment("Message to send in player correctly redirect")
         private String redirectMessage = "";
@@ -124,8 +130,16 @@ public class Configuration {
             return this.kickMessage;
         }
 
+        public String reloadingMessage() {
+            return this.reloadingMessage;
+        }
+
         public String reloadMessage() {
             return this.reloadmessage;
+        }
+
+        public String failedReload() {
+            return this.failedReload;
         }
 
         public String redirectMessage() {
