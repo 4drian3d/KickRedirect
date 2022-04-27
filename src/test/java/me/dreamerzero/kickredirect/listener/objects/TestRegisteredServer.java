@@ -1,5 +1,6 @@
 package me.dreamerzero.kickredirect.listener.objects;
 
+import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
@@ -24,7 +25,7 @@ public class TestRegisteredServer implements RegisteredServer {
 
     @Override
     public ServerInfo getServerInfo() {
-        return new ServerInfo(null, null);
+        return new ServerInfo("server", new InetSocketAddress(404));
     }
 
     @Override

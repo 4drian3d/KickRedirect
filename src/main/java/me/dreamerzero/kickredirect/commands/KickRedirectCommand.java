@@ -19,14 +19,14 @@ public final class KickRedirectCommand {
                     final var source = cmd.getSource();
                     source.sendMessage(
                         plugin.formatter().format(
-                            plugin.messages().reloadingMessage(),
+                            plugin.messages().reload().reloadingMessage(),
                             source
                     ));
                     source.sendMessage(
                         plugin.formatter().format(
                             plugin.loadConfig()
-                                ? plugin.messages().reloadMessage()
-                                : plugin.messages().failedReload(),
+                                ? plugin.messages().reload().reloadMessage()
+                                : plugin.messages().reload().failedReload(),
                             source
                     ));
                     return Command.SINGLE_SUCCESS;

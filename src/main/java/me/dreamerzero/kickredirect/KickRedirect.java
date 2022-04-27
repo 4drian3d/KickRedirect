@@ -1,7 +1,11 @@
 package me.dreamerzero.kickredirect;
 
 import java.nio.file.Path;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -18,8 +22,10 @@ import me.dreamerzero.kickredirect.configuration.Configuration;
 import me.dreamerzero.kickredirect.formatter.Formatter;
 import me.dreamerzero.kickredirect.formatter.MiniPlaceholdersFormatter;
 import me.dreamerzero.kickredirect.formatter.RegularFormatter;
+import me.dreamerzero.kickredirect.listener.DebugListener;
 import me.dreamerzero.kickredirect.listener.KickListener;
 import me.dreamerzero.kickredirect.utils.Constants;
+import me.dreamerzero.kickredirect.utils.DebugInfo;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
 import net.byteflux.libby.relocation.Relocation;
@@ -43,6 +49,9 @@ public final class KickRedirect {
     private Formatter formatter;
     private Configuration.Config config;
     private Configuration.Messages messages;
+    private final Cache<UUID, DebugInfo> cache = Caffeine.newBuilder()
+        .expireAfterAccess(4, TimeUnit.SECONDS)
+        .build();
 
     @Inject
     public KickRedirect(
@@ -72,6 +81,7 @@ public final class KickRedirect {
             : new RegularFormatter();
         KickRedirectCommand.command(this);
         proxy.getEventManager().register(this, new KickListener(this));
+        proxy.getEventManager().register(this, new DebugListener(this));
 
         long duration = System.currentTimeMillis() - start;
 
@@ -104,6 +114,10 @@ public final class KickRedirect {
         return this.formatter;
     }
 
+    public Cache<UUID, DebugInfo> debugCache() {
+        return this.cache;
+    }
+
     private void loadDependencies() {
         final VelocityLibraryManager<KickRedirect> libraryManager = new VelocityLibraryManager<>(this.logger, this.pluginPath, pluginManager, this, "libs");
         final Relocation configurateRelocation = new Relocation("org{}spongepowered", "me.dreamerzero.kickredirect.libs.sponge");
@@ -128,11 +142,19 @@ public final class KickRedirect {
             .id("geantyref")
             .relocate("io{}leangen{}geantyref", "me.dreamerzero.kickredirect.libs.geantyref")
             .build();
+        final Library caffeine = Library.builder()
+            .groupId("com{}github{}ben-manes{}caffeine")
+            .artifactId("caffeine")
+            .version("3.0.6")
+            .id("caffeine")
+            .relocate("com{}github{}ben-manes{}caffeine", "me.dreamerzero.kickredirect.libs.caffeine")
+            .build();
 
         libraryManager.addMavenCentral();
         libraryManager.loadLibrary(hocon);
         libraryManager.loadLibrary(confCore);
         libraryManager.loadLibrary(geantyref);
+        libraryManager.loadLibrary(caffeine);
     }
 
     public boolean loadConfig() {

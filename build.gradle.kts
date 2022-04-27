@@ -16,6 +16,7 @@ dependencies {
     compileOnly("org.spongepowered:configurate-hocon:4.1.2")
     compileOnly("io.leangen.geantyref:geantyref:1.3.13")
     compileOnly("com.github.4drian3d:MiniPlaceholders:1.1.1")
+    compileOnly("com.github.ben-manes.caffeine:caffeine:3.0.6")
 
     compileOnly("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
@@ -25,6 +26,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
     testImplementation("org.slf4j:slf4j-api:1.7.32")
+    testImplementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
 }
 
 group = "me.dreamerzero.kickredirect"
@@ -52,6 +54,7 @@ tasks {
         relocate("org.spongepowered", "me.dreamerzero.kickredirect.libs.sponge")
         relocate("net.byteflux", "me.dreamerzero.kickredirect.libs.byteflux")
         relocate("io.leangen.geantyref", "me.dreamerzero.kickredirect.libs.geantyref")
+        relocate("com.github.ben-manes.caffeine", "me.dreamerzero.kickredirect.libs.caffeine")
     }
 
     test {

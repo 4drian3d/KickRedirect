@@ -11,6 +11,7 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 
 import me.dreamerzero.kickredirect.KickRedirect;
 import me.dreamerzero.kickredirect.enums.CheckMode;
+import me.dreamerzero.kickredirect.utils.DebugInfo;
 import me.dreamerzero.kickredirect.utils.ServerUtils;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -24,10 +25,11 @@ public final class KickListener {
 
     private static final PlainTextComponentSerializer SERIALIZER = PlainTextComponentSerializer.plainText();
 
-    @Subscribe(order = PostOrder.LAST)
+    @Subscribe(order = PostOrder.LATE)
     public void onKickFromServer(final KickedFromServerEvent event, final Continuation continuation){
         if(!event.getResult().isAllowed()){
             continuation.resume();
+            plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event));
             return;
         }
         final Collection<String> messagesToCheck = plugin.config().getMessagesToCheck();
@@ -59,6 +61,7 @@ public final class KickListener {
                     );
                 }
                 continuation.resume();
+                plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event));
                 return;
             }
             final String redirectMessage = plugin.messages().redirectMessage();
@@ -68,5 +71,6 @@ public final class KickListener {
                     server, plugin.formatter().format(redirectMessage, event.getPlayer())));
         }
         continuation.resume();
+        plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event));
     }
 }

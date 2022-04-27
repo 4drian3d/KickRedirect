@@ -81,6 +81,9 @@ public class Configuration {
         @Comment("Sets the limit of times the random server will be calculated to send in case the sending mode is RANDOM")
         private int randomAttempts = 5;
 
+        @Comment("Enables debug mode")
+        private boolean debug = true;
+
         public String[] getServersToRedirect(){
             return this.serversToRedirect;
         }
@@ -104,6 +107,10 @@ public class Configuration {
         public int getRandomAttempts(){
             return this.randomAttempts;
         }
+
+        public boolean debug() {
+            return this.debug;
+        }
     }
 
     @ConfigSerializable
@@ -111,35 +118,18 @@ public class Configuration {
         @Comment("Sets the message to send if no server is found to which to send the player")
         private String kickMessage = "<gradient:#FF0000:dark_red>You could not be sent to a backup server";
 
-        @Comment("Message to send in plugin reload start")
-        private String reloadingMessage = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Reloading Configuration...";
-
-        @Comment("Message to send in plugin reload")
-        private String reloadMessage = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Correctly Reloaded Configuration";
-
-        @Comment("Message to send in failed plugin reload")
-        private String failedReload = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>An error ocurred in configuration reload, check your console logs";;
-
         @Comment("Message to send in player correctly redirect")
         private String redirectMessage = "";
 
         @Comment("Error message to be sent in case no server is available to send to player")
         private String noServersFoundToRedirect = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#b82e00:#ff4000>No servers were found to redirect the player to. <gray>SendMode: <sendmode>";
 
+        private Reload reloadMessages = new Reload();
+
+        private Debug debugMessages = new Debug();
+
         public String kickMessage(){
             return this.kickMessage;
-        }
-
-        public String reloadingMessage() {
-            return this.reloadingMessage;
-        }
-
-        public String reloadMessage() {
-            return this.reloadMessage;
-        }
-
-        public String failedReload() {
-            return this.failedReload;
         }
 
         public String redirectMessage() {
@@ -148,6 +138,53 @@ public class Configuration {
 
         public String noServersFoundToRedirect() {
             return this.noServersFoundToRedirect;
+        }
+
+        public Reload reload() {
+            return this.reloadMessages;
+        }
+
+        public Debug debug() {
+            return this.debugMessages;
+        }
+
+        @ConfigSerializable
+        public static class Reload {
+            @Comment("Message to send in plugin reload start")
+            private String reloadingMessage = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Reloading Configuration...";
+
+            @Comment("Message to send in plugin reload")
+            private String reloadMessage = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Correctly Reloaded Configuration";
+
+            @Comment("Message to send in failed plugin reload")
+            private String failedReload = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>An error ocurred in configuration reload, check your console logs";
+
+            public String reloadingMessage() {
+                return this.reloadingMessage;
+            }
+
+            public String reloadMessage() {
+                return this.reloadMessage;
+            }
+
+            public String failedReload() {
+                return this.failedReload;
+            }
+        }
+
+        @ConfigSerializable
+        public static class Debug {
+            private String redirectResult = "Player: <player_name>, Server: <server_name>, Kicked in Server Connect: <during_server_connect>, Calculated result: <result>";
+
+            private String finalResult = "Player: <player_name>, Server: <server_name>, Kicked in Server Connect: <during_server_connect>, Final Event Result: <result>";
+
+            public String redirectResult() {
+                return this.redirectResult;
+            }
+
+            public String finalResult() {
+                return this.finalResult;
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ import net.kyori.adventure.text.Component;
 public class ListenerTest {
     public static KickRedirect plugin;
     public static ProxyServer proxy;
+
     @BeforeAll
     static void loadConfig() {
         proxy = new TestProxyServer();
@@ -36,7 +38,9 @@ public class ListenerTest {
         );
         plugin.loadConfig();
     }
+
     @Test
+    @DisplayName("Redirect Test")
     void testRedirect() {
         TestBundle bundle = new TestBundle(Component.text("shutdown from server"));
         assertNotNull(plugin.config());
@@ -46,7 +50,7 @@ public class ListenerTest {
 
         new KickListener(plugin)
             .onKickFromServer(bundle.event, bundle.continuation);
-
+        assertNotNull(plugin.debugCache().getIfPresent(bundle.player.getUniqueId()));
         assertTrue(bundle.continuation.resumed());
 
         var result = assertInstanceOf(KickedFromServerEvent.RedirectPlayer.class, bundle.event.getResult());
@@ -56,10 +60,12 @@ public class ListenerTest {
     public static class TestBundle {
         public final KickedFromServerEvent event;
         public final TestContinuation continuation;
+        public final TestPlayer player;
 
         public TestBundle(Component reason) {
+            this.player = new TestPlayer("4drian3d", true);
             this.event = new KickedFromServerEvent(
-                new TestPlayer("4drian3d", true),
+                player,
                 new TestRegisteredServer(),
                 reason,
                 false,
