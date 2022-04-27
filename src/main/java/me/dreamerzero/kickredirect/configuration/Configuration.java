@@ -135,7 +135,7 @@ public class Configuration {
         }
 
         public String reloadMessage() {
-            return this.reloadmessage;
+            return this.reloadMessage;
         }
 
         public String failedReload() {
