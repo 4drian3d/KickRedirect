@@ -20,7 +20,7 @@ public class DebugListener {
 
     @Subscribe(order = PostOrder.LAST)
     public EventTask afterKickFromServer(final KickedFromServerEvent event) {
-        if (plugin.config().debug()) {
+        if (plugin.config().get().debug()) {
             return EventTask.async(() -> {
                 final DebugInfo debug = plugin.debugCache().getIfPresent(event.getPlayer().getUniqueId());
                 if (debug == null) {
@@ -42,11 +42,11 @@ public class DebugListener {
 
                 plugin.getProxy().getConsoleCommandSource().sendMessage(
                     plugin.formatter().format(
-                        plugin.messages().debug().redirectResult(),
+                        plugin.messages().get().debug().redirectResult(),
                         event.getPlayer(), redirectResolver));
                 plugin.getProxy().getConsoleCommandSource().sendMessage(
                     plugin.formatter().format(
-                        plugin.messages().debug().finalResult(),
+                        plugin.messages().get().debug().finalResult(),
                         event.getPlayer(), eventResolver));
             });
         }

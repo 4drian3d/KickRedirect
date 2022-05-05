@@ -1,4 +1,4 @@
-package me.dreamerzero.kickredirect.listener;
+package me.dreamerzero.kickredirect;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
-import me.dreamerzero.kickredirect.KickRedirect;
+import me.dreamerzero.kickredirect.listener.KickListener;
 import me.dreamerzero.kickredirect.listener.objects.TestContinuation;
 import me.dreamerzero.kickredirect.listener.objects.TestPlayer;
 import me.dreamerzero.kickredirect.listener.objects.TestProxyServer;
@@ -36,7 +36,7 @@ public class ListenerTest {
             LoggerFactory.getLogger(ListenerTest.class),
             proxy.getPluginManager()
         );
-        plugin.loadConfig();
+        plugin.initialize(false);
     }
 
     @Test

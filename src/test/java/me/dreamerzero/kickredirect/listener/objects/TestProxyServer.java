@@ -33,8 +33,8 @@ public class TestProxyServer implements ProxyServer {
 
     public TestProxyServer(){
         this.pManager = new TestPluginManager();
-        this.eManager = null;
-        this.cManager = null;
+        this.eManager = new TestEventManager();
+        this.cManager = new TestCommandManager();
     }
     @Override
     public RegisteredServer createRawRegisteredServer(ServerInfo arg0) {

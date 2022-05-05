@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 
 import me.dreamerzero.kickredirect.commands.KickRedirectCommand;
 import me.dreamerzero.kickredirect.configuration.Configuration;
+import me.dreamerzero.kickredirect.configuration.ConfigurationContainer;
 import me.dreamerzero.kickredirect.formatter.Formatter;
 import me.dreamerzero.kickredirect.formatter.MiniPlaceholdersFormatter;
 import me.dreamerzero.kickredirect.formatter.RegularFormatter;
@@ -47,11 +48,9 @@ public final class KickRedirect {
     private final Logger logger;
     private final PluginManager pluginManager;
     private Formatter formatter;
-    private Configuration.Config config;
-    private Configuration.Messages messages;
-    private final Cache<UUID, DebugInfo> cache = Caffeine.newBuilder()
-        .expireAfterAccess(4, TimeUnit.SECONDS)
-        .build();
+    private ConfigurationContainer<Configuration.Config> config;
+    private ConfigurationContainer<Configuration.Messages> messages;
+    private Cache<UUID, DebugInfo> cache;
 
     @Inject
     public KickRedirect(
@@ -68,27 +67,9 @@ public final class KickRedirect {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event){
-        long start = System.currentTimeMillis();
-        this.proxy.getConsoleCommandSource().sendMessage(
-            MiniMessage.miniMessage().deserialize("<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Starting plugin...")
-        );
-        this.loadDependencies();
-        if (!this.loadConfig()) {
-            return;
-        }
-        this.formatter = proxy.getPluginManager().isLoaded("miniplaceholders")
-            ? new MiniPlaceholdersFormatter()
-            : new RegularFormatter();
-        KickRedirectCommand.command(this);
-        proxy.getEventManager().register(this, new KickListener(this));
-        proxy.getEventManager().register(this, new DebugListener(this));
-
-        long duration = System.currentTimeMillis() - start;
-
-        this.proxy.getConsoleCommandSource().sendMessage(
-            MiniMessage.miniMessage().deserialize("<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff> Fully started plugin in " + duration + "ms")
-        );
+        this.initialize(false);
     }
+
 
     public @NotNull ProxyServer getProxy(){
         return this.proxy;
@@ -102,11 +83,11 @@ public final class KickRedirect {
         return this.logger;
     }
 
-    public Configuration.Config config() {
+    public ConfigurationContainer<Configuration.Config> config() {
         return this.config;
     }
 
-    public Configuration.Messages messages() {
+    public ConfigurationContainer<Configuration.Messages> messages() {
         return this.messages;
     }
 
@@ -115,6 +96,11 @@ public final class KickRedirect {
     }
 
     public Cache<UUID, DebugInfo> debugCache() {
+        if (this.cache == null) {
+            this.cache = Caffeine.newBuilder()
+                .expireAfterAccess(3, TimeUnit.SECONDS)
+                .build();
+        }
         return this.cache;
     }
 
@@ -158,8 +144,34 @@ public final class KickRedirect {
     }
 
     public boolean loadConfig() {
-        this.config = Configuration.loadMainConfig(pluginPath, logger);
-        this.messages = Configuration.loadMessages(pluginPath, logger);
+        this.config = Configuration.loadMainConfig(this);
+        this.messages = Configuration.loadMessages(this);
         return this.config != null && this.messages != null;
+    }
+
+    void initialize(boolean test) {
+        long start = System.currentTimeMillis();
+        this.proxy.getConsoleCommandSource().sendMessage(
+            MiniMessage.miniMessage().deserialize("<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Starting plugin...")
+        );
+        if (!test) {
+            this.loadDependencies();
+        }
+        if (!this.loadConfig()) {
+            return;
+        }
+        this.formatter = proxy.getPluginManager().isLoaded("miniplaceholders")
+            ? new MiniPlaceholdersFormatter()
+            : new RegularFormatter();
+        KickRedirectCommand.command(this);
+        proxy.getEventManager().register(this, new KickListener(this));
+        proxy.getEventManager().register(this, new DebugListener(this));
+
+        this.proxy.getConsoleCommandSource().sendMessage(
+            MiniMessage.miniMessage().deserialize(
+                "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff> Fully started plugin in "
+                + (System.currentTimeMillis() - start)
+                + "ms")
+        );
     }
 }

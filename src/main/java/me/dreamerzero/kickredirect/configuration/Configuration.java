@@ -1,28 +1,24 @@
 package me.dreamerzero.kickredirect.configuration;
 
-import java.nio.file.Path;
-import java.util.Set;
-
-import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
+import me.dreamerzero.kickredirect.KickRedirect;
 import me.dreamerzero.kickredirect.enums.CheckMode;
 import me.dreamerzero.kickredirect.enums.SendMode;
 
 public class Configuration {
     private Configuration(){}
-    public static Config loadMainConfig(Path path, Logger logger){
-        final Path configPath = path.resolve("config.conf");
+    public static ConfigurationContainer<Config> loadMainConfig(final KickRedirect plugin){
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
                 .header("KickRedirect | by 4drian3d\n")
             )
-            .path(configPath)
+            .path(plugin.getPluginPath().resolve("config.conf"))
             .build();
 
         final Config config;
@@ -32,20 +28,19 @@ public class Configuration {
             node.set(Config.class, config);
             loader.save(node);
         } catch (ConfigurateException exception){
-            logger.error("Could not load config.conf file, error: {}", exception.getMessage());
+            plugin.getLogger().error("Could not load config.conf file", exception);
             return null;
         }
-        return config;
+        return new ConfigurationContainer<>(config, Config.class, loader, plugin.getLogger());
     }
 
-    public static Messages loadMessages(Path path, Logger logger){
-        final Path configPath = path.resolve("messages.conf");
+    public static ConfigurationContainer<Messages> loadMessages(final KickRedirect plugin){
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
                 .header("KickRedirect | by 4drian3d\n")
             )
-            .path(configPath)
+            .path(plugin.getPluginPath().resolve("messages.conf"))
             .build();
 
         final Messages messages;
@@ -55,10 +50,10 @@ public class Configuration {
             node.set(Messages.class, messages);
             loader.save(node);
         } catch (ConfigurateException exception){
-            logger.error("Could not load messages.conf file, error: {}", exception.getMessage());
+            plugin.getLogger().error("Could not load messages.conf file", exception);
             return null;
         }
-        return messages;
+        return new ConfigurationContainer<>(messages, Messages.class, loader, plugin.getLogger());
     }
 
     @ConfigSerializable
@@ -66,14 +61,14 @@ public class Configuration {
         @Comment("Sets the list of available servers to forward to the player\nDepending on the configuration of sendMode it will be sent to one server or another")
         private String[] serversToRedirect = {"lobby1", "lobby2"};
 
-        @Comment("Redirect the player if the expulsion message is null or empty?")
+        @Comment("Redirect the player if the expulsion message is null or empty")
         private boolean redirectOnNullMessage = true;
 
         @Comment("Sets whether to perform whitelist or blacklist detection\nAvailable options:\nWHITELIST: It will check if the expulsion string contains any of this strings\nBLACKLIST: It will check if the expulsion string not contains any of this strings")
         private CheckMode checkMode = CheckMode.WHITELIST;
 
         @Comment("Set the messages to be checked by blacklist or whitelist in case they are present in the expulsion message")
-        private Set<String> messagesToCheck = Set.of("kicked from server", "shutdown");
+        private String[] messagesToCheck = {"kicked from server", "shutdown"};
 
         @Comment("Sets the sending mode\nAvailable options:\nTO_FIRST | It will send the player to the first available server configured in serversToRedirect\nTO_EMPTIEST_SERVER | Send the player to the emptiest server that is available according to the serversToRedirect configuration\nRANDOM | Send to a random server from the configured servers")
         private SendMode sendMode = SendMode.TO_FIRST;
@@ -96,7 +91,7 @@ public class Configuration {
             return this.redirectOnNullMessage;
         }
 
-        public Set<String> getMessagesToCheck(){
+        public String[] getMessagesToCheck(){
             return this.messagesToCheck;
         }
 
@@ -124,8 +119,10 @@ public class Configuration {
         @Comment("Error message to be sent in case no server is available to send to player")
         private String noServersFoundToRedirect = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#b82e00:#ff4000>No servers were found to redirect the player to. <gray>SendMode: <sendmode>";
 
+        @Comment("\nReload Messages")
         private Reload reloadMessages = new Reload();
 
+        @Comment("\nDebug Messages")
         private Debug debugMessages = new Debug();
 
         public String kickMessage(){

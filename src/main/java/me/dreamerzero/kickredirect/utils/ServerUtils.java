@@ -15,8 +15,8 @@ public final class ServerUtils {
     private static final Random rm = new Random();
 
     public static @Nullable RegisteredServer getConfigServer(KickRedirect plugin){
-        final Config config = plugin.config();
-        switch(config.getSendMode()){
+        final Config config = plugin.config().get();
+        switch (config.getSendMode()) {
             case TO_FIRST: return ServerUtils.getFirstServer(plugin, config);
             case TO_EMPTIEST_SERVER: return ServerUtils.getEmptiestServer(plugin, config);
             case RANDOM: return ServerUtils.getRandomServer(plugin, config);

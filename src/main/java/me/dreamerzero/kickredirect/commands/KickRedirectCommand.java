@@ -16,17 +16,19 @@ public final class KickRedirectCommand {
             .requires(src -> src.hasPermission("kickredirect.command"))
             .then(LiteralArgumentBuilder.<CommandSource>literal("reload")
                 .executes(cmd -> {
-                    final var source = cmd.getSource();
+                    final CommandSource source = cmd.getSource();
+                    final var config = plugin.messages();
                     source.sendMessage(
                         plugin.formatter().format(
-                            plugin.messages().reload().reloadingMessage(),
+                            config.get().reload().reloadingMessage(),
                             source
                     ));
+                    config.reload();
                     source.sendMessage(
                         plugin.formatter().format(
                             plugin.loadConfig()
-                                ? plugin.messages().reload().reloadMessage()
-                                : plugin.messages().reload().failedReload(),
+                                ? plugin.messages().get().reload().reloadMessage()
+                                : plugin.messages().get().reload().failedReload(),
                             source
                     ));
                     return Command.SINGLE_SUCCESS;
@@ -34,7 +36,7 @@ public final class KickRedirectCommand {
             ).build();
 
         var manager = plugin.getProxy().getCommandManager();
-        var meta = manager.metaBuilder("kickredirect").plugin(plugin).build();
-        manager.register(meta, new BrigadierCommand(command));
+        manager.register(manager.metaBuilder("kickredirect")
+            .plugin(plugin).build(), new BrigadierCommand(command));
     }
 }
