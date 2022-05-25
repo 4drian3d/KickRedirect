@@ -9,6 +9,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginManager;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
@@ -40,6 +41,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
     url = Constants.URL,
     authors = {
         "4drian3d"
+    },
+    dependencies = {
+        @Dependency(
+            id = "miniplaceholders",
+            optional = true
+        )
     }
 )
 public final class KickRedirect {
@@ -66,7 +73,7 @@ public final class KickRedirect {
     }
 
     @Subscribe
-    public void onProxyInitialization(ProxyInitializeEvent event){
+    public void onProxyInitialization(final ProxyInitializeEvent event){
         this.initialize(false);
     }
 
@@ -105,8 +112,10 @@ public final class KickRedirect {
     }
 
     private void loadDependencies() {
-        final VelocityLibraryManager<KickRedirect> libraryManager = new VelocityLibraryManager<>(this.logger, this.pluginPath, pluginManager, this, "libs");
-        final Relocation configurateRelocation = new Relocation("org{}spongepowered", "me.dreamerzero.kickredirect.libs.sponge");
+        final VelocityLibraryManager<KickRedirect> libraryManager
+            = new VelocityLibraryManager<>(this.logger, this.pluginPath, pluginManager, this, "libs");
+        final Relocation configurateRelocation
+            = new Relocation("org{}spongepowered", "me.dreamerzero.kickredirect.libs.sponge");
         final Library hocon = Library.builder()
             .groupId("org{}spongepowered")
             .artifactId("configurate-hocon")
@@ -149,8 +158,8 @@ public final class KickRedirect {
         return this.config != null && this.messages != null;
     }
 
-    void initialize(boolean test) {
-        long start = System.currentTimeMillis();
+    void initialize(final boolean test) {
+        final long start = System.currentTimeMillis();
         this.proxy.getConsoleCommandSource().sendMessage(
             MiniMessage.miniMessage().deserialize("<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Starting plugin...")
         );
