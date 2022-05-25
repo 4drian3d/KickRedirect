@@ -57,7 +57,7 @@ public class Configuration {
     }
 
     @ConfigSerializable
-    public static class Config {
+    public static class Config implements ConfigSection {
         @Comment("Sets the list of available servers to forward to the player\nDepending on the configuration of sendMode it will be sent to one server or another")
         private String[] serversToRedirect = {"lobby1", "lobby2"};
 
@@ -109,7 +109,7 @@ public class Configuration {
     }
 
     @ConfigSerializable
-    public static class Messages {
+    public static class Messages implements ConfigSection {
         @Comment("Sets the message to send if no server is found to which to send the player")
         private String kickMessage = "<gradient:#FF0000:dark_red>You could not be sent to a backup server";
 
@@ -184,4 +184,6 @@ public class Configuration {
             }
         }
     }
+
+    static interface ConfigSection {}
 }

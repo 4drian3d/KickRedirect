@@ -7,7 +7,9 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
-public class ConfigurationContainer<C> {
+import me.dreamerzero.kickredirect.configuration.Configuration.ConfigSection;
+
+public class ConfigurationContainer<C extends ConfigSection> {
     private C config;
     private final HoconConfigurationLoader loader;
     private final Class<C> clazz;
@@ -26,34 +28,31 @@ public class ConfigurationContainer<C> {
     }
 
     public void reload() {
+        this.safeReload();
+    }
+
+    public void setValues(Consumer<C> consumer) {
+        consumer.accept(this.config);
+        this.safeReload();
+    }
+
+    public C get() {
+        return this.config;
+    }
+
+    private final void safeReload() {
         C newConfig = null;
         try {
             final CommentedConfigurationNode node = loader.load();
             newConfig = node.get(clazz);
             node.set(clazz, config);
             loader.save(node);
-        } catch (ConfigurateException exception){
+        } catch (ConfigurateException exception) {
             logger.error("Could not load config.conf file", exception);
         } finally {
             if (newConfig != null) {
                 config = newConfig;
             }
         }
-    }
-
-    public void setValues(Consumer<C> consumer) {
-        consumer.accept(this.config);
-        try {
-            final CommentedConfigurationNode node = loader.load();
-            config = node.get(clazz);
-            node.set(clazz, config);
-            loader.save(node);
-        } catch (ConfigurateException exception){
-            logger.error("Could not set new values to configuration", exception);
-        }
-    }
-
-    public C get() {
-        return this.config;
     }
 }
