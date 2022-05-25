@@ -2,6 +2,9 @@ package me.dreamerzero.kickredirect.utils;
 
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class DebugInfo {
@@ -37,5 +40,15 @@ public class DebugInfo {
 
     public String result() {
         return this.finalResult;
+    }
+
+    public TagResolver commonResolver() {
+        return TagResolver.builder()
+            .resolvers(
+                Placeholder.unparsed("player_name", playerName()),
+                Placeholder.unparsed("server_name", serverName()),
+                Placeholder.component("during_server_connect", Component.text(duringServerConnect())),
+                Placeholder.unparsed("reason", originalReason()))
+            .build();
     }
 }

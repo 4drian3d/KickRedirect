@@ -7,11 +7,10 @@ import com.velocitypowered.api.event.player.KickedFromServerEvent;
 
 import me.dreamerzero.kickredirect.KickRedirect;
 import me.dreamerzero.kickredirect.utils.DebugInfo;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
-public class DebugListener {
+public final class DebugListener {
     private final KickRedirect plugin;
 
     public DebugListener(final KickRedirect plugin){
@@ -26,19 +25,11 @@ public class DebugListener {
                 if (debug == null) {
                     return;
                 }
-                final TagResolver commonResolver = TagResolver.builder()
-                    .resolvers(
-                        Placeholder.unparsed("player_name", debug.playerName()),
-                        Placeholder.unparsed("server_name", debug.serverName()),
-                        Placeholder.component("during_server_connect", Component.text(debug.duringServerConnect())),
-                        Placeholder.unparsed("reason", debug.originalReason()))
-                    .build();
-                final TagResolver redirectResolver = TagResolver.builder()
-                    .resolvers(commonResolver, Placeholder.unparsed("result", debug.result()))
-                    .build();
-                final TagResolver eventResolver = TagResolver.builder()
-                    .resolvers(commonResolver, Placeholder.unparsed("result", event.getResult().getClass().getTypeName()))
-                    .build();
+                final TagResolver commonResolver = debug.commonResolver();
+                final TagResolver redirectResolver = TagResolver
+                    .resolver(commonResolver, Placeholder.unparsed("result", debug.result()));
+                final TagResolver eventResolver = TagResolver
+                    .resolver(commonResolver, Placeholder.unparsed("result", event.getResult().getClass().getTypeName()));
 
                 plugin.getProxy().getConsoleCommandSource().sendMessage(
                     plugin.formatter().format(
