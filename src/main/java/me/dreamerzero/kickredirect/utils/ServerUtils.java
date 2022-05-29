@@ -34,8 +34,8 @@ public final class ServerUtils {
     }
 
     private static @Nullable RegisteredServer getFirstServer(KickRedirect plugin, Config config){
-        for(final String st : config.getServersToRedirect()){
-            Optional<RegisteredServer> sv = plugin.getProxy().getServer(st);
+        for (final String st : config.getServersToRedirect()) {
+            final Optional<RegisteredServer> sv = plugin.getProxy().getServer(st);
             if(sv.isPresent()) return sv.get();
         }
         return null;
@@ -43,13 +43,13 @@ public final class ServerUtils {
 
     private static @Nullable RegisteredServer getEmptiestServer(KickRedirect plugin, Config config){
         RegisteredServer emptiest = null;
-        for(final String st : config.getServersToRedirect()){
-            Optional<RegisteredServer> sv = plugin.getProxy().getServer(st);
-            if(sv.isPresent()) {
+        for (final String st : config.getServersToRedirect()) {
+            final Optional<RegisteredServer> sv = plugin.getProxy().getServer(st);
+            if (sv.isPresent()) {
                 RegisteredServer actualsv = sv.get();
-                if(actualsv.getPlayersConnected().isEmpty())
+                if (actualsv.getPlayersConnected().isEmpty())
                     return actualsv;
-                if(emptiest == null) {
+                if (emptiest == null) {
                     emptiest = actualsv;
                 } else {
                     if(actualsv.getPlayersConnected().size() < emptiest.getPlayersConnected().size()){

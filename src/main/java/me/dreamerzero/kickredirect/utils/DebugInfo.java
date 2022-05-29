@@ -7,7 +7,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
-public class DebugInfo {
+public final class DebugInfo {
     private final String playerName;
     private final String serverName;
     private final boolean duringServerConnect;
