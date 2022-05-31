@@ -116,12 +116,15 @@ public final class KickRedirect {
             = new VelocityLibraryManager<>(this.logger, this.pluginPath, pluginManager, this, "libs");
         final Relocation configurateRelocation
             = new Relocation("org{}spongepowered", "me.dreamerzero.kickredirect.libs.sponge");
+        final Relocation geantyrefRelocation =
+            new Relocation("io{}leangen{}geantyref", "me.dreamerzero.kickredirect.libs.geantyref");
         final Library hocon = Library.builder()
             .groupId("org{}spongepowered")
             .artifactId("configurate-hocon")
             .version(Constants.CONFIGURATE)
             .id("configurate-hocon")
             .relocate(configurateRelocation)
+            .relocate(geantyrefRelocation)
             .build();
         final Library confCore = Library.builder()
             .groupId("org{}spongepowered")
@@ -129,13 +132,14 @@ public final class KickRedirect {
             .version(Constants.CONFIGURATE)
             .id("configurate-core")
             .relocate(configurateRelocation)
+            .relocate(geantyrefRelocation)
             .build();
         final Library geantyref = Library.builder()
             .groupId("io{}leangen{}geantyref")
             .artifactId("geantyref")
             .version(Constants.GEANTYREF)
             .id("geantyref")
-            .relocate("io{}leangen{}geantyref", "me.dreamerzero.kickredirect.libs.geantyref")
+            .relocate(geantyrefRelocation)
             .build();
         final Library caffeine = Library.builder()
             .groupId("com{}github{}ben-manes{}caffeine")
@@ -146,9 +150,9 @@ public final class KickRedirect {
             .build();
 
         libraryManager.addMavenCentral();
+        libraryManager.loadLibrary(geantyref);
         libraryManager.loadLibrary(hocon);
         libraryManager.loadLibrary(confCore);
-        libraryManager.loadLibrary(geantyref);
         libraryManager.loadLibrary(caffeine);
     }
 
