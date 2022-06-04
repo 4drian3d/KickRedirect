@@ -9,7 +9,7 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
 import me.dreamerzero.kickredirect.configuration.Configuration.ConfigSection;
 
-public class ConfigurationContainer<C extends ConfigSection> {
+public final class ConfigurationContainer<C extends ConfigSection> {
     private C config;
     private final HoconConfigurationLoader loader;
     private final Class<C> clazz;

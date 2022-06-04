@@ -2,7 +2,6 @@ package me.dreamerzero.kickredirect.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.velocitypowered.api.command.BrigadierCommand;
 import com.velocitypowered.api.command.CommandSource;
 
@@ -12,7 +11,7 @@ public final class KickRedirectCommand {
     private KickRedirectCommand(){}
 
     public static void command(final KickRedirect plugin) {
-        final LiteralCommandNode<CommandSource> command = LiteralArgumentBuilder.<CommandSource>literal("kickredirect")
+        final var command = new BrigadierCommand(LiteralArgumentBuilder.<CommandSource>literal("kickredirect")
             .requires(src -> src.hasPermission("kickredirect.command"))
             .then(LiteralArgumentBuilder.<CommandSource>literal("reload")
                 .executes(cmd -> {
@@ -27,16 +26,17 @@ public final class KickRedirectCommand {
                     source.sendMessage(
                         plugin.formatter().format(
                             plugin.loadConfig()
-                                ? plugin.messages().get().reload().reloadMessage()
-                                : plugin.messages().get().reload().failedReload(),
+                                ? config.get().reload().reloadMessage()
+                                : config.get().reload().failedReload(),
                             source
                     ));
                     return Command.SINGLE_SUCCESS;
                 })
-            ).build();
+            ).build());
 
         var manager = plugin.getProxy().getCommandManager();
-        manager.register(manager.metaBuilder("kickredirect")
-            .plugin(plugin).build(), new BrigadierCommand(command));
+        manager.register(manager.metaBuilder(command)
+            .plugin(plugin)
+            .build(), command);
     }
 }

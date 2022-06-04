@@ -77,7 +77,7 @@ public class Configuration {
         private int randomAttempts = 5;
 
         @Comment("Enables debug mode")
-        private boolean debug = true;
+        private boolean debug = false;
 
         public String[] getServersToRedirect(){
             return this.serversToRedirect;
