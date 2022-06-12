@@ -2,10 +2,12 @@ package me.dreamerzero.kickredirect.listener.objects;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.EventManager;
@@ -19,6 +21,7 @@ import com.velocitypowered.api.proxy.messages.ChannelRegistrar;
 import com.velocitypowered.api.proxy.player.ResourcePackInfo;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
+import com.velocitypowered.api.scheduler.ScheduledTask;
 import com.velocitypowered.api.scheduler.Scheduler;
 import com.velocitypowered.api.util.ProxyVersion;
 
@@ -115,8 +118,18 @@ public class TestProxyServer implements ProxyServer {
     public Scheduler getScheduler() {
         return new Scheduler(){
             @Override
-            public TaskBuilder buildTask(Object arg0, Runnable arg1) {
+            public TaskBuilder buildTask(Object plugin, Runnable consumer) {
                 return null;
+            }
+
+            @Override
+            public TaskBuilder buildTask(Object plugin, Consumer<ScheduledTask> consumer) {
+                return null;
+            }
+
+            @Override
+            public Collection<ScheduledTask> tasksByPlugin(Object plugin) {
+                return Collections.emptyList();
             }
         };
     }
