@@ -23,25 +23,31 @@ public final class DebugListener {
         if (plugin.config().get().debug()) {
             return EventTask.async(() -> {
                 final DebugInfo debug = plugin.debugCache().getIfPresent(event.getPlayer().getUniqueId());
-                if (debug == null || debug.serverName() == null) {
+                if (debug == null) {
                     return;
                 }
                 final TagResolver commonResolver = debug.commonResolver();
                 final TagResolver redirectResolver = TagResolver
-                    .resolver(commonResolver, Placeholder.unparsed("result", debug.result()));
+                    .resolver(
+                        commonResolver,
+                        Placeholder.unparsed("result", debug.result()),
+                        Placeholder.unparsed("server_name", debug.serverName() == null
+                            ? "NONE" : debug.serverName())    
+                    );
                 final TagResolver eventResolver = TagResolver
-                    .resolver(commonResolver, Placeholder.unparsed("result", event.getResult().getClass().getTypeName()));
-
-                plugin.getProxy().getConsoleCommandSource().sendMessage(
+                    .resolver(
+                        commonResolver,
+                        Placeholder.unparsed("result", event.getResult().getClass().getTypeName()),
+                        Placeholder.unparsed("server_name", serverName(event.getResult()))    
+                    );
+                var config = plugin.messages().get().debug();
+                var console = plugin.getProxy().getConsoleCommandSource();
+                console.sendMessage(
                     plugin.formatter().format(
-                        plugin.messages().get().debug().redirectResult(),
-                        event.getPlayer(),
-                        redirectResolver,
-                        Placeholder.unparsed("server_name", debug.serverName())));
-                plugin.getProxy().getConsoleCommandSource().sendMessage(
+                        config.redirectResult(), event.getPlayer(), redirectResolver));
+                console.sendMessage(
                     plugin.formatter().format(
-                        plugin.messages().get().debug().finalResult(),
-                        event.getPlayer(), eventResolver, Placeholder.unparsed("server_name", serverName(event.getResult()))));
+                        config.finalResult(), event.getPlayer(), eventResolver));
             });
         }
         return null;
