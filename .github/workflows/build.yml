@@ -32,4 +32,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: KickRedirect
-        path: build/libs/KickRedirect-**-SNAPSHOT-all.jar
+        path: build/libs/KickRedirect-*.jar
