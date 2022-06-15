@@ -32,13 +32,15 @@ public class TestProxyServer implements ProxyServer {
     private EventManager eManager;
     private CommandManager cManager;
     private final Map<String, RegisteredServer> servers = Map.of(
-        "lobby1", new TestRegisteredServer(), "lobby2", new TestRegisteredServer());
+        "lobby1", new TestRegisteredServer(5).name("lobby1"),
+        "lobby2", new TestRegisteredServer(0).name("lobby2"));
 
     public TestProxyServer(){
         this.pManager = new TestPluginManager();
         this.eManager = new TestEventManager();
         this.cManager = new TestCommandManager();
     }
+
     @Override
     public RegisteredServer createRawRegisteredServer(ServerInfo arg0) {
         return null;

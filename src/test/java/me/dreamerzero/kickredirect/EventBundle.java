@@ -10,6 +10,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.plugin.PluginManager;
 
+import me.dreamerzero.kickredirect.listener.KickListener;
 import me.dreamerzero.kickredirect.listener.objects.TestContinuation;
 import me.dreamerzero.kickredirect.listener.objects.TestProxyServer;
 import net.kyori.adventure.builder.AbstractBuilder;
@@ -61,6 +62,11 @@ public final class EventBundle {
 
     public ProxyServer getProxyServer() {
         return proxyServer;
+    }
+
+    public void applyListener() {
+        final KickListener listener = new KickListener(plugin);
+        listener.onKickFromServer(event, continuation);
     }
 
     public static class Builder implements AbstractBuilder<EventBundle> {
