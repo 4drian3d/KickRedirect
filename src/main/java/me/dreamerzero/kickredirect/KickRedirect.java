@@ -182,7 +182,7 @@ public final class KickRedirect {
 
         this.proxy.getConsoleCommandSource().sendMessage(
             MiniMessage.miniMessage().deserialize(
-                "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff> Fully started plugin in "
+                "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Fully started plugin in "
                 + (System.currentTimeMillis() - start)
                 + "ms")
         );
