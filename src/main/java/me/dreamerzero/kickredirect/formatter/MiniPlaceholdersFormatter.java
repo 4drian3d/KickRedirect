@@ -19,11 +19,13 @@ public class MiniPlaceholdersFormatter implements Formatter {
     }
 
     @Override
-    public Component format(@NotNull String string, @NotNull TagResolver extraResolver) {
+    public Component format(@NotNull String string, @NotNull TagResolver... extraResolver) {
         return MiniMessage.miniMessage().deserialize(
             string,
-            MiniPlaceholders.getGlobalPlaceholders(),
-            extraResolver
+            TagResolver.builder()
+                .resolver(MiniPlaceholders.getGlobalPlaceholders())
+                .resolvers(extraResolver)
+                .build()
         );
     }
 
@@ -36,11 +38,13 @@ public class MiniPlaceholdersFormatter implements Formatter {
     }
 
     @Override
-    public Component format(@NotNull String string, Audience audience, @NotNull TagResolver extraResolver) {
+    public Component format(@NotNull String string, Audience audience, @NotNull TagResolver... extraResolver) {
         return MiniMessage.miniMessage().deserialize(
             string,
-            MiniPlaceholders.getAudienceGlobalPlaceholders(audience),
-            extraResolver
+            TagResolver.builder()
+                .resolver(MiniPlaceholders.getAudienceGlobalPlaceholders(audience))
+                .resolvers(extraResolver)
+                .build()
         );
     }
 

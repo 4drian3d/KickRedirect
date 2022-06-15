@@ -4,6 +4,7 @@ import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
+import com.velocitypowered.api.event.player.KickedFromServerEvent.ServerKickResult;
 
 import me.dreamerzero.kickredirect.KickRedirect;
 import me.dreamerzero.kickredirect.utils.DebugInfo;
@@ -22,7 +23,7 @@ public final class DebugListener {
         if (plugin.config().get().debug()) {
             return EventTask.async(() -> {
                 final DebugInfo debug = plugin.debugCache().getIfPresent(event.getPlayer().getUniqueId());
-                if (debug == null) {
+                if (debug == null || debug.serverName() == null) {
                     return;
                 }
                 final TagResolver commonResolver = debug.commonResolver();
@@ -34,13 +35,22 @@ public final class DebugListener {
                 plugin.getProxy().getConsoleCommandSource().sendMessage(
                     plugin.formatter().format(
                         plugin.messages().get().debug().redirectResult(),
-                        event.getPlayer(), redirectResolver));
+                        event.getPlayer(),
+                        redirectResolver,
+                        Placeholder.unparsed("server_name", debug.serverName())));
                 plugin.getProxy().getConsoleCommandSource().sendMessage(
                     plugin.formatter().format(
                         plugin.messages().get().debug().finalResult(),
-                        event.getPlayer(), eventResolver));
+                        event.getPlayer(), eventResolver, Placeholder.unparsed("server_name", serverName(event.getResult()))));
             });
         }
         return null;
+    }
+
+    private String serverName(ServerKickResult result) {
+        if(result instanceof KickedFromServerEvent.RedirectPlayer) {
+            return ((KickedFromServerEvent.RedirectPlayer)result).getServer().getServerInfo().getName();
+        }
+        return "NONE";
     }
 }

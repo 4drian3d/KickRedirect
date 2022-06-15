@@ -24,11 +24,11 @@ public final class KickListener {
 
     private static final PlainTextComponentSerializer SERIALIZER = PlainTextComponentSerializer.plainText();
 
-    @Subscribe(order = PostOrder.LATE)
+    @Subscribe(order = PostOrder.EARLY)
     public void onKickFromServer(final KickedFromServerEvent event, final Continuation continuation){
         if(!event.getResult().isAllowed()){
             continuation.resume();
-            plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event));
+            plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event, null));
             return;
         }
         final Optional<String> optional = event.getServerKickReason().map(SERIALIZER::serialize);
@@ -56,7 +56,7 @@ public final class KickListener {
                     );
                 }
                 continuation.resume();
-                plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event));
+                plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event, null));
                 return;
             }
             final String redirectMessage = plugin.messages().get().redirectMessage();
@@ -64,9 +64,11 @@ public final class KickListener {
                 ? KickedFromServerEvent.RedirectPlayer.create(server)
                 : KickedFromServerEvent.RedirectPlayer.create(
                     server, plugin.formatter().format(redirectMessage, event.getPlayer())));
+            continuation.resume();
+            plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event, server.getServerInfo().getName()));
         }
         continuation.resume();
-        plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event));
+        plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event, null));
     }
 
     private boolean containsCheck(final String message) {

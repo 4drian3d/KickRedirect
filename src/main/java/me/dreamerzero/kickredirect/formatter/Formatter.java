@@ -13,7 +13,7 @@ public interface Formatter {
 
     Component format(
         final @NotNull String string,
-        final @NotNull TagResolver extraResolver
+        final @NotNull TagResolver... extraResolver
     );
 
     Component format(
@@ -24,6 +24,6 @@ public interface Formatter {
     Component format(
         final @NotNull String string,
         final Audience audience,
-        final @NotNull TagResolver extraResolver
+        final @NotNull TagResolver... extraResolver
     );
 }

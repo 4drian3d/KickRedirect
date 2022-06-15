@@ -15,7 +15,7 @@ public class RegularFormatter implements Formatter {
     }
 
     @Override
-    public Component format(@NotNull String string, @NotNull TagResolver extraResolver) {
+    public Component format(@NotNull String string, @NotNull TagResolver... extraResolver) {
         return MiniMessage.miniMessage().deserialize(string, extraResolver);
     }
 
@@ -25,7 +25,7 @@ public class RegularFormatter implements Formatter {
     }
 
     @Override
-    public Component format(@NotNull String string, Audience audience, @NotNull TagResolver extraResolver) {
+    public Component format(@NotNull String string, Audience audience, @NotNull TagResolver... extraResolver) {
         return format(string, extraResolver);
     }
 }

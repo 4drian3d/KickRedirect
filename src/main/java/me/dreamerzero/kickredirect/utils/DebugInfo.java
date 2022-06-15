@@ -14,9 +14,9 @@ public final class DebugInfo {
     private final String originalReason;
     private final String finalResult;
 
-    public DebugInfo(final KickedFromServerEvent event) {
+    public DebugInfo(final KickedFromServerEvent event, String server) {
         this.playerName = event.getPlayer().getUsername();
-        this.serverName = event.getServer().getServerInfo().getName();
+        this.serverName = server;
         this.duringServerConnect = event.kickedDuringServerConnect();
         this.originalReason = event.getServerKickReason().map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
         this.finalResult = event.getResult().getClass().getTypeName();
@@ -46,7 +46,6 @@ public final class DebugInfo {
         return TagResolver.builder()
             .resolvers(
                 Placeholder.unparsed("player_name", playerName()),
-                Placeholder.unparsed("server_name", serverName()),
                 Placeholder.component("during_server_connect", Component.text(duringServerConnect())),
                 Placeholder.unparsed("reason", originalReason()))
             .build();
