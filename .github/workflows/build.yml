@@ -27,3 +27,9 @@ jobs:
         timeout_minutes: 4
         max_attempts: 2
         command: gradle build
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: KickRedirect
+        path: build/libs/KickRedirect-**-SNAPSHOT-all.jar
