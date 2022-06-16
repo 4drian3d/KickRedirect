@@ -5,11 +5,13 @@ import java.nio.file.Path;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
+import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.plugin.PluginManager;
 
+import me.dreamerzero.kickredirect.listener.DebugListener;
 import me.dreamerzero.kickredirect.listener.KickListener;
 import me.dreamerzero.kickredirect.listener.objects.TestContinuation;
 import me.dreamerzero.kickredirect.listener.objects.TestProxyServer;
@@ -67,6 +69,11 @@ public final class EventBundle {
     public void applyListener() {
         final KickListener listener = new KickListener(plugin);
         listener.onKickFromServer(event, continuation);
+    }
+
+    public EventTask applyDebug() {
+        final DebugListener listener = new DebugListener(plugin);
+        return listener.afterKickFromServer(event);
     }
 
     public static class Builder implements AbstractBuilder<EventBundle> {

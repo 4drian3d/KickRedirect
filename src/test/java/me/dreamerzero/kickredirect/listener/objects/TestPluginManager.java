@@ -30,6 +30,6 @@ public class TestPluginManager implements PluginManager {
 
     @Override
     public boolean isLoaded(String arg0) {
-        return true;
+        return false;
     }
 }

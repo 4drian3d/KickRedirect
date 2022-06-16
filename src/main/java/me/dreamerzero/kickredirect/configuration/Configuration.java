@@ -1,5 +1,6 @@
 package me.dreamerzero.kickredirect.configuration;
 
+import org.jetbrains.annotations.VisibleForTesting;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
@@ -105,6 +106,11 @@ public class Configuration {
 
         public boolean debug() {
             return this.debug;
+        }
+
+        @VisibleForTesting
+        public void debug(boolean bool) {
+            this.debug = bool;
         }
     }
 

@@ -66,6 +66,7 @@ public final class KickListener {
                     server, plugin.formatter().format(redirectMessage, event.getPlayer())));
             continuation.resume();
             plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event, server.getServerInfo().getName()));
+            return;
         }
         continuation.resume();
         plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event, null));

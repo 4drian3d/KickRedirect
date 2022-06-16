@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import com.velocitypowered.api.proxy.Player;
@@ -34,6 +35,10 @@ public class TestRegisteredServer implements RegisteredServer {
         }
     }
 
+    public TestRegisteredServer(String name) {
+        this.name = name;
+    }
+
     public RegisteredServer name(String name) {
         this.name = name;
         return this;
@@ -56,7 +61,7 @@ public class TestRegisteredServer implements RegisteredServer {
 
     @Override
     public ServerInfo getServerInfo() {
-        return new ServerInfo("server", new InetSocketAddress(404));
+        return new ServerInfo(name, new InetSocketAddress(404));
     }
 
     @Override
@@ -68,7 +73,6 @@ public class TestRegisteredServer implements RegisteredServer {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((PLAYERS == null) ? 0 : PLAYERS.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
@@ -77,21 +81,8 @@ public class TestRegisteredServer implements RegisteredServer {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if(!(obj instanceof RegisteredServer))
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        TestRegisteredServer other = (TestRegisteredServer) obj;
-        if (PLAYERS == null) {
-            if (other.PLAYERS != null)
-                return false;
-        } else if (!PLAYERS.equals(other.PLAYERS))
-            return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
+        return Objects.equals(this.name, ((RegisteredServer)obj).getServerInfo().getName());
     }
 }
