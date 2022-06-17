@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import me.dreamerzero.kickredirect.EventBuilder;
 import me.dreamerzero.kickredirect.EventBundle;
 import me.dreamerzero.kickredirect.KickResultType;
+import me.dreamerzero.kickredirect.listener.KickListener.KickStep;
 import me.dreamerzero.kickredirect.listener.objects.TestContinuation;
 import me.dreamerzero.kickredirect.listener.objects.TestPlayer;
 import me.dreamerzero.kickredirect.listener.objects.TestRegisteredServer;
@@ -34,7 +35,7 @@ class DebugTest {
             .build();
 
         KickListener listener = new KickListener(bundle.getPlugin());
-        listener.cache(bundle.getEvent(), "TEstServer");
+        listener.cache(bundle.getEvent(), "TEstServer", KickStep.DISALLOWED_REASON);
 
         var cache = bundle.getPlugin().debugCache();
         assertNotNull(cache);
