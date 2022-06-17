@@ -2,6 +2,7 @@ package me.dreamerzero.kickredirect.utils;
 
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 
+import me.dreamerzero.kickredirect.listener.KickListener.KickStep;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -13,13 +14,15 @@ public final class DebugInfo {
     private final boolean duringServerConnect;
     private final String originalReason;
     private final String finalResult;
+    private final KickStep step;
 
-    public DebugInfo(final KickedFromServerEvent event, String server) {
+    public DebugInfo(final KickedFromServerEvent event, String server, KickStep step) {
         this.playerName = event.getPlayer().getUsername();
         this.serverName = server;
         this.duringServerConnect = event.kickedDuringServerConnect();
-        this.originalReason = event.getServerKickReason().map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
+        this.originalReason = event.getServerKickReason().map(PlainTextComponentSerializer.plainText()::serialize).orElse("NONE");
         this.finalResult = event.getResult().getClass().getTypeName();
+        this.step = step;
     }
 
     public String playerName() {
@@ -47,7 +50,9 @@ public final class DebugInfo {
             .resolvers(
                 Placeholder.unparsed("player_name", playerName()),
                 Placeholder.component("during_server_connect", Component.text(duringServerConnect())),
-                Placeholder.unparsed("reason", originalReason()))
+                Placeholder.unparsed("reason", originalReason()),
+                Placeholder.unparsed("step", step.toString())
+            )
             .build();
     }
 }

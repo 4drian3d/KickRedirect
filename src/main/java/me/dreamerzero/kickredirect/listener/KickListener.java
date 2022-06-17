@@ -25,13 +25,11 @@ public final class KickListener {
         this.plugin = plugin;
     }
 
-    private static final PlainTextComponentSerializer SERIALIZER = PlainTextComponentSerializer.plainText();
-
     @Subscribe(order = PostOrder.EARLY)
     public void onKickFromServer(final KickedFromServerEvent event, final Continuation continuation){
         if(!event.getResult().isAllowed()){
             continuation.resume();
-            cache(event, null);
+            cache(event, null, KickStep.NOT_ALLOWED);
             return;
         }
 
@@ -50,29 +48,32 @@ public final class KickListener {
                 );
                 applyKickResult(event);
                 continuation.resume();
-                cache(event, null);
-                return;
+                cache(event, null, KickStep.NULL_SERVER);
+            } else {
+                event.setResult(redirectResult(server, event.getPlayer()));
+                continuation.resume();
+                cache(event, server.getServerInfo().getName(), KickStep.AVAILABLE_SERVER);
             }
-            event.setResult(redirectResult(server, event.getPlayer()));
+        } else {
             continuation.resume();
-            cache(event, server.getServerInfo().getName());
-            return;
+            cache(event, null, KickStep.DISALLOWED_REASON);
         }
-        continuation.resume();
-        cache(event, null);
+        
     }
 
-    void cache(KickedFromServerEvent event, String serverName) {
+    void cache(KickedFromServerEvent event, String serverName, KickStep step) {
         if(plugin.config().get().debug())
             plugin.debugCache()
                 .put(
                     event.getPlayer().getUniqueId(),
-                    new DebugInfo(event, serverName)
+                    new DebugInfo(event, serverName, step)
                 );
     }
 
     boolean reasonCheck(KickedFromServerEvent event) {
-        final Optional<String> optional = event.getServerKickReason().map(SERIALIZER::serialize);
+        final Optional<String> optional = event.getServerKickReason()
+            .map(PlainTextComponentSerializer.plainText()::serialize);
+
         if(optional.isPresent()) {
             final String message = optional.get();
             for (final String msg : plugin.config().get().getMessagesToCheck()) {
@@ -105,5 +106,12 @@ public final class KickListener {
                 )
             );
         }
+    }
+
+    public enum KickStep {
+        NOT_ALLOWED,
+        NULL_SERVER,
+        AVAILABLE_SERVER,
+        DISALLOWED_REASON
     }
 }

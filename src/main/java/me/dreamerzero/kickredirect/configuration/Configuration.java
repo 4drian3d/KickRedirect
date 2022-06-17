@@ -177,9 +177,21 @@ public class Configuration {
 
         @ConfigSerializable
         public static class Debug {
-            private String redirectResult = "Player: <player_name><newline> Server: <server_name><newline> Kicked in Server Connect: <during_server_connect><newline> Calculated result: <result>";
+            private String redirectResult = "----- INITIAL DEBUG ----- "+
+                "<newline> Player: <player_name>"+
+                "<newline> Server: <server_name>"+
+                "<newline> Kick Reason: <reason>"+
+                "<newline> Kicked in Server Connect: <during_server_connect>"+
+                "<newline> Calculated result: <result>"+
+                "<newline> Step: <step>";
 
-            private String finalResult = "Player: <player_name><newline> Server: <server_name><newline> Kicked in Server Connect: <during_server_connect><newline> Final Event Result: <result>";
+            private String finalResult = "----- FINAL DEBUG -----"+
+                "<newline> Player: <player_name>"+
+                "<newline> Server: <server_name>"+
+                "<newline> Kick Reason: <reason>"+
+                "<newline> Kicked in Server Connect: <during_server_connect>"+
+                "<newline> Final Event Result: <result>"+
+                "<newline> Step: <step>";
 
             public String redirectResult() {
                 return this.redirectResult;
