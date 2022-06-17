@@ -29,10 +29,12 @@ public final class EventBundle {
         this.plugin = new KickRedirect(
             this.proxyServer,
             Path.of("build", "reports", "tests", "test"),
-            LoggerFactory.getLogger(ListenerTest.class),
+            LoggerFactory.getLogger(EventBundle.class),
             this.proxyServer.getPluginManager()
         );
         plugin.initialize(true);
+        if(builder.debug)
+            plugin.config().get().debug(true);
         this.continuation = new TestContinuation();
         this.player = builder.player;
         this.event = builder.event;
@@ -79,6 +81,7 @@ public final class EventBundle {
     public static class Builder implements AbstractBuilder<EventBundle> {
         private Player player;
         private KickedFromServerEvent event;
+        private boolean debug;
 
         private Builder() {}
 
@@ -89,6 +92,11 @@ public final class EventBundle {
 
         public Builder event(EventBuilder event) {
             this.event = event.player(this.player).build();
+            return this;
+        }
+
+        public Builder debug(boolean debug) {
+            this.debug = debug;
             return this;
         }
 

@@ -6,12 +6,15 @@ import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
+import com.velocitypowered.api.event.player.KickedFromServerEvent.ServerKickResult;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 
 import me.dreamerzero.kickredirect.KickRedirect;
 import me.dreamerzero.kickredirect.enums.CheckMode;
 import me.dreamerzero.kickredirect.utils.DebugInfo;
 import me.dreamerzero.kickredirect.utils.ServerUtils;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
@@ -28,13 +31,11 @@ public final class KickListener {
     public void onKickFromServer(final KickedFromServerEvent event, final Continuation continuation){
         if(!event.getResult().isAllowed()){
             continuation.resume();
-            plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event, null));
+            cache(event, null);
             return;
         }
-        final Optional<String> optional = event.getServerKickReason().map(SERIALIZER::serialize);
-        if (optional.isPresent() && containsCheck(optional.get())
-            || optional.isEmpty() && plugin.config().get().redirectOnNullMessage()
-        ) {
+
+        if (reasonCheck(event)) {
             final RegisteredServer server = ServerUtils.getConfigServer(plugin);
             if (server == null) {
                 plugin.getProxy().getConsoleCommandSource().sendMessage(
@@ -47,37 +48,62 @@ public final class KickListener {
                         )
                     )
                 );
-                final String kickMessage = plugin.messages().get().kickMessage();
-                if(!kickMessage.isBlank()) {
-                    event.setResult(
-                        KickedFromServerEvent.DisconnectPlayer.create(
-                            plugin.formatter().format(kickMessage, event.getPlayer())
-                        )
-                    );
-                }
+                applyKickResult(event);
                 continuation.resume();
-                plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event, null));
+                cache(event, null);
                 return;
             }
-            final String redirectMessage = plugin.messages().get().redirectMessage();
-            event.setResult(redirectMessage.isBlank()
-                ? KickedFromServerEvent.RedirectPlayer.create(server)
-                : KickedFromServerEvent.RedirectPlayer.create(
-                    server, plugin.formatter().format(redirectMessage, event.getPlayer())));
+            event.setResult(redirectResult(server, event.getPlayer()));
             continuation.resume();
-            plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event, server.getServerInfo().getName()));
+            cache(event, server.getServerInfo().getName());
             return;
         }
         continuation.resume();
-        plugin.debugCache().put(event.getPlayer().getUniqueId(), new DebugInfo(event, null));
+        cache(event, null);
     }
 
-    private boolean containsCheck(final String message) {
-        for (final String msg : plugin.config().get().getMessagesToCheck()) {
-            if (message.contains(msg)) {
-                return plugin.config().get().checkMode() == CheckMode.WHITELIST;
+    void cache(KickedFromServerEvent event, String serverName) {
+        if(plugin.config().get().debug())
+            plugin.debugCache()
+                .put(
+                    event.getPlayer().getUniqueId(),
+                    new DebugInfo(event, serverName)
+                );
+    }
+
+    boolean reasonCheck(KickedFromServerEvent event) {
+        final Optional<String> optional = event.getServerKickReason().map(SERIALIZER::serialize);
+        if(optional.isPresent()) {
+            final String message = optional.get();
+            for (final String msg : plugin.config().get().getMessagesToCheck()) {
+                if (message.contains(msg)) {
+                    return plugin.config().get().checkMode() == CheckMode.WHITELIST;
+                }
             }
+            return plugin.config().get().checkMode() != CheckMode.WHITELIST;
+        } else {
+            return plugin.config().get().redirectOnNullMessage();
         }
-        return plugin.config().get().checkMode() != CheckMode.WHITELIST;
+    }
+
+    ServerKickResult redirectResult(RegisteredServer server, Player player) {
+        final String redirectMessage = plugin.messages().get().redirectMessage();
+        if(redirectMessage.isBlank()) {
+            return KickedFromServerEvent.RedirectPlayer.create(server);
+        } else {
+            final Component message = plugin.formatter().format(redirectMessage, player);
+            return KickedFromServerEvent.RedirectPlayer.create(server, message);
+        }
+    }
+
+    void applyKickResult(KickedFromServerEvent event) {
+        final String kickMessage = plugin.messages().get().kickMessage();
+        if(!kickMessage.isBlank()) {
+            event.setResult(
+                KickedFromServerEvent.DisconnectPlayer.create(
+                    plugin.formatter().format(kickMessage, event.getPlayer())
+                )
+            );
+        }
     }
 }

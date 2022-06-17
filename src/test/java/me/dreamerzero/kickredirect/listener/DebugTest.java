@@ -1,55 +1,48 @@
-package me.dreamerzero.kickredirect;
+package me.dreamerzero.kickredirect.listener;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.jupiter.api.Test;
 
-import com.velocitypowered.api.proxy.Player;
 
+import me.dreamerzero.kickredirect.EventBuilder;
+import me.dreamerzero.kickredirect.EventBundle;
+import me.dreamerzero.kickredirect.KickResultType;
 import me.dreamerzero.kickredirect.listener.objects.TestContinuation;
 import me.dreamerzero.kickredirect.listener.objects.TestPlayer;
 import me.dreamerzero.kickredirect.listener.objects.TestRegisteredServer;
-import me.dreamerzero.kickredirect.utils.DebugInfo;
 import net.kyori.adventure.text.Component;
 
 class DebugTest {
-    @Test
-    void testDebug() {
-        Player player = new TestPlayer("4drian3d", true);
-        EventBundle bundle = EventBundle.builder()
-            .player(player)
-            .event(EventBuilder.builder()
-                .duringServerConnect(false)
-                .result(KickResultType.DISCONNECT.result(Component.text("")))
-                .server(new TestRegisteredServer())
-            )
-            .build();
-        
-        bundle.applyListener();
-        assertNotNull(bundle.getPlugin().debugCache().getIfPresent(player.getUniqueId()));
-    }
 
     @Test
-    void testEquality() {
+    void testKickListenerDebug() {
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
             .event(EventBuilder.builder()
-                .reason(null)
+                .duringServerConnect(false)
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
-                .server(new TestRegisteredServer())
+                .server(new TestRegisteredServer().name("TEstServer"))
             )
+            .debug(true)
             .build();
 
-        bundle.applyListener();
-        DebugInfo debuginfo = bundle.getPlugin()
-            .debugCache().getIfPresent(bundle.getPlayer().getUniqueId());
+        KickListener listener = new KickListener(bundle.getPlugin());
+        listener.cache(bundle.getEvent(), "TEstServer");
 
-        assertEquals("4drian3d", debuginfo.playerName());
+        var cache = bundle.getPlugin().debugCache();
+        assertNotNull(cache);
+
+        assertThat(cache.asMap())
+            .containsKey(bundle.getPlayer().getUniqueId());
     }
+
 
     @Test
     void testDebugListener() {
@@ -60,9 +53,8 @@ class DebugTest {
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer().name("TEstServer"))
             )
+            .debug(true)
             .build();
-
-        bundle.getPlugin().config().get().debug(true);
         
         bundle.applyListener();
         CountDownLatch latch = new CountDownLatch(1);
@@ -79,8 +71,9 @@ class DebugTest {
         } catch (Exception e) {
             fail("Exception on CountDown latch");
         }
-        
 
         assertEquals(0, latch.getCount());
+        var cache = bundle.getPlugin().debugCache();
+        assertNotNull(cache.getIfPresent(bundle.getPlayer().getUniqueId()));
     }
 }

@@ -28,6 +28,7 @@ dependencies {
     testImplementation("org.spongepowered:configurate-hocon:$configurate")
     testImplementation(platform("org.junit:junit-bom:5.8.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core:3.23.1")
     testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
     testImplementation("org.slf4j:slf4j-api:1.7.32")
     testImplementation("com.github.ben-manes.caffeine:caffeine:$caffeine")

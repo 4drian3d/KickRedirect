@@ -9,24 +9,24 @@ import net.kyori.adventure.text.Component;
 public enum KickResultType {
     NOTIFY {
         @Override
-        ServerKickResult result(Component component) {
+        public ServerKickResult result(Component component) {
             return KickedFromServerEvent.Notify.create(component);
         }
     },
     DISCONNECT{
         @Override
-        ServerKickResult result(Component component) {
+        public ServerKickResult result(Component component) {
             return KickedFromServerEvent.DisconnectPlayer.create(component);
         }
     },
     REDIRECT{
         @Override
-        ServerKickResult result(Component component) {
+        public ServerKickResult result(Component component) {
             return KickedFromServerEvent.RedirectPlayer.create(new TestRegisteredServer(), component);
         }
     };
 
-    ServerKickResult result(Component component) {
+    public ServerKickResult result(Component component) {
         return null;
     }
 }
