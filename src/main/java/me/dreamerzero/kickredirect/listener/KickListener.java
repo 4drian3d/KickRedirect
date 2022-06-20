@@ -27,11 +27,6 @@ public final class KickListener {
 
     @Subscribe(order = PostOrder.EARLY)
     public void onKickFromServer(final KickedFromServerEvent event, final Continuation continuation){
-        if(!event.getResult().isAllowed()){
-            continuation.resume();
-            cache(event, null, KickStep.NOT_ALLOWED);
-            return;
-        }
 
         if (reasonCheck(event)) {
             final RegisteredServer server = ServerUtils.getConfigServer(plugin);
@@ -109,9 +104,9 @@ public final class KickListener {
     }
 
     public enum KickStep {
-        NOT_ALLOWED,
+        //NOT_ALLOWED,
         NULL_SERVER,
         AVAILABLE_SERVER,
-        DISALLOWED_REASON
+        DISALLOWED_REASON;
     }
 }
