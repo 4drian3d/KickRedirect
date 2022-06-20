@@ -104,7 +104,6 @@ public final class KickListener {
     }
 
     public enum KickStep {
-        //NOT_ALLOWED,
         NULL_SERVER,
         AVAILABLE_SERVER,
         DISALLOWED_REASON;
