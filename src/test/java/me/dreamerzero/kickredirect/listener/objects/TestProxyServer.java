@@ -7,7 +7,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+
+import org.checkerframework.common.value.qual.IntRange;
+import org.jetbrains.annotations.NotNull;
 
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.EventManager;
@@ -121,7 +125,34 @@ public class TestProxyServer implements ProxyServer {
         return new Scheduler(){
             @Override
             public TaskBuilder buildTask(Object plugin, Runnable consumer) {
-                return null;
+                return new TaskBuilder() {
+
+                    @Override
+                    public TaskBuilder delay(@IntRange(from = 0) long time, @NotNull TimeUnit unit) {
+                        return this;
+                    }
+
+                    @Override
+                    public TaskBuilder repeat(@IntRange(from = 0) long time, @NotNull TimeUnit unit) {
+                        return this;
+                    }
+
+                    @Override
+                    public TaskBuilder clearDelay() {
+                        return this;
+                    }
+
+                    @Override
+                    public TaskBuilder clearRepeat() {
+                        return this;
+                    }
+
+                    @Override
+                    public ScheduledTask schedule() {
+                        return null;
+                    }
+                    
+                };
             }
 
             @Override

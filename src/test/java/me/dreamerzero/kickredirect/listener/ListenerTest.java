@@ -9,11 +9,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 
 import me.dreamerzero.kickredirect.EventBuilder;
 import me.dreamerzero.kickredirect.EventBundle;
 import me.dreamerzero.kickredirect.KickResultType;
+import me.dreamerzero.kickredirect.listener.objects.TestContinuation;
 import me.dreamerzero.kickredirect.listener.objects.TestPlayer;
 import me.dreamerzero.kickredirect.listener.objects.TestRegisteredServer;
 import net.kyori.adventure.text.Component;
@@ -95,7 +98,7 @@ class ListenerTest {
             .player(new TestPlayer("4drian3d", true))
             .event(EventBuilder.builder()
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
-                .server(new TestRegisteredServer())
+                .server(new TestRegisteredServer().name("nose"))
             )
             .build();
 
@@ -116,12 +119,40 @@ class ListenerTest {
             .player(new TestPlayer("4drian3d", true))
             .event(EventBuilder.builder()
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
-                .server(new TestRegisteredServer())
+                .server(new TestRegisteredServer().name("si"))
             )
             .build();
 
         bundle.applyListener();
 
         assertTrue(bundle.getContinuation().resumed());
+    }
+
+    // https://github.com/4drian3d/KickRedirect/issues/5
+    @Test
+    void issue5() {
+        RegisteredServer server = new TestRegisteredServer().name("lobby1");
+        EventBundle bundle = EventBundle.builder()
+            .player(new TestPlayer("4drian3d", true))
+            .event(EventBuilder.builder()
+                .result(KickResultType.DISCONNECT.result(Component.empty()))
+                .server(server)
+            )
+            .debug(true)
+            .build();
+
+        KickListener listener = new KickListener(bundle.getPlugin());
+        Continuation continuation = new TestContinuation();
+
+        listener.onKickFromServer(bundle.getEvent(), continuation);
+        listener.onKickFromServer(bundle.getEvent(), continuation);
+        
+        assertThat(bundle.getPlugin().debugCache().asMap())
+            .isNotNull()
+            .containsKey(bundle.getPlayer().getUniqueId())
+            .extracting(a -> a.get(bundle.getPlayer().getUniqueId()))
+            .isNotNull()
+            .extracting(a -> a.step())
+            .isEqualTo(KickListener.KickStep.REPEATED_ATTEMPT);
     }
 }

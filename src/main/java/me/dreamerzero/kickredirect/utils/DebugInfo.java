@@ -45,6 +45,10 @@ public final class DebugInfo {
         return this.finalResult;
     }
 
+    public KickStep step() {
+        return this.step;
+    }
+
     public TagResolver commonResolver() {
         return TagResolver.builder()
             .resolvers(

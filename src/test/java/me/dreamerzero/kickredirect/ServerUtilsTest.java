@@ -63,6 +63,7 @@ class ServerUtilsTest {
             .contains(server);
     }
 
+    // https://github.com/4drian3d/KickRedirect/issues/4
     @Test
     void issue4() {
         RegisteredServer server = new TestRegisteredServer(5);

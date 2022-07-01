@@ -13,7 +13,7 @@ public enum SendMode {
         public RegisteredServer server(KickRedirect plugin) {
             for (final String st : plugin.config().get().getServersToRedirect()) {
                 final Optional<RegisteredServer> sv = plugin.getProxy().getServer(st);
-                if(sv.isPresent()) return sv.get();
+                if (sv.isPresent()) return sv.get();
             }
             return null;
         }

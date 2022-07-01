@@ -19,6 +19,9 @@ import com.velocitypowered.api.proxy.player.TabList;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.util.GameProfile;
 import com.velocitypowered.api.util.GameProfile.Property;
+
+import me.dreamerzero.kickredirect.builder.RequestBuilder;
+
 import com.velocitypowered.api.util.ModInfo;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -72,7 +75,10 @@ public class TestPlayer implements Player {
 
     @Override
     public ConnectionRequestBuilder createConnectionRequest(RegisteredServer arg0) {
-        return null;
+        return RequestBuilder.builder()
+            .result(true)
+            .server(new TestRegisteredServer())
+            .build();
     }
 
     @Override

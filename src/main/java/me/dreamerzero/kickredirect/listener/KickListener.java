@@ -1,6 +1,11 @@
 package me.dreamerzero.kickredirect.listener;
 
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.PostOrder;
@@ -19,6 +24,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public final class KickListener {
     private final KickRedirect plugin;
+    private Map<UUID, String> sended = new HashMap<>();
 
     public KickListener(final KickRedirect plugin){
         this.plugin = plugin;
@@ -26,14 +32,20 @@ public final class KickListener {
 
     @Subscribe(order = PostOrder.EARLY)
     public void onKickFromServer(final KickedFromServerEvent event, final Continuation continuation){
-
+        final Player player = event.getPlayer();
+        if (shouldKick(player, event.getServer())) {
+            continuation.resume();
+            cache(event, event.getServer().getServerInfo().getName(), KickStep.REPEATED_ATTEMPT);
+            // This should keep the "original" DisconnectPlayer result
+            return;
+        }
         if (reasonCheck(event)) {
             final RegisteredServer server = plugin.config().get().getSendMode().server(plugin);
             if (server == null) {
                 plugin.getProxy().getConsoleCommandSource().sendMessage(
                     plugin.formatter().format(
                         plugin.messages().get().noServersFoundToRedirect(),
-                        event.getPlayer(),
+                        player,
                         Placeholder.unparsed(
                             "sendmode",
                             plugin.config().get().getSendMode().toString()
@@ -44,9 +56,10 @@ public final class KickListener {
                 continuation.resume();
                 cache(event, null, KickStep.NULL_SERVER);
             } else {
-                event.setResult(redirectResult(server, event.getPlayer()));
+                event.setResult(redirectResult(server, player));
                 continuation.resume();
                 cache(event, server.getServerInfo().getName(), KickStep.AVAILABLE_SERVER);
+                addToSended(player, server);
             }
         } else {
             continuation.resume();
@@ -68,7 +81,7 @@ public final class KickListener {
         final Optional<String> optional = event.getServerKickReason()
             .map(PlainTextComponentSerializer.plainText()::serialize);
 
-        if(optional.isPresent()) {
+        if (optional.isPresent()) {
             final String message = optional.get();
             for (final String msg : plugin.config().get().getMessagesToCheck()) {
                 if (message.contains(msg)) {
@@ -83,7 +96,7 @@ public final class KickListener {
 
     ServerKickResult redirectResult(RegisteredServer server, Player player) {
         final String redirectMessage = plugin.messages().get().redirectMessage();
-        if(redirectMessage.isBlank()) {
+        if (redirectMessage.isBlank()) {
             return KickedFromServerEvent.RedirectPlayer.create(server);
         } else {
             final Component message = plugin.formatter().format(redirectMessage, player);
@@ -102,7 +115,20 @@ public final class KickListener {
         }
     }
 
+    void addToSended(Player player, RegisteredServer server) {
+        sended.put(player.getUniqueId(), server.getServerInfo().getName());
+        plugin.getProxy().getScheduler()
+            .buildTask(plugin, () -> sended.remove(player.getUniqueId()))
+            .delay(Duration.ofMillis(10))
+            .schedule();
+    }
+
+    boolean shouldKick(Player player, RegisteredServer server) {
+        return Objects.equals(sended.get(player.getUniqueId()), server.getServerInfo().getName());
+    }
+
     public enum KickStep {
+        REPEATED_ATTEMPT,
         NULL_SERVER,
         AVAILABLE_SERVER,
         DISALLOWED_REASON;
