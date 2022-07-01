@@ -25,7 +25,7 @@ public final class EventBundle {
     private final KickRedirect plugin;
 
     private EventBundle(final Builder builder) {
-        this.proxyServer = new TestProxyServer();
+        this.proxyServer = builder.proxy == null ? new TestProxyServer() : builder.proxy;
         this.plugin = new KickRedirect(
             this.proxyServer,
             Path.of("build", "reports", "tests", "test"),
@@ -82,6 +82,7 @@ public final class EventBundle {
         private Player player;
         private KickedFromServerEvent event;
         private boolean debug;
+        private ProxyServer proxy;
 
         private Builder() {}
 
@@ -97,6 +98,11 @@ public final class EventBundle {
 
         public Builder debug(boolean debug) {
             this.debug = debug;
+            return this;
+        }
+
+        public Builder server(ProxyServer server) {
+            this.proxy = server;
             return this;
         }
 
