@@ -77,7 +77,6 @@ public final class KickRedirect {
         this.initialize(false);
     }
 
-
     public @NotNull ProxyServer getProxy(){
         return this.proxy;
     }
