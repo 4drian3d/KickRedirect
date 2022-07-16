@@ -11,10 +11,10 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.jupiter.api.Test;
 
 
-import me.dreamerzero.kickredirect.EventBuilder;
+import me.dreamerzero.kickredirect.KickedEventBuilder;
 import me.dreamerzero.kickredirect.EventBundle;
-import me.dreamerzero.kickredirect.KickResultType;
-import me.dreamerzero.kickredirect.listener.KickListener.KickStep;
+import me.dreamerzero.kickredirect.enums.KickResultType;
+import me.dreamerzero.kickredirect.enums.KickStep;
 import me.dreamerzero.kickredirect.listener.objects.TestContinuation;
 import me.dreamerzero.kickredirect.listener.objects.TestPlayer;
 import me.dreamerzero.kickredirect.listener.objects.TestRegisteredServer;
@@ -26,7 +26,7 @@ class DebugTest {
     void testKickListenerDebug() {
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
-            .event(EventBuilder.builder()
+            .event(KickedEventBuilder.builder()
                 .duringServerConnect(false)
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer().name("TEstServer"))
@@ -49,7 +49,7 @@ class DebugTest {
     void testDebugListener() {
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
-            .event(EventBuilder.builder()
+            .event(KickedEventBuilder.builder()
                 .duringServerConnect(false)
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer().name("TEstServer"))

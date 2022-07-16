@@ -2,7 +2,7 @@ package me.dreamerzero.kickredirect.utils;
 
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 
-import me.dreamerzero.kickredirect.listener.KickListener.KickStep;
+import me.dreamerzero.kickredirect.enums.KickStep;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;

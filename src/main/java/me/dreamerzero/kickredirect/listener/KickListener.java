@@ -17,6 +17,7 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 
 import me.dreamerzero.kickredirect.KickRedirect;
 import me.dreamerzero.kickredirect.enums.CheckMode;
+import me.dreamerzero.kickredirect.enums.KickStep;
 import me.dreamerzero.kickredirect.utils.DebugInfo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -24,7 +25,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public final class KickListener {
     private final KickRedirect plugin;
-    private Map<UUID, String> sended = new HashMap<>();
+    private final Map<UUID, String> sended = new HashMap<>();
 
     public KickListener(final KickRedirect plugin){
         this.plugin = plugin;
@@ -125,12 +126,5 @@ public final class KickListener {
 
     boolean shouldKick(Player player, RegisteredServer server) {
         return Objects.equals(sended.get(player.getUniqueId()), server.getServerInfo().getName());
-    }
-
-    public enum KickStep {
-        REPEATED_ATTEMPT,
-        NULL_SERVER,
-        AVAILABLE_SERVER,
-        DISALLOWED_REASON;
     }
 }

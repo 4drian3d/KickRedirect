@@ -91,7 +91,7 @@ public final class EventBundle {
             return this;
         }
 
-        public Builder event(EventBuilder event) {
+        public Builder event(KickedEventBuilder event) {
             this.event = event.player(this.player).build();
             return this;
         }

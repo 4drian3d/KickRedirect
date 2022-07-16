@@ -1,4 +1,4 @@
-package me.dreamerzero.kickredirect;
+package me.dreamerzero.kickredirect.enums;
 
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.player.KickedFromServerEvent.ServerKickResult;

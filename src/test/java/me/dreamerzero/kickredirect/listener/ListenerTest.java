@@ -13,9 +13,10 @@ import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 
-import me.dreamerzero.kickredirect.EventBuilder;
+import me.dreamerzero.kickredirect.KickedEventBuilder;
 import me.dreamerzero.kickredirect.EventBundle;
-import me.dreamerzero.kickredirect.KickResultType;
+import me.dreamerzero.kickredirect.enums.KickResultType;
+import me.dreamerzero.kickredirect.enums.KickStep;
 import me.dreamerzero.kickredirect.listener.objects.TestContinuation;
 import me.dreamerzero.kickredirect.listener.objects.TestPlayer;
 import me.dreamerzero.kickredirect.listener.objects.TestRegisteredServer;
@@ -24,7 +25,7 @@ import net.kyori.adventure.text.Component;
 class ListenerTest {
     @Test
     void testAllowed() {
-        EventBuilder builder = EventBuilder.builder()
+        KickedEventBuilder builder = KickedEventBuilder.builder()
             .player(new TestPlayer("aea", false))
             .server(new TestRegisteredServer())
             .reason(Component.text("test"));
@@ -53,7 +54,7 @@ class ListenerTest {
         EventBundle bundle = EventBundle.builder()
             .debug(true)
             .build();
-        EventBuilder builder = EventBuilder.builder()
+        KickedEventBuilder builder = KickedEventBuilder.builder()
             .player(new TestPlayer("aea", false))
             .server(new TestRegisteredServer())
             .result(KickResultType.DISCONNECT.result(Component.empty()));
@@ -79,7 +80,7 @@ class ListenerTest {
     void testCorrectRedirect() {
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
-            .event(EventBuilder.builder()
+            .event(KickedEventBuilder.builder()
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer())
             )
@@ -96,7 +97,7 @@ class ListenerTest {
     void testexactServer() {
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
-            .event(EventBuilder.builder()
+            .event(KickedEventBuilder.builder()
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer().name("nose"))
             )
@@ -117,7 +118,7 @@ class ListenerTest {
     void testContinuation() {
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
-            .event(EventBuilder.builder()
+            .event(KickedEventBuilder.builder()
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer().name("si"))
             )
@@ -134,7 +135,7 @@ class ListenerTest {
         RegisteredServer server = new TestRegisteredServer().name("lobby1");
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
-            .event(EventBuilder.builder()
+            .event(KickedEventBuilder.builder()
                 .result(KickResultType.DISCONNECT.result(Component.empty()))
                 .server(server)
             )
@@ -153,6 +154,6 @@ class ListenerTest {
             .extracting(a -> a.get(bundle.getPlayer().getUniqueId()))
             .isNotNull()
             .extracting(a -> a.step())
-            .isEqualTo(KickListener.KickStep.REPEATED_ATTEMPT);
+            .isEqualTo(KickStep.REPEATED_ATTEMPT);
     }
 }

@@ -10,42 +10,42 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 
-public final class EventBuilder implements AbstractBuilder<KickedFromServerEvent> {
+public final class KickedEventBuilder implements AbstractBuilder<KickedFromServerEvent> {
     private Player player;
     private RegisteredServer server;
     private Component reason;
     private boolean duringServerConnect = false;
     private ServerKickResult result;
 
-    private EventBuilder(){}
+    private KickedEventBuilder(){}
 
-    public EventBuilder result(@NotNull ServerKickResult result) {
+    public KickedEventBuilder result(@NotNull ServerKickResult result) {
         this.result = result;
         return this;
     }
 
-    public EventBuilder player(@NotNull Player player) {
+    public KickedEventBuilder player(@NotNull Player player) {
         this.player = player;
         return this;
     }
 
-    public EventBuilder reason(Component reason) {
+    public KickedEventBuilder reason(Component reason) {
         this.reason = reason;
         return this;
     }
 
-    public EventBuilder duringServerConnect(boolean serverConnect) {
+    public KickedEventBuilder duringServerConnect(boolean serverConnect) {
         this.duringServerConnect = serverConnect;
         return this;
     }
 
-    public EventBuilder server(@NotNull RegisteredServer server) {
+    public KickedEventBuilder server(@NotNull RegisteredServer server) {
         this.server = server;
         return this;
     }
 
-    public static EventBuilder builder() {
-        return new EventBuilder();
+    public static KickedEventBuilder builder() {
+        return new KickedEventBuilder();
     }
     
 
