@@ -6,10 +6,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.io.TempDir;
 
 import me.dreamerzero.kickredirect.KickedEventBuilder;
 import me.dreamerzero.kickredirect.EventBundle;
@@ -21,6 +22,7 @@ import me.dreamerzero.kickredirect.listener.objects.TestRegisteredServer;
 import net.kyori.adventure.text.Component;
 
 class DebugTest {
+    @TempDir Path path;
 
     @Test
     void testKickListenerDebug() {
@@ -32,6 +34,7 @@ class DebugTest {
                 .server(new TestRegisteredServer().name("TEstServer"))
             )
             .debug(true)
+            .path(path)
             .build();
 
         KickListener listener = new KickListener(bundle.getPlugin());
@@ -55,6 +58,7 @@ class DebugTest {
                 .server(new TestRegisteredServer().name("TEstServer"))
             )
             .debug(true)
+            .path(path)
             .build();
         
         bundle.applyListener();

@@ -3,6 +3,7 @@ package me.dreamerzero.kickredirect;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 
@@ -18,11 +20,13 @@ import me.dreamerzero.kickredirect.enums.SendMode;
 import me.dreamerzero.kickredirect.listener.objects.TestProxyServer;
 import me.dreamerzero.kickredirect.listener.objects.TestRegisteredServer;
 
-class ServerUtilsTest {
+class ServerUtilsTest {    
+    @TempDir Path path;
+
     @Test
     @DisplayName("ServerUtils Test")
     void configSendMode() {
-        EventBundle bundle = EventBundle.builder().build();
+        EventBundle bundle = EventBundle.builder().path(path).build();
 
         var server = bundle.getPlugin().config().get().getSendMode().server(bundle.getPlugin());
         assertThat(bundle.getProxyServer().getServer("lobby1"))
@@ -32,7 +36,7 @@ class ServerUtilsTest {
 
     @Test
     void randomSendMode() {
-        EventBundle bundle = EventBundle.builder().build();
+        EventBundle bundle = EventBundle.builder().path(path).build();
 
         assertThat(SendMode.RANDOM.server(bundle.getPlugin()))
             .isNotNull()
@@ -41,7 +45,7 @@ class ServerUtilsTest {
 
     @Test
     void firstServer() {
-        EventBundle bundle = EventBundle.builder().build();
+        EventBundle bundle = EventBundle.builder().path(path).build();
 
         var server = SendMode.TO_FIRST.server(bundle.getPlugin());
 
@@ -54,7 +58,7 @@ class ServerUtilsTest {
 
     @Test
     void emptiestServer() {
-        EventBundle bundle = EventBundle.builder().build();
+        EventBundle bundle = EventBundle.builder().path(path).build();
 
         RegisteredServer server = SendMode.TO_EMPTIEST_SERVER.server(bundle.getPlugin());
         assertNotNull(server);
@@ -77,7 +81,7 @@ class ServerUtilsTest {
                 public Optional<RegisteredServer> getServer(String arg) {
                     return Optional.of(server);
                 }
-            })
+            }).path(path)
             .build();
         SendMode sendMode = SendMode.RANDOM;
 

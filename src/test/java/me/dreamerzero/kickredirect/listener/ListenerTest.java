@@ -4,10 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Path;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
@@ -23,6 +26,7 @@ import me.dreamerzero.kickredirect.listener.objects.TestRegisteredServer;
 import net.kyori.adventure.text.Component;
 
 class ListenerTest {
+    @TempDir Path path;
     @Test
     void testAllowed() {
         KickedEventBuilder builder = KickedEventBuilder.builder()
@@ -53,6 +57,7 @@ class ListenerTest {
     void reasonTest() {
         EventBundle bundle = EventBundle.builder()
             .debug(true)
+            .path(path)
             .build();
         KickedEventBuilder builder = KickedEventBuilder.builder()
             .player(new TestPlayer("aea", false))
@@ -80,6 +85,7 @@ class ListenerTest {
     void testCorrectRedirect() {
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
+            .path(path)
             .event(KickedEventBuilder.builder()
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer())
@@ -101,6 +107,7 @@ class ListenerTest {
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer().name("nose"))
             )
+            .path(path)
             .build();
 
         bundle.applyListener();
@@ -118,6 +125,7 @@ class ListenerTest {
     void testContinuation() {
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
+            .path(path)
             .event(KickedEventBuilder.builder()
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer().name("si"))
@@ -135,6 +143,7 @@ class ListenerTest {
         RegisteredServer server = new TestRegisteredServer().name("lobby1");
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
+            .path(path)
             .event(KickedEventBuilder.builder()
                 .result(KickResultType.DISCONNECT.result(Component.empty()))
                 .server(server)
