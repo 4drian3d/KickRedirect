@@ -7,6 +7,7 @@ import com.velocitypowered.api.proxy.ConnectionRequestBuilder.Result;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 
 import net.kyori.adventure.builder.AbstractBuilder;
+import org.jetbrains.annotations.NotNull;
 
 public class RequestBuilder implements AbstractBuilder<ConnectionRequestBuilder> {
     private RegisteredServer server;
@@ -33,7 +34,7 @@ public class RequestBuilder implements AbstractBuilder<ConnectionRequestBuilder>
     }
 
     @Override
-    public ConnectionRequestBuilder build() {
+    public @NotNull ConnectionRequestBuilder build() {
         return new ConnectionRequestBuilder() {
 
             @Override

@@ -32,9 +32,9 @@ import com.velocitypowered.api.util.ProxyVersion;
 import net.kyori.adventure.text.Component;
 
 public class TestProxyServer implements ProxyServer {
-    private PluginManager pManager;
-    private EventManager eManager;
-    private CommandManager cManager;
+    private final PluginManager pManager;
+    private final EventManager eManager;
+    private final CommandManager cManager;
     private final Map<String, RegisteredServer> servers = Map.of(
         "lobby1", new TestRegisteredServer(5).name("lobby1"),
         "lobby2", new TestRegisteredServer(0).name("lobby2"));
@@ -57,7 +57,7 @@ public class TestProxyServer implements ProxyServer {
 
     @Override
     public Collection<Player> getAllPlayers() {
-        return Set.<Player>of();
+        return Set.of();
     }
 
     @Override
@@ -87,12 +87,7 @@ public class TestProxyServer implements ProxyServer {
 
     @Override
     public ConsoleCommandSource getConsoleCommandSource() {
-        return new ConsoleCommandSource(){
-            @Override
-            public Tristate getPermissionValue(String arg0) {
-                return Tristate.TRUE;
-            }
-        };
+        return st -> Tristate.TRUE;
     }
 
     @Override
@@ -124,7 +119,7 @@ public class TestProxyServer implements ProxyServer {
     public Scheduler getScheduler() {
         return new Scheduler(){
             @Override
-            public TaskBuilder buildTask(Object plugin, Runnable consumer) {
+            public TaskBuilder buildTask(@NotNull Object plugin, @NotNull Runnable consumer) {
                 return new TaskBuilder() {
 
                     @Override
@@ -156,12 +151,12 @@ public class TestProxyServer implements ProxyServer {
             }
 
             @Override
-            public TaskBuilder buildTask(Object plugin, Consumer<ScheduledTask> consumer) {
+            public TaskBuilder buildTask(@NotNull Object plugin, @NotNull Consumer<ScheduledTask> consumer) {
                 return null;
             }
 
             @Override
-            public Collection<ScheduledTask> tasksByPlugin(Object plugin) {
+            public @NotNull Collection<ScheduledTask> tasksByPlugin(@NotNull Object plugin) {
                 return Collections.emptyList();
             }
         };
@@ -179,12 +174,12 @@ public class TestProxyServer implements ProxyServer {
 
     @Override
     public Collection<Player> matchPlayer(String arg0) {
-        return Set.<Player>of();
+        return Set.of();
     }
 
     @Override
     public Collection<RegisteredServer> matchServer(String arg0) {
-        return Set.<RegisteredServer>of();
+        return Set.of();
     }
 
     @Override

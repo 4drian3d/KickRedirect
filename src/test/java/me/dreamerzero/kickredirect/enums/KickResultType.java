@@ -26,7 +26,5 @@ public enum KickResultType {
         }
     };
 
-    public ServerKickResult result(Component component) {
-        return null;
-    }
+    public abstract ServerKickResult result(Component component);
 }

@@ -11,6 +11,7 @@ import me.dreamerzero.kickredirect.KickRedirect;
 import me.dreamerzero.kickredirect.enums.CheckMode;
 import me.dreamerzero.kickredirect.enums.SendMode;
 
+@SuppressWarnings("CanBeFinal")
 public class Configuration {
     private Configuration(){}
     public static ConfigurationContainer<Config> loadMainConfig(final KickRedirect plugin){
@@ -50,7 +51,7 @@ public class Configuration {
             messages = node.get(Messages.class);
             node.set(Messages.class, messages);
             loader.save(node);
-        } catch (ConfigurateException exception){
+        } catch (ConfigurateException exception) {
             plugin.getLogger().error("Could not load messages.conf file", exception);
             return null;
         }
@@ -58,6 +59,7 @@ public class Configuration {
     }
 
     @ConfigSerializable
+    @SuppressWarnings({"CanBeFinal", "FieldMayBeFinal"})
     public static class Config implements ConfigSection {
         @Comment("Sets the list of available servers to forward to the player\nDepending on the configuration of sendMode it will be sent to one server or another")
         private String[] serversToRedirect = {"lobby1", "lobby2"};
@@ -114,6 +116,7 @@ public class Configuration {
         }
     }
 
+    @SuppressWarnings("FieldMayBeFinal")
     @ConfigSerializable
     public static class Messages implements ConfigSection {
         @Comment("Sets the message to send if no server is found to which to send the player")
@@ -151,6 +154,7 @@ public class Configuration {
             return this.debugMessages;
         }
 
+        @SuppressWarnings("FieldMayBeFinal")
         @ConfigSerializable
         public static class Reload {
             @Comment("Message to send in plugin reload start")
@@ -175,6 +179,7 @@ public class Configuration {
             }
         }
 
+        @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
         @ConfigSerializable
         public static class Debug {
             private String redirectResult = "----- INITIAL DEBUG ----- "+
@@ -203,5 +208,5 @@ public class Configuration {
         }
     }
 
-    static interface ConfigSection {}
+    interface ConfigSection {}
 }

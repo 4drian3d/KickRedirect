@@ -8,6 +8,7 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import me.dreamerzero.kickredirect.utils.DebugInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -162,7 +163,7 @@ class ListenerTest {
             .containsKey(bundle.getPlayer().getUniqueId())
             .extracting(a -> a.get(bundle.getPlayer().getUniqueId()))
             .isNotNull()
-            .extracting(a -> a.step())
+            .extracting(DebugInfo::step)
             .isEqualTo(KickStep.REPEATED_ATTEMPT);
     }
 }

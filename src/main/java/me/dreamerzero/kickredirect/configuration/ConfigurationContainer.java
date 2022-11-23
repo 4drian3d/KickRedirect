@@ -1,7 +1,5 @@
 package me.dreamerzero.kickredirect.configuration;
 
-import java.util.function.Consumer;
-
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -31,16 +29,11 @@ public final class ConfigurationContainer<C extends ConfigSection> {
         this.safeReload();
     }
 
-    public void setValues(Consumer<C> consumer) {
-        consumer.accept(this.config);
-        this.safeReload();
-    }
-
     public C get() {
         return this.config;
     }
 
-    private final void safeReload() {
+    private void safeReload() {
         C newConfig = null;
         try {
             final CommentedConfigurationNode node = loader.load();
