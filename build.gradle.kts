@@ -7,8 +7,8 @@ plugins {
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/")
-    // maven("https://repo.alessiodp.com/releases/")
     maven("https://jitpack.io")
 }
 
@@ -27,17 +27,15 @@ dependencies {
     annotationProcessor("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
 
     testImplementation("org.spongepowered:configurate-hocon:$configurate")
-    testImplementation(platform("org.junit:junit-bom:5.8.1"))
+    testImplementation(platform("org.junit:junit-bom:5.9.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.23.1")
     testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
-    testImplementation("org.slf4j:slf4j-api:1.7.32")
+    testImplementation("org.slf4j:slf4j-api:2.0.4")
     testImplementation("com.github.ben-manes.caffeine:caffeine:$caffeine")
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_11
-
-blossom{
+blossom {
     replaceTokenIn("src/main/java/me/dreamerzero/kickredirect/utils/Constants.java")
     replaceToken("{name}", rootProject.name)
     replaceToken("{id}", property("id"))
@@ -53,6 +51,7 @@ tasks {
     build {
         dependsOn(shadowJar)
     }
+
     shadowJar {
         relocate("org.spongepowered", "me.dreamerzero.kickredirect.libs.sponge")
         relocate("net.byteflux", "me.dreamerzero.kickredirect.libs.byteflux")
@@ -66,11 +65,16 @@ tasks {
 		    events("passed", "failed")
 	    }
     }
+
     runVelocity {
         velocityVersion("3.1.2-SNAPSHOT")
     }
+
+    compileJava {
+        options.encoding = Charsets.UTF_8.name()
+
+        options.release.set(11)
+    }
 }
 
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
