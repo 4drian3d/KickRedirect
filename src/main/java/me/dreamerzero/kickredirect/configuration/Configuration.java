@@ -119,6 +119,8 @@ public class Configuration {
     @SuppressWarnings("FieldMayBeFinal")
     @ConfigSerializable
     public static class Messages implements ConfigSection {
+        @Comment("Main Command Message displayed on '/kickredirect' execution")
+        private String mainCommandMessage = "<gradient:red:#fff494>[KickRedirect]</gradient> <gray>|</gray> <white>by <gradient:#0BAB64:#3BB78F>4drian3d";
         @Comment("Sets the message to send if no server is found to which to send the player")
         private String kickMessage = "<gradient:#FF0000:dark_red>You could not be sent to a backup server";
 
@@ -133,6 +135,10 @@ public class Configuration {
 
         @Comment("\nDebug Messages")
         private Debug debugMessages = new Debug();
+
+        public String mainCommandMessage() {
+            return this.mainCommandMessage;
+        }
 
         public String kickMessage(){
             return this.kickMessage;
