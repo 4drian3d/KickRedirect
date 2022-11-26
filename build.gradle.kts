@@ -17,6 +17,7 @@ val geantyref: String = property("geantyrefVersion") as String
 val caffeine: String = property("caffeineVersion") as String
 
 dependencies {
+    implementation("org.bstats:bstats-velocity:3.0.0")
     implementation("com.github.AlessioDP.libby:libby-velocity:43d25ade72")
     compileOnly("org.spongepowered:configurate-hocon:$configurate")
     compileOnly("io.leangen.geantyref:geantyref:$geantyref")
@@ -33,6 +34,7 @@ dependencies {
     testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
     testImplementation("org.slf4j:slf4j-api:2.0.4")
     testImplementation("com.github.ben-manes.caffeine:caffeine:$caffeine")
+    testImplementation("org.bstats:bstats-velocity:3.0.0")
 }
 
 blossom {
@@ -57,6 +59,7 @@ tasks {
         relocate("net.byteflux", "me.dreamerzero.kickredirect.libs.byteflux")
         relocate("io.leangen.geantyref", "me.dreamerzero.kickredirect.libs.geantyref")
         relocate("com.github.ben-manes.caffeine", "me.dreamerzero.kickredirect.libs.caffeine")
+        relocate("org.bstats", "me.dreamerzero.kickredirect.libs.bstats")
     }
 
     test {

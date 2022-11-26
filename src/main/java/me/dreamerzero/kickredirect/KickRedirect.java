@@ -15,6 +15,7 @@ import com.velocitypowered.api.plugin.PluginManager;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 
+import org.bstats.velocity.Metrics;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -28,9 +29,6 @@ import me.dreamerzero.kickredirect.listener.DebugListener;
 import me.dreamerzero.kickredirect.listener.KickListener;
 import me.dreamerzero.kickredirect.utils.Constants;
 import me.dreamerzero.kickredirect.utils.DebugInfo;
-import net.byteflux.libby.Library;
-import net.byteflux.libby.VelocityLibraryManager;
-import net.byteflux.libby.relocation.Relocation;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 @Plugin(
@@ -54,6 +52,7 @@ public final class KickRedirect {
     private final Path pluginPath;
     private final Logger logger;
     private final PluginManager pluginManager;
+    private final Metrics.Factory metrics;
     private Formatter formatter;
     private ConfigurationContainer<Configuration.Config> config;
     private ConfigurationContainer<Configuration.Messages> messages;
@@ -64,16 +63,20 @@ public final class KickRedirect {
         final ProxyServer proxy,
         final @DataDirectory Path pluginPath,
         final Logger logger,
-        final PluginManager pluginManager
+        final PluginManager pluginManager,
+        final Metrics.Factory metrics
     ) {
         this.pluginPath = pluginPath;
         this.proxy = proxy;
         this.logger = logger;
         this.pluginManager = pluginManager;
+        this.metrics = metrics;
     }
 
     @Subscribe
-    public void onProxyInitialization(final ProxyInitializeEvent event){
+    public void onProxyInitialization(final ProxyInitializeEvent event) {
+        int pluginId = 16944;
+        metrics.make(this, pluginId);
         this.initialize(false);
     }
 
@@ -110,51 +113,6 @@ public final class KickRedirect {
         return this.cache;
     }
 
-    private void loadDependencies() {
-        final VelocityLibraryManager<KickRedirect> libraryManager
-            = new VelocityLibraryManager<>(this.logger, this.pluginPath, pluginManager, this, "libs");
-        final Relocation configurateRelocation
-            = new Relocation("org{}spongepowered", "me.dreamerzero.kickredirect.libs.sponge");
-        final Relocation geantyrefRelocation =
-            new Relocation("io{}leangen{}geantyref", "me.dreamerzero.kickredirect.libs.geantyref");
-        final Library hocon = Library.builder()
-            .groupId("org{}spongepowered")
-            .artifactId("configurate-hocon")
-            .version(Constants.CONFIGURATE)
-            .id("configurate-hocon")
-            .relocate(configurateRelocation)
-            .relocate(geantyrefRelocation)
-            .build();
-        final Library confCore = Library.builder()
-            .groupId("org{}spongepowered")
-            .artifactId("configurate-core")
-            .version(Constants.CONFIGURATE)
-            .id("configurate-core")
-            .relocate(configurateRelocation)
-            .relocate(geantyrefRelocation)
-            .build();
-        final Library geantyref = Library.builder()
-            .groupId("io{}leangen{}geantyref")
-            .artifactId("geantyref")
-            .version(Constants.GEANTYREF)
-            .id("geantyref")
-            .relocate(geantyrefRelocation)
-            .build();
-        final Library caffeine = Library.builder()
-            .groupId("com{}github{}ben-manes{}caffeine")
-            .artifactId("caffeine")
-            .version(Constants.CAFFEINE)
-            .id("caffeine")
-            .relocate("com{}github{}ben-manes{}caffeine", "me.dreamerzero.kickredirect.libs.caffeine")
-            .build();
-
-        libraryManager.addMavenCentral();
-        libraryManager.loadLibrary(geantyref);
-        libraryManager.loadLibrary(hocon);
-        libraryManager.loadLibrary(confCore);
-        libraryManager.loadLibrary(caffeine);
-    }
-
     public boolean loadConfig() {
         this.config = Configuration.loadMainConfig(this);
         this.messages = Configuration.loadMessages(this);
@@ -167,7 +125,7 @@ public final class KickRedirect {
             MiniMessage.miniMessage().deserialize("<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Starting plugin...")
         );
         if (!test) {
-            this.loadDependencies();
+            Dependencies.loadDependencies(this, this.logger, pluginManager, pluginPath);
         }
         if (!this.loadConfig()) {
             return;

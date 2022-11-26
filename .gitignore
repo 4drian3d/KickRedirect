@@ -10,3 +10,4 @@ bin/
 .factorypath
 .project
 .vscode/
+/run/

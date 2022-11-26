@@ -9,7 +9,6 @@ import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import com.velocitypowered.api.plugin.PluginManager;
 
 import me.dreamerzero.kickredirect.listener.DebugListener;
 import me.dreamerzero.kickredirect.listener.KickListener;
@@ -27,10 +26,11 @@ public final class EventBundle {
     private EventBundle(final Builder builder) {
         this.proxyServer = builder.proxy == null ? new TestProxyServer() : builder.proxy;
         this.plugin = new KickRedirect(
-            this.proxyServer,
-            builder.path,
-            LoggerFactory.getLogger(EventBundle.class),
-            this.proxyServer.getPluginManager()
+                this.proxyServer,
+                builder.path,
+                LoggerFactory.getLogger(EventBundle.class),
+                this.proxyServer.getPluginManager(),
+                null
         );
         plugin.initialize(true);
         if(builder.debug)
@@ -46,10 +46,6 @@ public final class EventBundle {
 
     public KickRedirect getPlugin() {
         return plugin;
-    }
-
-    public PluginManager getPluginManager() {
-        return proxyServer.getPluginManager();
     }
 
     public TestContinuation getContinuation() {
