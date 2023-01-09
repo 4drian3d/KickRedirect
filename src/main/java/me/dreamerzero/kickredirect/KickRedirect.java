@@ -75,7 +75,7 @@ public final class KickRedirect {
 
     @Subscribe
     public void onProxyInitialization(final ProxyInitializeEvent event) {
-        int pluginId = 16944;
+        final int pluginId = 16944;
         metrics.make(this, pluginId);
         this.initialize(false);
     }

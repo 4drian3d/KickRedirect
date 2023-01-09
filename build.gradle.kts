@@ -1,8 +1,8 @@
 plugins {
     java
-    id("net.kyori.blossom") version "1.3.0"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("xyz.jpenilla.run-velocity") version "2.0.0"
+    alias(libs.plugins.blossom)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.runvelocity)
 }
 
 repositories {
@@ -12,29 +12,26 @@ repositories {
     maven("https://jitpack.io")
 }
 
-val configurate: String = property("configurateVersion") as String
-val geantyref: String = property("geantyrefVersion") as String
-val caffeine: String = property("caffeineVersion") as String
-
 dependencies {
-    implementation("org.bstats:bstats-velocity:3.0.0")
-    implementation("com.github.AlessioDP.libby:libby-velocity:43d25ade72")
-    compileOnly("org.spongepowered:configurate-hocon:$configurate")
-    compileOnly("io.leangen.geantyref:geantyref:$geantyref")
-    compileOnly("com.github.4drian3d:MiniPlaceholders:1.1.1")
-    compileOnly("com.github.ben-manes.caffeine:caffeine:$caffeine")
+    implementation(libs.bstats)
+    implementation(libs.libby)
+    compileOnly(libs.configurate)
+    compileOnly(libs.miniplaceholders)
+    compileOnly(libs.caffeine)
 
-    compileOnly("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
+    libs.velocity.run {
+        compileOnly(this)
+        annotationProcessor(this)
+        testImplementation(this)
+    }
 
-    testImplementation("org.spongepowered:configurate-hocon:$configurate")
+    testImplementation(libs.configurate)
     testImplementation(platform("org.junit:junit-bom:5.9.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.assertj:assertj-core:3.23.1")
-    testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
-    testImplementation("org.slf4j:slf4j-api:2.0.4")
-    testImplementation("com.github.ben-manes.caffeine:caffeine:$caffeine")
-    testImplementation("org.bstats:bstats-velocity:3.0.0")
+    testImplementation(libs.assetrj)
+    testImplementation(libs.slf4j)
+    testImplementation(libs.caffeine)
+    testImplementation(libs.bstats)
 }
 
 blossom {
@@ -44,9 +41,9 @@ blossom {
     replaceToken("{version}", version)
     replaceToken("{description}", description)
     replaceToken("{url}", property("url"))
-    replaceToken("{configurate}", configurate)
-    replaceToken("{geantyref}", geantyref)
-    replaceToken("{caffeine}", caffeine)
+    replaceToken("{configurate}", libs.versions.configurate.get())
+    replaceToken("{geantyref}", libs.versions.geantyref.get())
+    replaceToken("{caffeine}", libs.versions.caffeine.get())
 }
 
 tasks {
@@ -60,6 +57,17 @@ tasks {
         relocate("io.leangen.geantyref", "me.dreamerzero.kickredirect.libs.geantyref")
         relocate("com.github.ben-manes.caffeine", "me.dreamerzero.kickredirect.libs.caffeine")
         relocate("org.bstats", "me.dreamerzero.kickredirect.libs.bstats")
+
+        // TODO: Apply in a future release
+        /*listOf(
+            "org.spongepowered",
+            "net.byteflux",
+            "io.leangen.geantyref",
+            "com.github.ben-manes.caffeine",
+            "org.bstats"
+        ).forEach {
+            relocate(it, "me.adrianed.kickredirect.libs.$it")
+        }*/
     }
 
     test {
@@ -70,7 +78,7 @@ tasks {
     }
 
     runVelocity {
-        velocityVersion("3.1.2-SNAPSHOT")
+        velocityVersion(libs.versions.velocity.get())
     }
 
     compileJava {
