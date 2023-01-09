@@ -41,18 +41,10 @@ public final class Dependencies {
                 .id("geantyref")
                 .relocate(geantyrefRelocation)
                 .build();
-        final Library caffeine = Library.builder()
-                .groupId("com{}github{}ben-manes{}caffeine")
-                .artifactId("caffeine")
-                .version(Constants.CAFFEINE)
-                .id("caffeine")
-                .relocate("com{}github{}ben-manes{}caffeine", "me.dreamerzero.kickredirect.libs.caffeine")
-                .build();
 
         libraryManager.addMavenCentral();
         libraryManager.loadLibrary(geantyref);
         libraryManager.loadLibrary(hocon);
         libraryManager.loadLibrary(confCore);
-        libraryManager.loadLibrary(caffeine);
     }
 }

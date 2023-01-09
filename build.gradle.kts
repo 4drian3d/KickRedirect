@@ -43,7 +43,6 @@ blossom {
     replaceToken("{url}", property("url"))
     replaceToken("{configurate}", libs.versions.configurate.get())
     replaceToken("{geantyref}", libs.versions.geantyref.get())
-    replaceToken("{caffeine}", libs.versions.caffeine.get())
 }
 
 tasks {
@@ -51,11 +50,14 @@ tasks {
         dependsOn(shadowJar)
     }
 
+    clean {
+        delete("run")
+    }
+
     shadowJar {
         relocate("org.spongepowered", "me.dreamerzero.kickredirect.libs.sponge")
         relocate("net.byteflux", "me.dreamerzero.kickredirect.libs.byteflux")
         relocate("io.leangen.geantyref", "me.dreamerzero.kickredirect.libs.geantyref")
-        relocate("com.github.ben-manes.caffeine", "me.dreamerzero.kickredirect.libs.caffeine")
         relocate("org.bstats", "me.dreamerzero.kickredirect.libs.bstats")
 
         // TODO: Apply in a future release
@@ -63,7 +65,6 @@ tasks {
             "org.spongepowered",
             "net.byteflux",
             "io.leangen.geantyref",
-            "com.github.ben-manes.caffeine",
             "org.bstats"
         ).forEach {
             relocate(it, "me.adrianed.kickredirect.libs.$it")
@@ -86,6 +87,10 @@ tasks {
 
         options.release.set(11)
     }
+
+
+
+
 }
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
