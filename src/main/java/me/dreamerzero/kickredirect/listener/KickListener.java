@@ -19,6 +19,7 @@ import me.dreamerzero.kickredirect.KickRedirect;
 import me.dreamerzero.kickredirect.enums.CheckMode;
 import me.dreamerzero.kickredirect.enums.KickStep;
 import me.dreamerzero.kickredirect.utils.DebugInfo;
+import me.dreamerzero.kickredirect.utils.Strings;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -85,7 +86,7 @@ public final class KickListener {
         if (optional.isPresent()) {
             final String message = optional.get();
             for (final String msg : plugin.config().get().getMessagesToCheck()) {
-                if (message.contains(msg)) {
+                if (Strings.containsIgnoreCase(message, msg)) {
                     return plugin.config().get().checkMode() == CheckMode.WHITELIST;
                 }
             }
