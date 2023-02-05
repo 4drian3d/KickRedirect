@@ -16,6 +16,7 @@ repositories {
     maven("https://jitpack.io") {
         mavenContent {
             includeGroup("com.github.AlessioDP.libby")
+            includeGroup("com.github.4drian3d")
         }
     }
 }

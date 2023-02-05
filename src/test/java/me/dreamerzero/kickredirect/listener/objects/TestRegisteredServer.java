@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
+import com.velocitypowered.api.proxy.server.PingOptions;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import com.velocitypowered.api.proxy.server.ServerPing;
@@ -62,6 +63,11 @@ public class TestRegisteredServer implements RegisteredServer {
     @Override
     public CompletableFuture<ServerPing> ping() {
         return CompletableFuture.completedFuture(null);
+    }
+
+    @Override
+    public CompletableFuture<ServerPing> ping(PingOptions pingOptions) {
+        return CompletableFuture.failedFuture(new Throwable());
     }
 
     @Override
