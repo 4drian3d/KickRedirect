@@ -9,7 +9,7 @@ repositories {
     mavenLocal()
     maven("https://papermc.io/repo/repository/maven-public/") {
         mavenContent {
-            includeGroup("org.velocitypowered")
+            includeGroup("com.velocitypowered")
         }
     }
     mavenCentral()
