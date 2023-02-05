@@ -20,7 +20,9 @@ public final class DebugInfo {
         this.playerName = event.getPlayer().getUsername();
         this.serverName = server;
         this.duringServerConnect = event.kickedDuringServerConnect();
-        this.originalReason = event.getServerKickReason().map(PlainTextComponentSerializer.plainText()::serialize).orElse("NONE");
+        this.originalReason = event.getServerKickReason()
+                .map(PlainTextComponentSerializer.plainText()::serialize)
+                .orElse("NONE");
         this.finalResult = event.getResult().getClass().getTypeName();
         this.step = step;
     }
@@ -51,12 +53,12 @@ public final class DebugInfo {
 
     public TagResolver commonResolver() {
         return TagResolver.builder()
-            .resolvers(
-                Placeholder.unparsed("player_name", playerName()),
-                Placeholder.component("during_server_connect", Component.text(duringServerConnect())),
-                Placeholder.unparsed("reason", originalReason()),
-                Placeholder.unparsed("step", step.toString())
-            )
-            .build();
+                .resolvers(
+                        Placeholder.unparsed("player_name", playerName()),
+                        Placeholder.component("during_server_connect", Component.text(duringServerConnect())),
+                        Placeholder.unparsed("reason", originalReason()),
+                        Placeholder.unparsed("step", step.toString())
+                )
+                .build();
     }
 }
