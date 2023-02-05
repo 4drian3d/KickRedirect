@@ -26,7 +26,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public final class KickListener {
     private final KickRedirect plugin;
-    private final Map<UUID, String> sended = new HashMap<>();
+    private final Map<UUID, String> sent = new HashMap<>();
 
     public KickListener(final KickRedirect plugin){
         this.plugin = plugin;
@@ -118,14 +118,14 @@ public final class KickListener {
     }
 
     void addToSended(Player player, RegisteredServer server) {
-        sended.put(player.getUniqueId(), server.getServerInfo().getName());
+        sent.put(player.getUniqueId(), server.getServerInfo().getName());
         plugin.getProxy().getScheduler()
-            .buildTask(plugin, () -> sended.remove(player.getUniqueId()))
+            .buildTask(plugin, () -> sent.remove(player.getUniqueId()))
             .delay(Duration.ofMillis(10))
             .schedule();
     }
 
     boolean shouldKick(Player player, RegisteredServer server) {
-        return Objects.equals(sended.get(player.getUniqueId()), server.getServerInfo().getName());
+        return Objects.equals(sent.get(player.getUniqueId()), server.getServerInfo().getName());
     }
 }
