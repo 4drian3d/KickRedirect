@@ -101,7 +101,7 @@ class ListenerTest {
 
     @Test
     @DisplayName("Exact Server")
-    void testexactServer() {
+    void testExactServer() {
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
             .event(KickedEventBuilder.builder()

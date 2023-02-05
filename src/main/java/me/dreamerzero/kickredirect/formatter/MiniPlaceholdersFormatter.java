@@ -13,38 +13,38 @@ public class MiniPlaceholdersFormatter implements Formatter {
     @Override
     public Component format(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(
-            string,
-            MiniPlaceholders.getGlobalPlaceholders()
+                string,
+                MiniPlaceholders.getGlobalPlaceholders()
         );
     }
 
     @Override
     public Component format(@NotNull String string, @NotNull TagResolver... extraResolver) {
         return MiniMessage.miniMessage().deserialize(
-            string,
-            TagResolver.builder()
-                .resolver(MiniPlaceholders.getGlobalPlaceholders())
-                .resolvers(extraResolver)
-                .build()
+                string,
+                TagResolver.builder()
+                        .resolver(MiniPlaceholders.getGlobalPlaceholders())
+                        .resolvers(extraResolver)
+                        .build()
         );
     }
 
     @Override
     public Component format(@NotNull String string, Audience audience) {
         return MiniMessage.miniMessage().deserialize(
-            string,
-            MiniPlaceholders.getAudienceGlobalPlaceholders(audience)
+                string,
+                MiniPlaceholders.getAudienceGlobalPlaceholders(audience)
         );
     }
 
     @Override
     public Component format(@NotNull String string, Audience audience, @NotNull TagResolver... extraResolver) {
         return MiniMessage.miniMessage().deserialize(
-            string,
-            TagResolver.builder()
-                .resolver(MiniPlaceholders.getAudienceGlobalPlaceholders(audience))
-                .resolvers(extraResolver)
-                .build()
+                string,
+                TagResolver.builder()
+                        .resolver(MiniPlaceholders.getAudienceGlobalPlaceholders(audience))
+                        .resolvers(extraResolver)
+                        .build()
         );
     }
 

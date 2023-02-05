@@ -32,20 +32,20 @@ import me.dreamerzero.kickredirect.utils.DebugInfo;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 @Plugin(
-    id = Constants.ID,
-    name = Constants.NAME,
-    version = Constants.VERSION,
-    description = Constants.DESCRIPTION,
-    url = Constants.URL,
-    authors = {
-        "4drian3d"
-    },
-    dependencies = {
-        @Dependency(
-            id = "miniplaceholders",
-            optional = true
-        )
-    }
+        id = Constants.ID,
+        name = Constants.NAME,
+        version = Constants.VERSION,
+        description = Constants.DESCRIPTION,
+        url = Constants.URL,
+        authors = {
+                "4drian3d"
+        },
+        dependencies = {
+                @Dependency(
+                        id = "miniplaceholders",
+                        optional = true
+                )
+        }
 )
 public final class KickRedirect {
     private final ProxyServer proxy;
@@ -60,11 +60,11 @@ public final class KickRedirect {
 
     @Inject
     public KickRedirect(
-        final ProxyServer proxy,
-        final @DataDirectory Path pluginPath,
-        final Logger logger,
-        final PluginManager pluginManager,
-        final Metrics.Factory metrics
+            final ProxyServer proxy,
+            final @DataDirectory Path pluginPath,
+            final Logger logger,
+            final PluginManager pluginManager,
+            final Metrics.Factory metrics
     ) {
         this.pluginPath = pluginPath;
         this.proxy = proxy;
@@ -80,15 +80,15 @@ public final class KickRedirect {
         this.initialize(false);
     }
 
-    public @NotNull ProxyServer getProxy(){
+    public @NotNull ProxyServer getProxy() {
         return this.proxy;
     }
 
-    public @NotNull Path getPluginPath(){
+    public @NotNull Path getPluginPath() {
         return this.pluginPath;
     }
 
-    public @NotNull Logger getLogger(){
+    public @NotNull Logger getLogger() {
         return this.logger;
     }
 
@@ -107,8 +107,8 @@ public final class KickRedirect {
     public Cache<UUID, DebugInfo> debugCache() {
         if (this.cache == null) {
             this.cache = Caffeine.newBuilder()
-                .expireAfterAccess(3, TimeUnit.SECONDS)
-                .build();
+                    .expireAfterAccess(2, TimeUnit.SECONDS)
+                    .build();
         }
         return this.cache;
     }
@@ -122,7 +122,8 @@ public final class KickRedirect {
     void initialize(final boolean test) {
         final long start = System.currentTimeMillis();
         this.proxy.getConsoleCommandSource().sendMessage(
-            MiniMessage.miniMessage().deserialize("<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Starting plugin...")
+                MiniMessage.miniMessage()
+                        .deserialize("<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Starting plugin...")
         );
         if (!test) {
             Dependencies.loadDependencies(this, this.logger, pluginManager, pluginPath);
@@ -131,17 +132,17 @@ public final class KickRedirect {
             return;
         }
         this.formatter = proxy.getPluginManager().isLoaded("miniplaceholders")
-            ? new MiniPlaceholdersFormatter()
-            : new RegularFormatter();
+                ? new MiniPlaceholdersFormatter()
+                : new RegularFormatter();
         KickRedirectCommand.command(this);
         proxy.getEventManager().register(this, new KickListener(this));
         proxy.getEventManager().register(this, new DebugListener(this));
 
         this.proxy.getConsoleCommandSource().sendMessage(
-            MiniMessage.miniMessage().deserialize(
-                "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Fully started plugin in "
-                + (System.currentTimeMillis() - start)
-                + "ms")
+                MiniMessage.miniMessage().deserialize(
+                        "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#78edff:#699dff>Fully started plugin in "
+                                + (System.currentTimeMillis() - start)
+                                + "ms")
         );
     }
 }

@@ -31,7 +31,7 @@ public enum SendMode {
                     if (emptiest == null) {
                         emptiest = actualsv;
                     } else {
-                        if(actualsv.getPlayersConnected().size() < emptiest.getPlayersConnected().size()){
+                        if (actualsv.getPlayersConnected().size() < emptiest.getPlayersConnected().size()) {
                             emptiest = actualsv;
                         }
                     }

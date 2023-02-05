@@ -28,12 +28,12 @@ public final class KickListener {
     private final KickRedirect plugin;
     private final Map<UUID, String> sent = new HashMap<>();
 
-    public KickListener(final KickRedirect plugin){
+    public KickListener(final KickRedirect plugin) {
         this.plugin = plugin;
     }
 
     @Subscribe(order = PostOrder.EARLY)
-    public void onKickFromServer(final KickedFromServerEvent event, final Continuation continuation){
+    public void onKickFromServer(final KickedFromServerEvent event, final Continuation continuation) {
         final Player player = event.getPlayer();
         if (shouldKick(player, event.getServer())) {
             continuation.resume();
@@ -45,14 +45,14 @@ public final class KickListener {
             final RegisteredServer server = plugin.config().get().getSendMode().server(plugin);
             if (server == null) {
                 plugin.getProxy().getConsoleCommandSource().sendMessage(
-                    plugin.formatter().format(
-                        plugin.messages().get().noServersFoundToRedirect(),
-                        player,
-                        Placeholder.unparsed(
-                            "sendmode",
-                            plugin.config().get().getSendMode().toString()
+                        plugin.formatter().format(
+                                plugin.messages().get().noServersFoundToRedirect(),
+                                player,
+                                Placeholder.unparsed(
+                                        "sendmode",
+                                        plugin.config().get().getSendMode().toString()
+                                )
                         )
-                    )
                 );
                 applyKickResult(event);
                 continuation.resume();
@@ -61,27 +61,27 @@ public final class KickListener {
                 event.setResult(redirectResult(server, player));
                 continuation.resume();
                 cache(event, server.getServerInfo().getName(), KickStep.AVAILABLE_SERVER);
-                addToSended(player, server);
+                addToSent(player, server);
             }
         } else {
             continuation.resume();
             cache(event, null, KickStep.DISALLOWED_REASON);
         }
-        
+
     }
 
     void cache(KickedFromServerEvent event, String serverName, KickStep step) {
-        if(plugin.config().get().debug())
+        if (plugin.config().get().debug())
             plugin.debugCache()
-                .put(
-                    event.getPlayer().getUniqueId(),
-                    new DebugInfo(event, serverName, step)
-                );
+                    .put(
+                            event.getPlayer().getUniqueId(),
+                            new DebugInfo(event, serverName, step)
+                    );
     }
 
     boolean reasonCheck(KickedFromServerEvent event) {
         final Optional<String> optional = event.getServerKickReason()
-            .map(PlainTextComponentSerializer.plainText()::serialize);
+                .map(PlainTextComponentSerializer.plainText()::serialize);
 
         if (optional.isPresent()) {
             final String message = optional.get();
@@ -108,21 +108,21 @@ public final class KickListener {
 
     void applyKickResult(KickedFromServerEvent event) {
         final String kickMessage = plugin.messages().get().kickMessage();
-        if(!kickMessage.isBlank()) {
+        if (!kickMessage.isBlank()) {
             event.setResult(
-                KickedFromServerEvent.DisconnectPlayer.create(
-                    plugin.formatter().format(kickMessage, event.getPlayer())
-                )
+                    KickedFromServerEvent.DisconnectPlayer.create(
+                            plugin.formatter().format(kickMessage, event.getPlayer())
+                    )
             );
         }
     }
 
-    void addToSended(Player player, RegisteredServer server) {
+    void addToSent(Player player, RegisteredServer server) {
         sent.put(player.getUniqueId(), server.getServerInfo().getName());
         plugin.getProxy().getScheduler()
-            .buildTask(plugin, () -> sent.remove(player.getUniqueId()))
-            .delay(Duration.ofMillis(10))
-            .schedule();
+                .buildTask(plugin, () -> sent.remove(player.getUniqueId()))
+                .delay(Duration.ofMillis(10))
+                .schedule();
     }
 
     boolean shouldKick(Player player, RegisteredServer server) {
