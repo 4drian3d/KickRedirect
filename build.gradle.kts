@@ -7,9 +7,17 @@ plugins {
 
 repositories {
     mavenLocal()
+    maven("https://papermc.io/repo/repository/maven-public/") {
+        mavenContent {
+            includeGroup("org.velocitypowered")
+        }
+    }
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-public/")
-    maven("https://jitpack.io")
+    maven("https://jitpack.io") {
+        mavenContent {
+            includeGroup("com.github.AlessioDP.libby")
+        }
+    }
 }
 
 dependencies {
@@ -74,8 +82,8 @@ tasks {
     test {
         useJUnitPlatform()
         testLogging {
-		    events("passed", "failed")
-	    }
+            events("passed", "failed")
+        }
     }
 
     runVelocity {
@@ -84,13 +92,8 @@ tasks {
 
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-
         options.release.set(11)
     }
-
-
-
-
 }
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
