@@ -15,7 +15,7 @@ shadow = "7.1.2"
 runvelocity = "2.0.1"
 
 # Test versions
-slf4j = "2.0.5"
+slf4j = "2.0.6"
 assertj = "3.23.1"
 
 # Required by Configurate 4
