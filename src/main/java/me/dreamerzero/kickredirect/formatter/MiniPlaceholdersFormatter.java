@@ -2,7 +2,7 @@ package me.dreamerzero.kickredirect.formatter;
 
 import org.jetbrains.annotations.NotNull;
 
-import me.dreamerzero.miniplaceholders.api.MiniPlaceholders;
+import io.github.miniplaceholders.api.MiniPlaceholders;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;

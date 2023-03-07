@@ -6,19 +6,12 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
-    maven("https://papermc.io/repo/repository/maven-public/") {
-        mavenContent {
-            includeGroup("com.velocitypowered")
-        }
-    }
-    mavenCentral()
     maven("https://jitpack.io") {
         mavenContent {
             includeGroup("com.github.AlessioDP.libby")
-            includeGroup("com.github.4drian3d")
         }
     }
+    maven("https://papermc.io/repo/repository/maven-public/")
 }
 
 dependencies {
