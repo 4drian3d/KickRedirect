@@ -4,7 +4,7 @@ metadata.format.version = "1.1"
 
 # Compile only
 velocity = "3.2.0-SNAPSHOT"
-libby = "43d25ade72"
+libby = "1.1.5"
 bstats = "3.0.1"
 configurate = "4.1.2"
 miniplaceholders = "2.0.0"
@@ -33,7 +33,7 @@ configurate = { module = "org.spongepowered:configurate-hocon", version.ref = "c
 miniplaceholders = { group = "io.github.miniplaceholders", name = "miniplaceholders-api", version.ref = "miniplaceholders" }
 
 # Included Dependencies
-libby = { group = "com.github.AlessioDP.libby", name = "libby-velocity", version.ref = "libby" }
+libby = { group = "net.byteflux", name = "libby-velocity", version.ref = "libby" }
 
 # Test Dependencies
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }

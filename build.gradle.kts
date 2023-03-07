@@ -6,9 +6,9 @@ plugins {
 }
 
 repositories {
-    maven("https://jitpack.io") {
+    maven("https://repo.alessiodp.com/releases/") {
         mavenContent {
-            includeGroup("com.github.AlessioDP.libby")
+            includeGroup("net.byteflux")
         }
     }
     maven("https://papermc.io/repo/repository/maven-public/")
