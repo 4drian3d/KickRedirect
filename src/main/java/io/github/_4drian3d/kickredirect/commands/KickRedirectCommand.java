@@ -24,21 +24,25 @@ public final class KickRedirectCommand {
                 .then(LiteralArgumentBuilder.<CommandSource>literal("reload")
                     .executes(cmd -> {
                         final CommandSource source = cmd.getSource();
-                        final var config = plugin.messages();
+                        final var messages = plugin.messages();
                         source.sendMessage(
                             plugin.formatter().format(
-                                config.get().reload().reloadingMessage(),
+                                    messages.get().reload().reloadingMessage(),
                                 source
                         ));
                         final long start = System.currentTimeMillis();
-                        config.reload()
+                        messages.reload()
                                 .thenCombineAsync(plugin.config().reload(), (c, m) -> c && m)
+                                .exceptionally(t -> {
+                                    plugin.getLogger().error("An unexpected error occurred on config reloading", t);
+                                    return false;
+                                })
                                 .thenAcceptAsync(result -> {
-                                    final var newConfig = config.get().reload();
+                                    final var updatedMessages = messages.get().reload();
                                     final var duration = System.currentTimeMillis()-start;
                                     source.sendMessage(plugin.formatter()
                                         .format(
-                                                result ? newConfig.reloadMessage() : newConfig.failedReload(), source,
+                                                result ? updatedMessages.reloadMessage() : updatedMessages.failedReload(), source,
                                                 Placeholder.component("time", Component.text(duration))
                                         ));
                                 });

@@ -7,20 +7,21 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class ConfigurationContainer<C extends Section> {
-    private C config;
+    private final AtomicReference<C> config;
     private final HoconConfigurationLoader loader;
     private final Class<C> clazz;
     private final Logger logger;
 
-    public ConfigurationContainer(
+    private ConfigurationContainer(
         final C config,
         final Class<C> clazz,
         final HoconConfigurationLoader loader,
         final Logger logger
     ) {
-        this.config = config;
+        this.config = new AtomicReference<>(config);
         this.loader = loader;
         this.clazz = clazz;
         this.logger = logger;
@@ -33,7 +34,7 @@ public final class ConfigurationContainer<C extends Section> {
                 C newConfig = node.get(clazz);
                 node.set(clazz, config);
                 loader.save(node);
-                config = newConfig;
+                config.set(newConfig);
                 return true;
             } catch (ConfigurateException exception) {
                 logger.error("Could not reload {} configuration file", clazz.getSimpleName(), exception);
@@ -43,7 +44,7 @@ public final class ConfigurationContainer<C extends Section> {
     }
 
     public C get() {
-        return this.config;
+        return this.config.get();
     }
 
     public static <C extends Section> ConfigurationContainer<C> load(final KickRedirect plugin, Class<C> clazz, String file) {
