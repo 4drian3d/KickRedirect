@@ -57,7 +57,9 @@ public final class KickRedirect {
     private Formatter formatter;
     private ConfigurationContainer<Configuration> config;
     private ConfigurationContainer<Messages> messages;
-    private Cache<UUID, DebugInfo> cache;
+    private final Cache<UUID, DebugInfo> cache = Caffeine.newBuilder()
+            .expireAfterAccess(2, TimeUnit.SECONDS)
+            .build();
 
     @Inject
     public KickRedirect(
@@ -106,11 +108,6 @@ public final class KickRedirect {
     }
 
     public Cache<UUID, DebugInfo> debugCache() {
-        if (this.cache == null) {
-            this.cache = Caffeine.newBuilder()
-                    .expireAfterAccess(2, TimeUnit.SECONDS)
-                    .build();
-        }
         return this.cache;
     }
 
