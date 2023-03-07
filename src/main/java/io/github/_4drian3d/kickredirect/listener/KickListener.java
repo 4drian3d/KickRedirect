@@ -1,12 +1,12 @@
 package io.github._4drian3d.kickredirect.listener;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
@@ -26,7 +26,9 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public final class KickListener {
     private final KickRedirect plugin;
-    private final Map<UUID, String> sent = new HashMap<>();
+    private final Cache<UUID, String> sent = Caffeine.newBuilder()
+            .expireAfterWrite(Duration.ofMillis(10))
+            .build();
 
     public KickListener(final KickRedirect plugin) {
         this.plugin = plugin;
@@ -67,7 +69,6 @@ public final class KickListener {
             continuation.resume();
             cache(event, null, KickStep.DISALLOWED_REASON);
         }
-
     }
 
     void cache(KickedFromServerEvent event, String serverName, KickStep step) {
@@ -83,16 +84,18 @@ public final class KickListener {
         final Optional<String> optional = event.getServerKickReason()
                 .map(PlainTextComponentSerializer.plainText()::serialize);
 
+        final var configuration = plugin.config().get();
+
         if (optional.isPresent()) {
             final String message = optional.get();
             for (final String msg : plugin.config().get().getMessagesToCheck()) {
                 if (Strings.containsIgnoreCase(message, msg)) {
-                    return plugin.config().get().checkMode() == CheckMode.WHITELIST;
+                    return configuration.checkMode() == CheckMode.WHITELIST;
                 }
             }
-            return plugin.config().get().checkMode() != CheckMode.WHITELIST;
+            return configuration.checkMode() != CheckMode.WHITELIST;
         } else {
-            return plugin.config().get().redirectOnNullMessage();
+            return configuration.redirectOnNullMessage();
         }
     }
 
@@ -119,13 +122,9 @@ public final class KickListener {
 
     void addToSent(Player player, RegisteredServer server) {
         sent.put(player.getUniqueId(), server.getServerInfo().getName());
-        plugin.getProxy().getScheduler()
-                .buildTask(plugin, () -> sent.remove(player.getUniqueId()))
-                .delay(Duration.ofMillis(10))
-                .schedule();
     }
 
     boolean shouldKick(Player player, RegisteredServer server) {
-        return Objects.equals(sent.get(player.getUniqueId()), server.getServerInfo().getName());
+        return Objects.equals(sent.getIfPresent(player.getUniqueId()), server.getServerInfo().getName());
     }
 }
