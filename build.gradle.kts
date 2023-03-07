@@ -37,7 +37,7 @@ dependencies {
 }
 
 blossom {
-    replaceTokenIn("src/main/java/me/dreamerzero/kickredirect/utils/Constants.java")
+    replaceTokenIn("src/main/java/io/github/_4drian3d/kickredirect/utils/Constants.java")
     replaceToken("{name}", rootProject.name)
     replaceToken("{id}", property("id"))
     replaceToken("{version}", version)
@@ -57,20 +57,14 @@ tasks {
     }
 
     shadowJar {
-        relocate("org.spongepowered", "me.dreamerzero.kickredirect.libs.sponge")
-        relocate("net.byteflux", "me.dreamerzero.kickredirect.libs.byteflux")
-        relocate("io.leangen.geantyref", "me.dreamerzero.kickredirect.libs.geantyref")
-        relocate("org.bstats", "me.dreamerzero.kickredirect.libs.bstats")
-
-        // TODO: Apply in a future release
-        /*listOf(
+        listOf(
             "org.spongepowered",
             "net.byteflux",
             "io.leangen.geantyref",
             "org.bstats"
         ).forEach {
-            relocate(it, "me.adrianed.kickredirect.libs.$it")
-        }*/
+            relocate(it, "io.github._4drian3d.kickredirect.libs.$it")
+        }
     }
 
     test {
