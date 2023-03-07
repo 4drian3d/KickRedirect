@@ -17,6 +17,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 
 import io.github._4drian3d.kickredirect.configuration.Configuration;
 import io.github._4drian3d.kickredirect.configuration.ConfigurationContainer;
+import io.github._4drian3d.kickredirect.configuration.Messages;
 import io.github._4drian3d.kickredirect.formatter.MiniPlaceholdersFormatter;
 import io.github._4drian3d.kickredirect.formatter.RegularFormatter;
 import io.github._4drian3d.kickredirect.listener.DebugListener;
@@ -54,8 +55,8 @@ public final class KickRedirect {
     private final PluginManager pluginManager;
     private final Metrics.Factory metrics;
     private Formatter formatter;
-    private ConfigurationContainer<Configuration.Config> config;
-    private ConfigurationContainer<Configuration.Messages> messages;
+    private ConfigurationContainer<Configuration> config;
+    private ConfigurationContainer<Messages> messages;
     private Cache<UUID, DebugInfo> cache;
 
     @Inject
@@ -92,11 +93,11 @@ public final class KickRedirect {
         return this.logger;
     }
 
-    public ConfigurationContainer<Configuration.Config> config() {
+    public ConfigurationContainer<Configuration> config() {
         return this.config;
     }
 
-    public ConfigurationContainer<Configuration.Messages> messages() {
+    public ConfigurationContainer<Messages> messages() {
         return this.messages;
     }
 
@@ -113,9 +114,9 @@ public final class KickRedirect {
         return this.cache;
     }
 
-    public boolean loadConfig() {
-        this.config = Configuration.loadMainConfig(this);
-        this.messages = Configuration.loadMessages(this);
+    private boolean loadConfig() {
+        this.config = ConfigurationContainer.load(this, Configuration.class, "config");
+        this.messages = ConfigurationContainer.load(this, Messages.class, "messages");
         return this.config != null && this.messages != null;
     }
 

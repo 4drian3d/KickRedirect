@@ -6,6 +6,8 @@ import com.velocitypowered.api.command.BrigadierCommand;
 import com.velocitypowered.api.command.CommandSource;
 
 import io.github._4drian3d.kickredirect.KickRedirect;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 public final class KickRedirectCommand {
     private KickRedirectCommand() {}
@@ -28,14 +30,18 @@ public final class KickRedirectCommand {
                                 config.get().reload().reloadingMessage(),
                                 source
                         ));
-                        config.reload();
-                        source.sendMessage(
-                            plugin.formatter().format(
-                                plugin.loadConfig()
-                                    ? config.get().reload().reloadMessage()
-                                    : config.get().reload().failedReload(),
-                                source
-                        ));
+                        final long start = System.currentTimeMillis();
+                        config.reload()
+                                .thenCombineAsync(plugin.config().reload(), (c, m) -> c && m)
+                                .thenAcceptAsync(result -> {
+                                    final var newConfig = config.get().reload();
+                                    final var duration = System.currentTimeMillis()-start;
+                                    source.sendMessage(plugin.formatter()
+                                        .format(
+                                                result ? newConfig.reloadMessage() : newConfig.failedReload(), source,
+                                                Placeholder.component("time", Component.text(duration))
+                                        ));
+                                });
                         return Command.SINGLE_SUCCESS;
                     })
                 ).build());

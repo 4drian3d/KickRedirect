@@ -1,11 +1,14 @@
 package io.github._4drian3d.kickredirect.configuration;
 
+import io.github._4drian3d.kickredirect.KickRedirect;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
-public final class ConfigurationContainer<C extends Configuration.ConfigSection> {
+import java.util.concurrent.CompletableFuture;
+
+public final class ConfigurationContainer<C extends Section> {
     private C config;
     private final HoconConfigurationLoader loader;
     private final Class<C> clazz;
@@ -23,27 +26,45 @@ public final class ConfigurationContainer<C extends Configuration.ConfigSection>
         this.logger = logger;
     }
 
-    public void reload() {
-        this.safeReload();
+    public CompletableFuture<Boolean> reload() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                final CommentedConfigurationNode node = loader.load();
+                C newConfig = node.get(clazz);
+                node.set(clazz, config);
+                loader.save(node);
+                config = newConfig;
+                return true;
+            } catch (ConfigurateException exception) {
+                logger.error("Could not reload {} configuration file", clazz.getSimpleName(), exception);
+                return false;
+            }
+        });
     }
 
     public C get() {
         return this.config;
     }
 
-    private void safeReload() {
-        C newConfig = null;
+    public static <C extends Section> ConfigurationContainer<C> load(final KickRedirect plugin, Class<C> clazz, String file) {
+        final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
+                .defaultOptions(opts -> opts
+                        .shouldCopyDefaults(true)
+                        .header("KickRedirect | by 4drian3d\n")
+                )
+                .path(plugin.getPluginPath().resolve(file+".conf"))
+                .build();
+
+        final C config;
         try {
             final CommentedConfigurationNode node = loader.load();
-            newConfig = node.get(clazz);
+            config = node.get(clazz);
             node.set(clazz, config);
             loader.save(node);
-        } catch (ConfigurateException exception) {
-            logger.error("Could not load config.conf file", exception);
-        } finally {
-            if (newConfig != null) {
-                config = newConfig;
-            }
+        } catch (ConfigurateException exception){
+            plugin.getLogger().error("Could not load {} configuration file", clazz.getSimpleName(), exception);
+            return null;
         }
+        return new ConfigurationContainer<>(config, clazz, loader, plugin.getLogger());
     }
 }

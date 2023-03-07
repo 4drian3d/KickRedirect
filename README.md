@@ -4,15 +4,13 @@ Redirect your players to a server after a server shutdown
 
 ## Requirements
 
-- Velocity 3.1.2|3.2.0+
+- Velocity 3.1.2+
 
 ## Commands
 
 `/kickredirect reload`
 
 Reload the configuration
-
-
 
 ### How does this plugin differ from the Velocity builtin redirect system?
 
