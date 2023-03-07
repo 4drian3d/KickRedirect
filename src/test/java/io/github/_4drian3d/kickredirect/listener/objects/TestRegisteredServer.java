@@ -14,7 +14,7 @@ import com.velocitypowered.api.proxy.server.ServerPing;
 public class TestRegisteredServer implements RegisteredServer {
     private String name;
     public String name() {
-        return this.name == null ? super.toString()+"-UNNAMED" : this.name;
+        return name == null ? "TEST-SERVER-"+hashCode() : name;
     }
     private final List<Player> PLAYERS = new ArrayList<>();
 
@@ -22,17 +22,9 @@ public class TestRegisteredServer implements RegisteredServer {
     }
 
     public TestRegisteredServer(int playerCount) {
-        for(int i = 0; i< playerCount; i++) {
+        for (int i = 0; i< playerCount; i++) {
             PLAYERS.add(null);
         }
-    }
-
-    public TestRegisteredServer(Player... players) {
-        PLAYERS.addAll(Arrays.asList(players));
-    }
-
-    public TestRegisteredServer(String name) {
-        this.name = name;
     }
 
     public RegisteredServer name(String name) {
@@ -57,7 +49,7 @@ public class TestRegisteredServer implements RegisteredServer {
 
     @Override
     public ServerInfo getServerInfo() {
-        return new ServerInfo(name, new InetSocketAddress(404));
+        return new ServerInfo(name(), new InetSocketAddress(404));
     }
 
     @Override
@@ -82,8 +74,8 @@ public class TestRegisteredServer implements RegisteredServer {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if(!(obj instanceof RegisteredServer))
+        if (!(obj instanceof TestRegisteredServer))
             return false;
-        return Objects.equals(this.name, ((RegisteredServer)obj).getServerInfo().getName());
+        return Objects.equals(this.name(), ((RegisteredServer)obj).getServerInfo().getName());
     }
 }

@@ -7,6 +7,7 @@ import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.PostOrder;
 
 public class TestEventManager implements EventManager {
+    public static final TestEventManager INSTANCE = new TestEventManager();
 
     @Override
     public <E> CompletableFuture<E> fire(E arg0) {

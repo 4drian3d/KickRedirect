@@ -1,20 +1,13 @@
 package io.github._4drian3d.kickredirect.listener.objects;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.checkerframework.common.value.qual.IntRange;
 import org.jetbrains.annotations.NotNull;
 
-import com.velocitypowered.api.command.CommandManager;
-import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.plugin.PluginManager;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
@@ -32,18 +25,9 @@ import com.velocitypowered.api.util.ProxyVersion;
 import net.kyori.adventure.text.Component;
 
 public class TestProxyServer implements ProxyServer {
-    private final PluginManager pManager;
-    private final EventManager eManager;
-    private final CommandManager cManager;
-    private final Map<String, RegisteredServer> servers = Map.of(
-        "lobby1", new TestRegisteredServer(5).name("lobby1"),
-        "lobby2", new TestRegisteredServer(0).name("lobby2"));
-
-    public TestProxyServer(){
-        this.pManager = new TestPluginManager();
-        this.eManager = new TestEventManager();
-        this.cManager = new TestCommandManager();
-    }
+    private final List<RegisteredServer> servers = List.of(
+        new TestRegisteredServer(5).name("lobby1"),
+        new TestRegisteredServer(0).name("lobby2"));
 
     @Override
     public RegisteredServer createRawRegisteredServer(ServerInfo arg0) {
@@ -62,7 +46,7 @@ public class TestProxyServer implements ProxyServer {
 
     @Override
     public Collection<RegisteredServer> getAllServers() {
-        return servers.values();
+        return servers;
     }
 
     @Override
@@ -76,8 +60,8 @@ public class TestProxyServer implements ProxyServer {
     }
 
     @Override
-    public CommandManager getCommandManager() {
-        return this.cManager;
+    public TestCommandManager getCommandManager() {
+        return TestCommandManager.INSTANCE;
     }
 
     @Override
@@ -91,8 +75,8 @@ public class TestProxyServer implements ProxyServer {
     }
 
     @Override
-    public EventManager getEventManager() {
-        return this.eManager;
+    public TestEventManager getEventManager() {
+        return TestEventManager.INSTANCE;
     }
 
     @Override
@@ -112,7 +96,7 @@ public class TestProxyServer implements ProxyServer {
 
     @Override
     public PluginManager getPluginManager() {
-        return this.pManager;
+        return TestPluginManager.INSTANCE;
     }
 
     @Override
@@ -164,7 +148,9 @@ public class TestProxyServer implements ProxyServer {
 
     @Override
     public Optional<RegisteredServer> getServer(String arg0) {
-        return Optional.ofNullable(servers.get(arg0));
+        return servers.stream()
+                .filter(sv -> sv.getServerInfo().getName().equals(arg0))
+                .findAny();
     }
 
     @Override

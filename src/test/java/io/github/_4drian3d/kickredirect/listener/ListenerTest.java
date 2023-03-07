@@ -107,7 +107,7 @@ class ListenerTest {
             .player(new TestPlayer("4drian3d", true))
             .event(KickedEventBuilder.builder()
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
-                .server(new TestRegisteredServer().name("nose"))
+                .server(new TestRegisteredServer())
             )
             .path(path)
             .build();
@@ -130,7 +130,7 @@ class ListenerTest {
             .path(path)
             .event(KickedEventBuilder.builder()
                 .result(KickResultType.DISCONNECT.result(Component.text("")))
-                .server(new TestRegisteredServer().name("si"))
+                .server(new TestRegisteredServer())
             )
             .build();
 

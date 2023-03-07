@@ -9,6 +9,7 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.PluginManager;
 
 public class TestPluginManager implements PluginManager {
+    public static final TestPluginManager INSTANCE = new TestPluginManager();
     @Override
     public void addToClasspath(Object arg0, Path arg1) {
     }
