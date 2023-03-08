@@ -7,11 +7,13 @@ import org.spongepowered.configurate.objectmapping.meta.Comment;
 import io.github._4drian3d.kickredirect.enums.CheckMode;
 import io.github._4drian3d.kickredirect.enums.SendMode;
 
+import java.util.List;
+
 @ConfigSerializable
 @SuppressWarnings({"CanBeFinal", "FieldMayBeFinal"})
 public final class Configuration implements Section {
     @Comment("Sets the list of available servers to forward to the player\nDepending on the configuration of sendMode it will be sent to one server or another")
-    private String[] serversToRedirect = {"lobby1", "lobby2"};
+    private List<String> serversToRedirect = List.of("lobby1", "lobby2");
 
     @Comment("Redirect the player if the expulsion message is null or empty")
     private boolean redirectOnNullMessage = true;
@@ -20,7 +22,7 @@ public final class Configuration implements Section {
     private CheckMode checkMode = CheckMode.WHITELIST;
 
     @Comment("Set the messages to be checked by blacklist or whitelist in case they are present in the expulsion message")
-    private String[] messagesToCheck = {"kicked from server", "shutdown"};
+    private List<String> messagesToCheck = List.of("kicked from server", "shutdown");
 
     @Comment("Sets the sending mode\nAvailable options:\nTO_FIRST | It will send the player to the first available server configured in serversToRedirect\nTO_EMPTIEST_SERVER | Send the player to the emptiest server that is available according to the serversToRedirect configuration\nRANDOM | Send to a random server from the configured servers")
     private SendMode sendMode = SendMode.TO_FIRST;
@@ -31,7 +33,7 @@ public final class Configuration implements Section {
     @Comment("Enables debug mode")
     private boolean debug = false;
 
-    public String[] getServersToRedirect(){
+    public List<String> getServersToRedirect(){
         return this.serversToRedirect;
     }
 
@@ -43,7 +45,7 @@ public final class Configuration implements Section {
         return this.redirectOnNullMessage;
     }
 
-    public String[] getMessagesToCheck(){
+    public List<String> getMessagesToCheck(){
         return this.messagesToCheck;
     }
 

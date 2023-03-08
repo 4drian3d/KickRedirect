@@ -1,5 +1,6 @@
 package io.github._4drian3d.kickredirect.enums;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -43,16 +44,14 @@ public enum SendMode {
     RANDOM {
         @Override
         public RegisteredServer server(KickRedirect plugin) {
-            final String[] servers = plugin.config().get().getServersToRedirect();
-            Optional<RegisteredServer> server;
+            final List<String> servers = plugin.config().get().getServersToRedirect();
+            Optional<RegisteredServer> server = servers.size() == 1
+                    ? plugin.getProxy().getServer(servers.get(0))
+                    : Optional.empty();
             for (int i = 0; i < plugin.config().get().getRandomAttempts(); i++) {
-                if (servers.length == 1) {
-                    server = plugin.getProxy().getServer(servers[0]);
-                } else {
-                    int value = rm.nextInt(servers.length);
-                    server = plugin.getProxy().getServer(servers[value]);
-                }
                 if (server.isPresent()) return server.get();
+                int value = rm.nextInt(servers.size());
+                server = plugin.getProxy().getServer(servers.get(value));
             }
             return null;
         }

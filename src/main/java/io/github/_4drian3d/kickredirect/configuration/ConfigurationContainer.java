@@ -32,7 +32,7 @@ public final class ConfigurationContainer<C extends Section> {
             try {
                 final CommentedConfigurationNode node = loader.load();
                 C newConfig = node.get(clazz);
-                node.set(clazz, config);
+                node.set(clazz, newConfig);
                 loader.save(node);
                 config.set(newConfig);
                 return true;
@@ -47,7 +47,11 @@ public final class ConfigurationContainer<C extends Section> {
         return this.config.get();
     }
 
-    public static <C extends Section> ConfigurationContainer<C> load(final KickRedirect plugin, Class<C> clazz, String file) {
+    public static <C extends Section> ConfigurationContainer<C> load(
+            final KickRedirect plugin,
+            final Class<C> clazz,
+            final String file
+    ) {
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
                 .defaultOptions(opts -> opts
                         .shouldCopyDefaults(true)
@@ -56,16 +60,16 @@ public final class ConfigurationContainer<C extends Section> {
                 .path(plugin.getPluginPath().resolve(file+".conf"))
                 .build();
 
-        final C config;
+
         try {
             final CommentedConfigurationNode node = loader.load();
-            config = node.get(clazz);
+            final C config = node.get(clazz);
             node.set(clazz, config);
             loader.save(node);
+            return new ConfigurationContainer<>(config, clazz, loader, plugin.getLogger());
         } catch (ConfigurateException exception){
             plugin.getLogger().error("Could not load {} configuration file", clazz.getSimpleName(), exception);
             return null;
         }
-        return new ConfigurationContainer<>(config, clazz, loader, plugin.getLogger());
     }
 }

@@ -17,10 +17,10 @@ public final class Messages implements Section {
     @Comment("Error message to be sent in case no server is available to send to player")
     private String noServersFoundToRedirect = "<gradient:red:#fff494>[KickRedirect]</gradient> <gradient:#b82e00:#ff4000>No servers were found to redirect the player to. <gray>SendMode: <sendmode>";
 
-    @Comment("\nReload Messages")
+    @Comment("Reload Messages")
     private Reload reloadMessages = new Reload();
 
-    @Comment("\nDebug Messages")
+    @Comment("Debug Messages")
     private Debug debugMessages = new Debug();
 
     public String mainCommandMessage() {

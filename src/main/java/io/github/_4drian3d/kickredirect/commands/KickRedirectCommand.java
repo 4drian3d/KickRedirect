@@ -50,10 +50,11 @@ public final class KickRedirectCommand {
                     })
                 ).build());
 
-        var manager = plugin.getProxy().getCommandManager();
-        manager.register(manager.metaBuilder(command)
-                        .plugin(plugin)
-                        .aliases("kr")
-                        .build(), command);
+        final var manager = plugin.getProxy().getCommandManager();
+        final var meta = manager.metaBuilder(command)
+                .plugin(plugin)
+                .aliases("kr")
+                .build();
+        manager.register(meta, command);
     }
 }
