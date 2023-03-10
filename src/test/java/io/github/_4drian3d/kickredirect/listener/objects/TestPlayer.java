@@ -30,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 
-@SuppressWarnings("deprecation")
 public class TestPlayer implements Player {
     private final boolean op;
     private final String name;

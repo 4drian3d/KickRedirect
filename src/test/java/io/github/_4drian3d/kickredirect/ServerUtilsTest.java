@@ -1,68 +1,99 @@
 package io.github._4drian3d.kickredirect;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
+import io.github._4drian3d.kickredirect.configuration.Configuration;
+import io.github._4drian3d.kickredirect.configuration.ConfigurationContainer;
+import io.github._4drian3d.kickredirect.enums.SendMode;
 import io.github._4drian3d.kickredirect.listener.objects.TestProxyServer;
-import io.github._4drian3d.kickredirect.listener.objects.TestRegisteredServer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.velocitypowered.api.proxy.server.RegisteredServer;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Optional;
 
-import io.github._4drian3d.kickredirect.enums.SendMode;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-class ServerUtilsTest {    
+class ServerUtilsTest {
     @TempDir Path path;
 
     @Test
     @DisplayName("ServerUtils Test")
     void configSendMode() {
-        EventBundle bundle = EventBundle.builder().path(path).build();
+        var proxyServer = new TestProxyServer();
 
-        var server = bundle.getPlugin().config().get().getSendMode().server(bundle.getPlugin());
-        assertThat(bundle.getProxyServer().getServer("lobby1"))
+        var configuration = ConfigurationContainer.load(mock(), path, Configuration.class, "config");
+        assertThat(configuration).isNotNull();
+
+        var server = configuration.get()
+                .getSendMode()
+                .server(
+                        proxyServer,
+                    configuration.get().getServersToRedirect(),
+                    configuration.get().getRandomAttempts()
+                );
+
+        assertThat(proxyServer.getServer("lobby1"))
             .isPresent()
             .contains(server);
     }
 
     @Test
     void randomSendMode() {
-        EventBundle bundle = EventBundle.builder().path(path).build();
+        var proxyServer = new TestProxyServer();
 
-        assertThat(SendMode.RANDOM.server(bundle.getPlugin()))
+        var configuration = ConfigurationContainer.load(mock(), path, Configuration.class, "config");
+        assertThat(configuration).isNotNull();
+        assertThat(SendMode.RANDOM.server(
+                proxyServer,
+                configuration.get().getServersToRedirect(),
+                configuration.get().getRandomAttempts()
+        ))
             .isNotNull()
-            .isIn(bundle.getProxyServer().getAllServers());
+            .isIn(proxyServer.getAllServers());
     }
 
     @Test
     void firstServer() {
-        EventBundle bundle = EventBundle.builder().path(path).build();
+        var proxyServer = new TestProxyServer();
+        var configuration = ConfigurationContainer.load(mock(), path, Configuration.class, "config");
 
-        var server = SendMode.TO_FIRST.server(bundle.getPlugin());
+        assertThat(configuration).isNotNull();
 
-        assertThat(server).isNotNull();
+        var server = SendMode.TO_FIRST.server(
+                proxyServer,
+                configuration.get().getServersToRedirect(),
+                configuration.get().getRandomAttempts()
+        );
 
-        assertThat(bundle.getProxyServer().getServer("lobby1"))
+        assertThat(proxyServer.getServer("lobby1"))
             .isPresent()
             .contains(server);
     }
 
     @Test
     void emptiestServer() {
-        EventBundle bundle = EventBundle.builder().path(path).build();
+        ProxyServer proxyServer = new TestProxyServer();
 
-        RegisteredServer server = SendMode.TO_EMPTIEST_SERVER.server(bundle.getPlugin());
-        assertNotNull(server);
-        assertThat(bundle.getProxyServer().getServer("lobby2"))
+        var container = ConfigurationContainer.load(
+                mock(), path, Configuration.class, "config"
+        );
+
+        assertThat(container).isNotNull();
+
+        RegisteredServer server = SendMode.TO_EMPTIEST_SERVER.server(
+                proxyServer,
+                container.get().getServersToRedirect(),
+                container.get().getRandomAttempts()
+        );
+
+        assertThat(proxyServer.getServer("lobby2"))
             .isPresent()
             .contains(server);
     }
@@ -70,21 +101,20 @@ class ServerUtilsTest {
     // https://github.com/4drian3d/KickRedirect/issues/4
     @Test
     void issue4() {
-        RegisteredServer server = new TestRegisteredServer(5);
-        EventBundle bundle = EventBundle.builder()
-            .server(new TestProxyServer() {
-                @Override
-                public Collection<RegisteredServer> getAllServers() {
-                    return Collections.singleton(server);
-                }
-                @Override
-                public Optional<RegisteredServer> getServer(String arg) {
-                    return Optional.of(server);
-                }
-            }).path(path)
-            .build();
-        SendMode sendMode = SendMode.RANDOM;
+        var configuration = ConfigurationContainer.load(mock(), path, Configuration.class, "config");
 
-        assertDoesNotThrow(() -> sendMode.server(bundle.getPlugin()));
+        assertThat(configuration).isNotNull();
+
+        RegisteredServer server = mock();
+
+        ProxyServer proxyServer = mock();
+        when(proxyServer.getServer(any())).thenReturn(Optional.of(server));
+        when(proxyServer.getAllServers()).thenReturn(Collections.singleton(server));
+
+        assertDoesNotThrow(() -> SendMode.RANDOM.server(
+                proxyServer,
+                configuration.get().getServersToRedirect(),
+                configuration.get().getRandomAttempts()
+        ));
     }
 }

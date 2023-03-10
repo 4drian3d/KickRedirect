@@ -1,31 +1,26 @@
 package io.github._4drian3d.kickredirect.listener;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.nio.file.Path;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.velocitypowered.api.event.Continuation;
+import com.velocitypowered.api.event.player.KickedFromServerEvent;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 import io.github._4drian3d.kickredirect.EventBundle;
+import io.github._4drian3d.kickredirect.KickedEventBuilder;
+import io.github._4drian3d.kickredirect.enums.KickStep;
 import io.github._4drian3d.kickredirect.listener.objects.TestContinuation;
+import io.github._4drian3d.kickredirect.listener.objects.TestPlayer;
 import io.github._4drian3d.kickredirect.listener.objects.TestRegisteredServer;
 import io.github._4drian3d.kickredirect.utils.DebugInfo;
+import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.velocitypowered.api.event.Continuation;
-import com.velocitypowered.api.event.player.KickedFromServerEvent;
-import com.velocitypowered.api.proxy.server.RegisteredServer;
+import java.nio.file.Path;
 
-import io.github._4drian3d.kickredirect.KickedEventBuilder;
-import io.github._4drian3d.kickredirect.enums.KickResultType;
-import io.github._4drian3d.kickredirect.enums.KickStep;
-import io.github._4drian3d.kickredirect.listener.objects.TestPlayer;
-import net.kyori.adventure.text.Component;
+import static io.github._4drian3d.kickredirect.enums.KickResultType.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ListenerTest {
     @TempDir Path path;
@@ -37,19 +32,19 @@ class ListenerTest {
             .reason(Component.text("test"));
 
         KickedFromServerEvent event = builder
-            .result(KickResultType.REDIRECT.result(Component.empty()))
+            .result(REDIRECT.result(Component.empty()))
             .build();
 
         assertFalse(event.getResult().isAllowed());
 
         event = builder
-            .result(KickResultType.NOTIFY.result(Component.empty()))
+            .result(NOTIFY.result(Component.empty()))
             .build();
 
         assertFalse(event.getResult().isAllowed());
 
         event = builder
-            .result(KickResultType.DISCONNECT.result(Component.empty()))
+            .result(DISCONNECT.result(Component.empty()))
             .build();
 
         assertTrue(event.getResult().isAllowed());
@@ -64,7 +59,7 @@ class ListenerTest {
         KickedEventBuilder builder = KickedEventBuilder.builder()
             .player(new TestPlayer("aea", false))
             .server(new TestRegisteredServer())
-            .result(KickResultType.DISCONNECT.result(Component.empty()));
+            .result(DISCONNECT.result(Component.empty()));
         KickedFromServerEvent event = builder
             .reason(Component.text("kicked from server"))
             .build();
@@ -89,7 +84,7 @@ class ListenerTest {
             .player(new TestPlayer("4drian3d", true))
             .path(path)
             .event(KickedEventBuilder.builder()
-                .result(KickResultType.DISCONNECT.result(Component.text("")))
+                .result(DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer())
             )
             .build();
@@ -106,7 +101,7 @@ class ListenerTest {
         EventBundle bundle = EventBundle.builder()
             .player(new TestPlayer("4drian3d", true))
             .event(KickedEventBuilder.builder()
-                .result(KickResultType.DISCONNECT.result(Component.text("")))
+                .result(DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer())
             )
             .path(path)
@@ -129,7 +124,7 @@ class ListenerTest {
             .player(new TestPlayer("4drian3d", true))
             .path(path)
             .event(KickedEventBuilder.builder()
-                .result(KickResultType.DISCONNECT.result(Component.text("")))
+                .result(DISCONNECT.result(Component.text("")))
                 .server(new TestRegisteredServer())
             )
             .build();
@@ -147,14 +142,14 @@ class ListenerTest {
             .player(new TestPlayer("4drian3d", true))
             .path(path)
             .event(KickedEventBuilder.builder()
-                .result(KickResultType.DISCONNECT.result(Component.empty()))
+                .result(DISCONNECT.result(Component.empty()))
                 .server(server)
             )
             .debug(true)
             .build();
 
         KickListener listener = new KickListener(bundle.getPlugin());
-        Continuation continuation = new TestContinuation();
+        Continuation continuation = new TestContinuation(null);
 
         listener.onKickFromServer(bundle.getEvent(), continuation);
         listener.onKickFromServer(bundle.getEvent(), continuation);

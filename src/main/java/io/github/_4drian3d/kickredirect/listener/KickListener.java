@@ -44,7 +44,14 @@ public final class KickListener {
             return;
         }
         if (reasonCheck(event)) {
-            final RegisteredServer server = plugin.config().get().getSendMode().server(plugin);
+            final var configuration = plugin.config().get();
+            final RegisteredServer server = configuration
+                    .getSendMode()
+                    .server(
+                            plugin.getProxy(),
+                            configuration.getServersToRedirect(),
+                            configuration.getRandomAttempts()
+                    );
             if (server == null) {
                 plugin.getProxy().getConsoleCommandSource().sendMessage(
                         plugin.formatter().format(

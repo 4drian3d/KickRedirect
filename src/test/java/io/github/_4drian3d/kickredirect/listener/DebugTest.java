@@ -63,13 +63,7 @@ class DebugTest {
         
         bundle.applyListener();
         CountDownLatch latch = new CountDownLatch(1);
-        bundle.applyDebug().execute(new TestContinuation() {
-            @Override
-            public void resume() {
-                super.resume();
-                latch.countDown();
-            }
-        });
+        bundle.applyDebug().execute(new TestContinuation(latch::countDown));
 
         try {
             latch.await();

@@ -87,10 +87,6 @@ public final class KickRedirect {
         return this.proxy;
     }
 
-    public @NotNull Path getPluginPath() {
-        return this.pluginPath;
-    }
-
     public @NotNull Logger getLogger() {
         return this.logger;
     }
@@ -112,8 +108,8 @@ public final class KickRedirect {
     }
 
     private boolean loadConfig() {
-        this.config = ConfigurationContainer.load(this, Configuration.class, "config");
-        this.messages = ConfigurationContainer.load(this, Messages.class, "messages");
+        this.config = ConfigurationContainer.load(logger, pluginPath, Configuration.class, "config");
+        this.messages = ConfigurationContainer.load(logger, pluginPath, Messages.class, "messages");
         return this.config != null && this.messages != null;
     }
 

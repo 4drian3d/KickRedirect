@@ -13,8 +13,8 @@ import com.velocitypowered.api.command.CommandSource;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final class TestCommandManager implements CommandManager {
-    public static final TestCommandManager INSTANCE = new TestCommandManager();
+public enum TestCommandManager implements CommandManager {
+    INSTANCE;
 
     @Override
     public CompletableFuture<Boolean> executeAsync(CommandSource arg0, String arg1) {
@@ -87,46 +87,7 @@ public final class TestCommandManager implements CommandManager {
 
     @Override
     public Builder metaBuilder(BrigadierCommand arg0) {
-        return new Builder() {
-
-            @Override
-            public Builder aliases(String... arg0) {
-                return this;
-            }
-
-            @Override
-            public CommandMeta build() {
-                return new CommandMeta() {
-
-                    @Override
-                    public Collection<String> getAliases() {
-                        return null;
-                    }
-
-                    @Override
-                    public Collection<CommandNode<CommandSource>> getHints() {
-                        return null;
-                    }
-
-                    @Override
-                    public @Nullable Object getPlugin() {
-                        return null;
-                    }
-
-                };
-            }
-
-            @Override
-            public Builder hint(CommandNode<CommandSource> arg0) {
-                return this;
-            }
-
-            @Override
-            public Builder plugin(Object arg0) {
-                return this;
-            }
-
-        };
+        return metaBuilder(arg0.getNode().getLiteral());
     }
 
     @Override

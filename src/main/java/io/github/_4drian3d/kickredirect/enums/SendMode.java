@@ -1,19 +1,18 @@
 package io.github._4drian3d.kickredirect.enums;
 
+import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import com.velocitypowered.api.proxy.server.RegisteredServer;
-
-import io.github._4drian3d.kickredirect.KickRedirect;
-
 public enum SendMode {
     TO_FIRST {
         @Override
-        public RegisteredServer server(KickRedirect plugin) {
-            for (final String st : plugin.config().get().getServersToRedirect()) {
-                final Optional<RegisteredServer> sv = plugin.getProxy().getServer(st);
+        public RegisteredServer server(ProxyServer proxyServer, List<String> servers, int randomAttempts) {
+            for (final String st : servers) {
+                final Optional<RegisteredServer> sv = proxyServer.getServer(st);
                 if (sv.isPresent()) return sv.get();
             }
             return null;
@@ -21,10 +20,10 @@ public enum SendMode {
     },
     TO_EMPTIEST_SERVER {
         @Override
-        public RegisteredServer server(KickRedirect plugin) {
+        public RegisteredServer server(ProxyServer proxyServer, List<String> servers, int randomAttempts) {
             RegisteredServer emptiest = null;
-            for (final String st : plugin.config().get().getServersToRedirect()) {
-                final Optional<RegisteredServer> sv = plugin.getProxy().getServer(st);
+            for (final String st : servers) {
+                final Optional<RegisteredServer> sv = proxyServer.getServer(st);
                 if (sv.isPresent()) {
                     RegisteredServer actualsv = sv.get();
                     if (actualsv.getPlayersConnected().isEmpty())
@@ -43,20 +42,19 @@ public enum SendMode {
     },
     RANDOM {
         @Override
-        public RegisteredServer server(KickRedirect plugin) {
-            final List<String> servers = plugin.config().get().getServersToRedirect();
+        public RegisteredServer server(ProxyServer proxyServer, List<String> servers, int randomAttempts) {
             Optional<RegisteredServer> server = servers.size() == 1
-                    ? plugin.getProxy().getServer(servers.get(0))
+                    ? proxyServer.getServer(servers.get(0))
                     : Optional.empty();
-            for (int i = 0; i < plugin.config().get().getRandomAttempts(); i++) {
+            for (int i = 0; i < randomAttempts; i++) {
                 if (server.isPresent()) return server.get();
                 int value = rm.nextInt(servers.size());
-                server = plugin.getProxy().getServer(servers.get(value));
+                server = proxyServer.getServer(servers.get(value));
             }
             return null;
         }
     };
     private static final Random rm = new Random();
 
-    public abstract RegisteredServer server(KickRedirect plugin);
+    public abstract RegisteredServer server(ProxyServer proxyServer, List<String> servers, int randomAttempts);
 }

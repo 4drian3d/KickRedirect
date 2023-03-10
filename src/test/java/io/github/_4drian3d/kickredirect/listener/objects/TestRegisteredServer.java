@@ -11,6 +11,8 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import com.velocitypowered.api.proxy.server.ServerPing;
 
+import static org.mockito.Mockito.mock;
+
 public class TestRegisteredServer implements RegisteredServer {
     private String name;
     public String name() {
@@ -54,7 +56,7 @@ public class TestRegisteredServer implements RegisteredServer {
 
     @Override
     public CompletableFuture<ServerPing> ping() {
-        return CompletableFuture.completedFuture(null);
+        return CompletableFuture.completedFuture(mock());
     }
 
     @Override

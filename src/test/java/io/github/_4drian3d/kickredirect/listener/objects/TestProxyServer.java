@@ -1,13 +1,7 @@
 package io.github._4drian3d.kickredirect.listener.objects;
 
-import java.net.InetSocketAddress;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-
-import org.checkerframework.common.value.qual.IntRange;
-import org.jetbrains.annotations.NotNull;
-
+import com.velocitypowered.api.command.CommandManager;
+import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.plugin.PluginManager;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
@@ -21,8 +15,16 @@ import com.velocitypowered.api.proxy.server.ServerInfo;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 import com.velocitypowered.api.scheduler.Scheduler;
 import com.velocitypowered.api.util.ProxyVersion;
-
 import net.kyori.adventure.text.Component;
+import org.checkerframework.common.value.qual.IntRange;
+import org.jetbrains.annotations.NotNull;
+
+import java.net.InetSocketAddress;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+
+import static org.mockito.Mockito.mock;
 
 public class TestProxyServer implements ProxyServer {
     private final List<RegisteredServer> servers = List.of(
@@ -31,17 +33,17 @@ public class TestProxyServer implements ProxyServer {
 
     @Override
     public RegisteredServer createRawRegisteredServer(ServerInfo arg0) {
-        return null;
+        return mock();
     }
 
     @Override
     public ResourcePackInfo.Builder createResourcePackBuilder(String arg0) {
-        return null;
+        return mock();
     }
 
     @Override
     public Collection<Player> getAllPlayers() {
-        return Set.of();
+        return List.of();
     }
 
     @Override
@@ -51,22 +53,22 @@ public class TestProxyServer implements ProxyServer {
 
     @Override
     public InetSocketAddress getBoundAddress() {
-        return null;
+        return mock();
     }
 
     @Override
     public ChannelRegistrar getChannelRegistrar() {
-        return null;
+        return mock();
     }
 
     @Override
-    public TestCommandManager getCommandManager() {
+    public CommandManager getCommandManager() {
         return TestCommandManager.INSTANCE;
     }
 
     @Override
     public ProxyConfig getConfiguration() {
-        return null;
+        return mock();
     }
 
     @Override
@@ -75,8 +77,8 @@ public class TestProxyServer implements ProxyServer {
     }
 
     @Override
-    public TestEventManager getEventManager() {
-        return TestEventManager.INSTANCE;
+    public EventManager getEventManager() {
+        return mock();
     }
 
     @Override
@@ -96,7 +98,7 @@ public class TestProxyServer implements ProxyServer {
 
     @Override
     public PluginManager getPluginManager() {
-        return TestPluginManager.INSTANCE;
+        return mock();
     }
 
     @Override
@@ -160,17 +162,17 @@ public class TestProxyServer implements ProxyServer {
 
     @Override
     public Collection<Player> matchPlayer(String arg0) {
-        return Set.of();
+        return List.of();
     }
 
     @Override
     public Collection<RegisteredServer> matchServer(String arg0) {
-        return Set.of();
+        return List.of();
     }
 
     @Override
     public RegisteredServer registerServer(ServerInfo arg0) {
-        return null;
+        return mock();
     }
 
     @Override

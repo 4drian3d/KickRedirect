@@ -34,6 +34,7 @@ dependencies {
     testImplementation(libs.slf4j)
     testImplementation(libs.caffeine)
     testImplementation(libs.bstats)
+    testImplementation(libs.mockito)
 }
 
 blossom {
