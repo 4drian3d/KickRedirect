@@ -35,7 +35,7 @@ public final class EventBundle {
         plugin.initialize(true);
         if(builder.debug)
             plugin.config().get().debug(true);
-        this.continuation = new TestContinuation();
+        this.continuation = new TestContinuation(null);
         this.player = builder.player;
         this.event = builder.event;
     }
