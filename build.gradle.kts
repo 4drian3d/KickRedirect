@@ -19,7 +19,6 @@ dependencies {
     implementation(libs.libby)
     compileOnly(libs.configurate)
     compileOnly(libs.miniplaceholders)
-    compileOnly(libs.caffeine)
 
     libs.velocity.run {
         compileOnly(this)
@@ -32,7 +31,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(libs.assetrj)
     testImplementation(libs.slf4j)
-    testImplementation(libs.caffeine)
     testImplementation(libs.bstats)
     testImplementation(libs.mockito)
 }

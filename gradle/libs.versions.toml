@@ -41,9 +41,6 @@ slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 assetrj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 
-# Velocity dependencies included in classpath but not in API
-caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
-
 [plugins]
 
 blossom = { id = "net.kyori.blossom", version.ref = "blossom" }
