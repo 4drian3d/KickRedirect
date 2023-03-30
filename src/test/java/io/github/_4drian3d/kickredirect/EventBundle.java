@@ -1,20 +1,18 @@
 package io.github._4drian3d.kickredirect;
 
-import java.nio.file.Path;
-
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.LoggerFactory;
-
 import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-
 import io.github._4drian3d.kickredirect.listener.DebugListener;
 import io.github._4drian3d.kickredirect.listener.KickListener;
 import io.github._4drian3d.kickredirect.listener.objects.TestContinuation;
 import io.github._4drian3d.kickredirect.listener.objects.TestProxyServer;
 import net.kyori.adventure.builder.AbstractBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.LoggerFactory;
+
+import java.nio.file.Path;
 
 public final class EventBundle {
     private final TestContinuation continuation;
@@ -24,7 +22,7 @@ public final class EventBundle {
     private final KickRedirect plugin;
 
     private EventBundle(final Builder builder) {
-        this.proxyServer = builder.proxy == null ? new TestProxyServer() : builder.proxy;
+        this.proxyServer = new TestProxyServer();
         this.plugin = new KickRedirect(
                 this.proxyServer,
                 builder.path,
@@ -66,7 +64,7 @@ public final class EventBundle {
 
     public void applyListener() {
         final KickListener listener = new KickListener(plugin);
-        listener.onKickFromServer(event, continuation);
+        listener.executeAsync(event).execute(continuation);
     }
 
     public EventTask applyDebug() {
@@ -78,7 +76,6 @@ public final class EventBundle {
         private Player player;
         private KickedFromServerEvent event;
         private boolean debug;
-        private ProxyServer proxy;
         private Path path;
 
         private Builder() {}
@@ -95,11 +92,6 @@ public final class EventBundle {
 
         public Builder debug(boolean debug) {
             this.debug = debug;
-            return this;
-        }
-
-        public Builder server(ProxyServer server) {
-            this.proxy = server;
             return this;
         }
 
