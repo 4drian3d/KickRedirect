@@ -5,7 +5,7 @@ metadata.format.version = "1.1"
 # Compile only
 velocity = "3.2.0-SNAPSHOT"
 libby = "1.1.5"
-bstats = "3.0.1"
+bstats = "3.0.2"
 configurate = "4.1.2"
 miniplaceholders = "2.0.0"
 
