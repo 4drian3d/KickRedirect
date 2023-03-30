@@ -56,6 +56,8 @@ tasks {
     }
 
     shadowJar {
+        archiveBaseName.set(rootProject.name)
+        archiveClassifier.set("")
         listOf(
             "org.spongepowered",
             "net.byteflux",

@@ -146,6 +146,11 @@ public class TestPlayer implements Player {
     }
 
     @Override
+    public boolean hasSentPlayerSettings() {
+        return true;
+    }
+
+    @Override
     public TabList getTabList() {
         return null;
     }
