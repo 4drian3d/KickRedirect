@@ -1,6 +1,7 @@
 package io.github._4drian3d.kickredirect.listener;
 
 import com.velocitypowered.api.event.Continuation;
+import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import io.github._4drian3d.kickredirect.EventBundle;
@@ -151,8 +152,10 @@ class ListenerTest {
         KickListener listener = new KickListener(bundle.getPlugin());
         Continuation continuation = new TestContinuation(null);
 
-        listener.onKickFromServer(bundle.getEvent(), continuation);
-        listener.onKickFromServer(bundle.getEvent(), continuation);
+        EventTask task = listener.executeAsync(bundle.getEvent());
+
+        task.execute(continuation);
+        task.execute(continuation);
         
         assertThat(bundle.getPlugin().debugCache().asMap())
             .isNotNull()

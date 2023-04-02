@@ -8,6 +8,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
@@ -129,7 +130,12 @@ public final class KickRedirect {
                 ? new MiniPlaceholdersFormatter()
                 : new RegularFormatter();
         KickRedirectCommand.command(this);
-        proxy.getEventManager().register(this, new KickListener(this));
+        proxy.getEventManager().register(
+                this,
+                KickedFromServerEvent.class,
+                config.get().getListenerPriority(),
+                new KickListener(this)
+        );
         proxy.getEventManager().register(this, new DebugListener(this));
 
         this.proxy.getConsoleCommandSource().sendMessage(

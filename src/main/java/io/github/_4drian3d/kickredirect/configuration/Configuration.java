@@ -1,5 +1,6 @@
 package io.github._4drian3d.kickredirect.configuration;
 
+import com.velocitypowered.api.event.PostOrder;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
@@ -32,6 +33,11 @@ public final class Configuration implements Section {
 
     @Comment("Enables debug mode")
     private boolean debug = false;
+
+    @Comment("Sets the priority of the main KickRedirect listener."
+            +"\nThis may solve compatibility issues with other plugins."
+            +"\nAvailable Values: EARLY, FIRST, NORMAL, LATE")
+    private PostOrder listenerPriority = PostOrder.EARLY;
 
     public List<String> getServersToRedirect(){
         return this.serversToRedirect;
@@ -66,4 +72,7 @@ public final class Configuration implements Section {
         this.debug = bool;
     }
 
+    public PostOrder getListenerPriority() {
+        return listenerPriority;
+    }
 }
