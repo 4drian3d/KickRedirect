@@ -8,47 +8,26 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
-public final class DebugInfo {
-    private final String playerName;
-    private final String serverName;
-    private final boolean duringServerConnect;
-    private final String originalReason;
-    private final String finalResult;
-    private final KickStep step;
+public record DebugInfo(
+        String playerName,
+        String serverName,
+        boolean duringServerConnect,
+        String originalReason,
+        String finalResult,
+        KickStep step
+) {
 
     public DebugInfo(final KickedFromServerEvent event, String server, KickStep step) {
-        this.playerName = event.getPlayer().getUsername();
-        this.serverName = server;
-        this.duringServerConnect = event.kickedDuringServerConnect();
-        this.originalReason = event.getServerKickReason()
-                .map(PlainTextComponentSerializer.plainText()::serialize)
-                .orElse("NONE");
-        this.finalResult = event.getResult().getClass().getTypeName();
-        this.step = step;
-    }
-
-    public String playerName() {
-        return this.playerName;
-    }
-
-    public String serverName() {
-        return this.serverName;
-    }
-
-    public boolean duringServerConnect() {
-        return this.duringServerConnect;
-    }
-
-    public String originalReason() {
-        return this.originalReason;
-    }
-
-    public String result() {
-        return this.finalResult;
-    }
-
-    public KickStep step() {
-        return this.step;
+        this(
+            event.getPlayer().getUsername(),
+            server,
+            event.kickedDuringServerConnect(),
+            event.getServerKickReason()
+                    .map(PlainTextComponentSerializer.plainText()::serialize)
+                    .orElse("NONE"),
+            event.getResult().getClass().getTypeName(),
+            step
+        );
     }
 
     public TagResolver commonResolver() {

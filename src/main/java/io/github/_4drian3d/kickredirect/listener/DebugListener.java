@@ -32,7 +32,7 @@ public final class DebugListener implements AwaitingEventExecutor<KickedFromServ
             final TagResolver redirectResolver = TagResolver
                     .resolver(
                             commonResolver,
-                            Placeholder.unparsed("result", debug.result()),
+                            Placeholder.unparsed("result", debug.finalResult()),
                             Placeholder.unparsed("server_name", debug.serverName() == null
                                     ? "NONE" : debug.serverName())
                     );
@@ -54,8 +54,8 @@ public final class DebugListener implements AwaitingEventExecutor<KickedFromServ
     }
 
     private String serverName(ServerKickResult result) {
-        if (result instanceof KickedFromServerEvent.RedirectPlayer) {
-            return ((KickedFromServerEvent.RedirectPlayer) result).getServer().getServerInfo().getName();
+        if (result instanceof KickedFromServerEvent.RedirectPlayer redirectPlayer) {
+            return redirectPlayer.getServer().getServerInfo().getName();
         }
         return "NONE";
     }

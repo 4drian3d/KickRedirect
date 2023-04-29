@@ -1,6 +1,6 @@
 package io.github._4drian3d.kickredirect.utils;
 
-public class Constants {
+public final class Constants {
     /**Plugin Version */
     public static final String VERSION = "{version}";
 

@@ -23,16 +23,16 @@ public enum SendMode {
         public RegisteredServer server(ProxyServer proxyServer, List<String> servers, int randomAttempts) {
             RegisteredServer emptiest = null;
             for (final String st : servers) {
-                final Optional<RegisteredServer> sv = proxyServer.getServer(st);
-                if (sv.isPresent()) {
-                    RegisteredServer actualsv = sv.get();
-                    if (actualsv.getPlayersConnected().isEmpty())
-                        return actualsv;
+                final Optional<RegisteredServer> serverOptional = proxyServer.getServer(st);
+                if (serverOptional.isPresent()) {
+                    RegisteredServer actual = serverOptional.get();
+                    if (actual.getPlayersConnected().isEmpty())
+                        return actual;
                     if (emptiest == null) {
-                        emptiest = actualsv;
+                        emptiest = actual;
                     } else {
-                        if (actualsv.getPlayersConnected().size() < emptiest.getPlayersConnected().size()) {
-                            emptiest = actualsv;
+                        if (actual.getPlayersConnected().size() < emptiest.getPlayersConnected().size()) {
+                            emptiest = actual;
                         }
                     }
                 }

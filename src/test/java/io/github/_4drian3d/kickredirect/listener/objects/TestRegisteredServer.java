@@ -76,8 +76,8 @@ public class TestRegisteredServer implements RegisteredServer {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (!(obj instanceof TestRegisteredServer))
+        if (!(obj instanceof TestRegisteredServer o))
             return false;
-        return Objects.equals(this.name(), ((RegisteredServer)obj).getServerInfo().getName());
+        return Objects.equals(this.name(), o.name());
     }
 }
