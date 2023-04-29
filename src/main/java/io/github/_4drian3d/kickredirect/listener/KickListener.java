@@ -2,15 +2,22 @@ package io.github._4drian3d.kickredirect.listener;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.inject.Inject;
 import com.velocitypowered.api.event.AwaitingEventExecutor;
+import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.player.KickedFromServerEvent.ServerKickResult;
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import io.github._4drian3d.kickredirect.KickRedirect;
+import io.github._4drian3d.kickredirect.configuration.Configuration;
+import io.github._4drian3d.kickredirect.configuration.ConfigurationContainer;
+import io.github._4drian3d.kickredirect.configuration.Messages;
 import io.github._4drian3d.kickredirect.enums.CheckMode;
 import io.github._4drian3d.kickredirect.enums.KickStep;
+import io.github._4drian3d.kickredirect.formatter.Formatter;
 import io.github._4drian3d.kickredirect.utils.DebugInfo;
 import io.github._4drian3d.kickredirect.utils.Strings;
 import net.kyori.adventure.text.Component;
@@ -23,14 +30,23 @@ import java.util.Optional;
 import java.util.UUID;
 
 public final class KickListener implements AwaitingEventExecutor<KickedFromServerEvent> {
-    private final KickRedirect plugin;
+    @Inject
+    private KickRedirect plugin;
+    @Inject
+    private ProxyServer proxyServer;
+    @Inject
+    private EventManager eventManager;
+    @Inject
+    private Formatter formatter;
+    @Inject
+    private ConfigurationContainer<Configuration> configurationContainer;
+    @Inject
+    private ConfigurationContainer<Messages> messagesContainer;
+    @Inject
+    private Cache<UUID, DebugInfo> debugCache;
     private final Cache<UUID, String> sent = Caffeine.newBuilder()
             .expireAfterWrite(Duration.ofMillis(10))
             .build();
-
-    public KickListener(final KickRedirect plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public EventTask executeAsync(KickedFromServerEvent event) {
@@ -43,22 +59,22 @@ public final class KickListener implements AwaitingEventExecutor<KickedFromServe
                 return;
             }
             if (reasonCheck(event)) {
-                final var configuration = plugin.config().get();
+                final Configuration configuration = configurationContainer.get();
                 final RegisteredServer server = configuration
                         .getSendMode()
                         .server(
-                                plugin.getProxy(),
+                                proxyServer,
                                 configuration.getServersToRedirect(),
                                 configuration.getRandomAttempts()
                         );
                 if (server == null) {
-                    plugin.getProxy().getConsoleCommandSource().sendMessage(
-                            plugin.formatter().format(
-                                    plugin.messages().get().noServersFoundToRedirect(),
+                    proxyServer.getConsoleCommandSource().sendMessage(
+                            formatter.format(
+                                    messagesContainer.get().noServersFoundToRedirect(),
                                     player,
                                     Placeholder.unparsed(
                                             "sendmode",
-                                            plugin.config().get().getSendMode().toString()
+                                            configurationContainer.get().getSendMode().toString()
                                     )
                             )
                     );
@@ -79,23 +95,20 @@ public final class KickListener implements AwaitingEventExecutor<KickedFromServe
     }
 
     void cache(KickedFromServerEvent event, String serverName, KickStep step) {
-        if (plugin.config().get().debug())
-            plugin.debugCache()
-                    .put(
-                            event.getPlayer().getUniqueId(),
-                            new DebugInfo(event, serverName, step)
-                    );
+        if (configurationContainer.get().debug()) {
+            debugCache.put(event.getPlayer().getUniqueId(), new DebugInfo(event, serverName, step));
+        }
     }
 
     boolean reasonCheck(KickedFromServerEvent event) {
         final Optional<String> optional = event.getServerKickReason()
                 .map(PlainTextComponentSerializer.plainText()::serialize);
 
-        final var configuration = plugin.config().get();
+        final Configuration configuration = configurationContainer.get();
 
         if (optional.isPresent()) {
             final String message = optional.get();
-            for (final String msg : plugin.config().get().getMessagesToCheck()) {
+            for (final String msg : configuration.getMessagesToCheck()) {
                 if (Strings.containsIgnoreCase(message, msg)) {
                     return configuration.checkMode() == CheckMode.WHITELIST;
                 }
@@ -107,22 +120,22 @@ public final class KickListener implements AwaitingEventExecutor<KickedFromServe
     }
 
     ServerKickResult redirectResult(RegisteredServer server, Player player) {
-        final String redirectMessage = plugin.messages().get().redirectMessage();
+        final String redirectMessage = messagesContainer.get().redirectMessage();
         if (redirectMessage.isBlank()) {
             return KickedFromServerEvent.RedirectPlayer.create(server);
         } else {
-            final Component message = plugin.formatter().format(redirectMessage, player);
+            final Component message = formatter.format(redirectMessage, player);
             return KickedFromServerEvent.RedirectPlayer.create(server, message);
         }
     }
 
     void applyKickResult(KickedFromServerEvent event) {
-        final String kickMessage = plugin.messages().get().kickMessage();
+        final String kickMessage = messagesContainer.get().kickMessage();
         if (!kickMessage.isBlank()) {
             event.setResult(
-                    KickedFromServerEvent.DisconnectPlayer.create(
-                            plugin.formatter().format(kickMessage, event.getPlayer())
-                    )
+                KickedFromServerEvent.DisconnectPlayer.create(
+                    formatter.format(kickMessage, event.getPlayer())
+                )
             );
         }
     }
@@ -133,5 +146,14 @@ public final class KickListener implements AwaitingEventExecutor<KickedFromServe
 
     boolean shouldKick(Player player, RegisteredServer server) {
         return Objects.equals(sent.getIfPresent(player.getUniqueId()), server.getServerInfo().getName());
+    }
+
+    public void register() {
+        eventManager.register(
+            plugin,
+            KickedFromServerEvent.class,
+            configurationContainer.get().getListenerPriority(),
+            this
+        );
     }
 }

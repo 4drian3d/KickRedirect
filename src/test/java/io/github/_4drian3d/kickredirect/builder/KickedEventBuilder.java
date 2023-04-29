@@ -1,4 +1,4 @@
-package io.github._4drian3d.kickredirect;
+package io.github._4drian3d.kickredirect.builder;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,6 @@ public final class KickedEventBuilder implements AbstractBuilder<KickedFromServe
     private Player player;
     private RegisteredServer server;
     private Component reason;
-    private boolean duringServerConnect = false;
     private ServerKickResult result;
 
     private KickedEventBuilder(){}
@@ -34,11 +33,6 @@ public final class KickedEventBuilder implements AbstractBuilder<KickedFromServe
         return this;
     }
 
-    public KickedEventBuilder duringServerConnect(boolean serverConnect) {
-        this.duringServerConnect = serverConnect;
-        return this;
-    }
-
     public KickedEventBuilder server(@NotNull RegisteredServer server) {
         this.server = server;
         return this;
@@ -55,7 +49,7 @@ public final class KickedEventBuilder implements AbstractBuilder<KickedFromServe
             player,
             server,
             reason,
-            duringServerConnect,
+            false,
             result
         );
     }

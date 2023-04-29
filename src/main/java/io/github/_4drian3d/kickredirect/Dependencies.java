@@ -1,6 +1,8 @@
 package io.github._4drian3d.kickredirect;
 
+import com.google.inject.Inject;
 import com.velocitypowered.api.plugin.PluginManager;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import io.github._4drian3d.kickredirect.utils.Constants;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
@@ -10,10 +12,19 @@ import org.slf4j.Logger;
 import java.nio.file.Path;
 
 public final class Dependencies {
-    private Dependencies() {}
-    static void loadDependencies(KickRedirect plugin, Logger logger, PluginManager manager, Path path) {
+    @Inject
+    private KickRedirect plugin;
+    @Inject
+    private Logger logger;
+    @Inject
+    private PluginManager pluginManager;
+    @Inject
+    @DataDirectory
+    private Path dataDirectory;
+
+    void loadDependencies() {
         final VelocityLibraryManager<KickRedirect> libraryManager
-                = new VelocityLibraryManager<>(logger, path, manager, plugin, "libs");
+                = new VelocityLibraryManager<>(logger, dataDirectory, pluginManager, plugin, "libs");
         final Relocation configurateRelocation
                 = new Relocation(
                         "org{}spongepowered",
