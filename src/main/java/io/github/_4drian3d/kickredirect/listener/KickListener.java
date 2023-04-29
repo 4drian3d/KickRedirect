@@ -18,6 +18,7 @@ import io.github._4drian3d.kickredirect.configuration.Messages;
 import io.github._4drian3d.kickredirect.enums.CheckMode;
 import io.github._4drian3d.kickredirect.enums.KickStep;
 import io.github._4drian3d.kickredirect.formatter.Formatter;
+import io.github._4drian3d.kickredirect.modules.KickRedirectSource;
 import io.github._4drian3d.kickredirect.utils.DebugInfo;
 import io.github._4drian3d.kickredirect.utils.Strings;
 import net.kyori.adventure.text.Component;
@@ -44,12 +45,14 @@ public final class KickListener implements AwaitingEventExecutor<KickedFromServe
     private ConfigurationContainer<Messages> messagesContainer;
     @Inject
     private Cache<UUID, DebugInfo> debugCache;
+    @Inject
+    private KickRedirectSource source;
     private final Cache<UUID, String> sent = Caffeine.newBuilder()
             .expireAfterWrite(Duration.ofMillis(10))
             .build();
 
     @Override
-    public EventTask executeAsync(KickedFromServerEvent event) {
+    public EventTask executeAsync(final KickedFromServerEvent event) {
         return EventTask.withContinuation(continuation -> {
             final Player player = event.getPlayer();
             if (shouldKick(player, event.getServer())) {
@@ -68,16 +71,14 @@ public final class KickListener implements AwaitingEventExecutor<KickedFromServe
                                 configuration.getRandomAttempts()
                         );
                 if (server == null) {
-                    proxyServer.getConsoleCommandSource().sendMessage(
-                            formatter.format(
-                                    messagesContainer.get().noServersFoundToRedirect(),
-                                    player,
-                                    Placeholder.unparsed(
-                                            "sendmode",
-                                            configurationContainer.get().getSendMode().toString()
-                                    )
+                    source.sendMessage(formatter.format(
+                            messagesContainer.get().noServersFoundToRedirect(),
+                            player,
+                            Placeholder.unparsed(
+                                    "sendmode",
+                                    configuration.getSendMode().toString()
                             )
-                    );
+                    ));
                     applyKickResult(event);
                     continuation.resume();
                     cache(event, null, KickStep.NULL_SERVER);
@@ -94,13 +95,16 @@ public final class KickListener implements AwaitingEventExecutor<KickedFromServe
         });
     }
 
-    void cache(KickedFromServerEvent event, String serverName, KickStep step) {
+    // Cache event information in case debug mode is enabled
+    void cache(final KickedFromServerEvent event, final String serverName, final KickStep step) {
         if (configurationContainer.get().debug()) {
             debugCache.put(event.getPlayer().getUniqueId(), new DebugInfo(event, serverName, step));
         }
     }
 
-    boolean reasonCheck(KickedFromServerEvent event) {
+    // Check in case the kick message corresponds
+    // to a message configured for revision
+    boolean reasonCheck(final KickedFromServerEvent event) {
         final Optional<String> optional = event.getServerKickReason()
                 .map(PlainTextComponentSerializer.plainText()::serialize);
 
@@ -119,7 +123,9 @@ public final class KickListener implements AwaitingEventExecutor<KickedFromServe
         }
     }
 
-    ServerKickResult redirectResult(RegisteredServer server, Player player) {
+    // If the redirection message is empty,
+    // simply apply a redirection result without message
+    ServerKickResult redirectResult(final RegisteredServer server, final Player player) {
         final String redirectMessage = messagesContainer.get().redirectMessage();
         if (redirectMessage.isBlank()) {
             return KickedFromServerEvent.RedirectPlayer.create(server);
@@ -129,7 +135,10 @@ public final class KickListener implements AwaitingEventExecutor<KickedFromServe
         }
     }
 
-    void applyKickResult(KickedFromServerEvent event) {
+    // If the configured kick message is empty,
+    // it avoids applying a new result,
+    // since Velocity already applies the kick result
+    void applyKickResult(final KickedFromServerEvent event) {
         final String kickMessage = messagesContainer.get().kickMessage();
         if (!kickMessage.isBlank()) {
             event.setResult(
@@ -140,11 +149,17 @@ public final class KickListener implements AwaitingEventExecutor<KickedFromServe
         }
     }
 
-    void addToSent(Player player, RegisteredServer server) {
+    // The server from which the player has been expelled is added to the cache,
+    // to avoid infinite redirection calculations
+    // https://github.com/4drian3d/KickRedirect/issues/5
+    void addToSent(final Player player, final RegisteredServer server) {
         sent.put(player.getUniqueId(), server.getServerInfo().getName());
     }
 
-    boolean shouldKick(Player player, RegisteredServer server) {
+    // If the player has already been kicked from the same server recently,
+    // do not retry to recalculate the server to redirect
+    // https://github.com/4drian3d/KickRedirect/issues/5
+    boolean shouldKick(final Player player, final RegisteredServer server) {
         return Objects.equals(sent.getIfPresent(player.getUniqueId()), server.getServerInfo().getName());
     }
 

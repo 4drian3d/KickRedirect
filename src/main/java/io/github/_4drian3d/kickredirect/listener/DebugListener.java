@@ -71,7 +71,7 @@ public final class DebugListener implements AwaitingEventExecutor<KickedFromServ
         });
     }
 
-    private String serverName(ServerKickResult result) {
+    private String serverName(final ServerKickResult result) {
         if (result instanceof KickedFromServerEvent.RedirectPlayer redirectPlayer) {
             return redirectPlayer.getServer().getServerInfo().getName();
         }
