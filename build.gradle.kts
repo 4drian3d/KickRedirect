@@ -37,11 +37,7 @@ dependencies {
 
 blossom {
     replaceTokenIn("src/main/java/io/github/_4drian3d/kickredirect/utils/Constants.java")
-    replaceToken("{name}", rootProject.name)
-    replaceToken("{id}", property("id"))
     replaceToken("{version}", version)
-    replaceToken("{description}", description)
-    replaceToken("{url}", property("url"))
     replaceToken("{configurate}", libs.versions.configurate.get())
     replaceToken("{geantyref}", libs.versions.geantyref.get())
 }

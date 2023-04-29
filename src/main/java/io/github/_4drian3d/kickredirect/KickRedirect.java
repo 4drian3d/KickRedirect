@@ -34,11 +34,11 @@ import io.github._4drian3d.kickredirect.formatter.Formatter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 @Plugin(
-        id = Constants.ID,
-        name = Constants.NAME,
+        id = "kickredirect",
+        name = "KickRedirect",
         version = Constants.VERSION,
-        description = Constants.DESCRIPTION,
-        url = Constants.URL,
+        description = "Set the redirect result of your servers shutdown",
+        url = "https://modrinth.com/plugin/kickredirect",
         authors = {
                 "4drian3d"
         },
