@@ -20,10 +20,10 @@ import java.nio.file.Path;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class PluginModule extends AbstractModule {
+public final class PluginModule extends AbstractModule {
     @Provides
     @Singleton
-    private Formatter formatter(PluginManager pluginManager) {
+    private Formatter formatter(final PluginManager pluginManager) {
         return pluginManager.isLoaded("miniplaceholders")
                 ? new MiniPlaceholdersFormatter()
                 : new RegularFormatter();
@@ -31,13 +31,19 @@ public class PluginModule extends AbstractModule {
 
     @Provides
     @Singleton
-    private ConfigurationContainer<Messages> messagesContainer(Logger logger, @DataDirectory Path path) {
+    private ConfigurationContainer<Messages> messagesContainer(
+            final Logger logger,
+            final @DataDirectory Path path
+    ) {
         return ConfigurationContainer.load(logger, path, Messages.class, "messages.conf");
     }
 
     @Provides
     @Singleton
-    private ConfigurationContainer<Configuration> configurationContainer(Logger logger, @DataDirectory Path path) {
+    private ConfigurationContainer<Configuration> configurationContainer(
+            final Logger logger,
+            final @DataDirectory Path path
+    ) {
         return ConfigurationContainer.load(logger, path, Configuration.class, "config.conf");
     }
 

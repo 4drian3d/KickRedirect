@@ -41,7 +41,6 @@ public final class KickedEventBuilder implements AbstractBuilder<KickedFromServe
     public static KickedEventBuilder builder() {
         return new KickedEventBuilder();
     }
-    
 
     @Override
     public @NotNull KickedFromServerEvent build() {
@@ -53,5 +52,4 @@ public final class KickedEventBuilder implements AbstractBuilder<KickedFromServe
             result
         );
     }
-    
 }
