@@ -69,7 +69,7 @@ public final class EventBundle {
 
     public EventTask applyDebug() {
         final DebugListener listener = new DebugListener(plugin);
-        return listener.afterKickFromServer(event);
+        return listener.executeAsync(event);
     }
 
     public static class Builder implements AbstractBuilder<EventBundle> {

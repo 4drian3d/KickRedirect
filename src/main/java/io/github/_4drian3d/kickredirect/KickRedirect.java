@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -136,7 +137,12 @@ public final class KickRedirect {
                 config.get().getListenerPriority(),
                 new KickListener(this)
         );
-        proxy.getEventManager().register(this, new DebugListener(this));
+        proxy.getEventManager().register(
+                this,
+                KickedFromServerEvent.class,
+                PostOrder.LAST,
+                new DebugListener(this)
+        );
 
         this.proxy.getConsoleCommandSource().sendMessage(
                 MiniMessage.miniMessage().deserialize(

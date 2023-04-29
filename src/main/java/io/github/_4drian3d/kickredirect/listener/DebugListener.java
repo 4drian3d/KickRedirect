@@ -1,8 +1,7 @@
 package io.github._4drian3d.kickredirect.listener;
 
+import com.velocitypowered.api.event.AwaitingEventExecutor;
 import com.velocitypowered.api.event.EventTask;
-import com.velocitypowered.api.event.PostOrder;
-import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.player.KickedFromServerEvent.ServerKickResult;
 
@@ -10,16 +9,17 @@ import io.github._4drian3d.kickredirect.utils.DebugInfo;
 import io.github._4drian3d.kickredirect.KickRedirect;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final class DebugListener {
+public final class DebugListener implements AwaitingEventExecutor<KickedFromServerEvent> {
     private final KickRedirect plugin;
 
     public DebugListener(final KickRedirect plugin) {
         this.plugin = plugin;
     }
 
-    @Subscribe(order = PostOrder.LAST)
-    public EventTask afterKickFromServer(final KickedFromServerEvent event) {
+    @Override
+    public @Nullable EventTask executeAsync(KickedFromServerEvent event) {
         if (!plugin.config().get().debug()) {
             return null;
         }
