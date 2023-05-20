@@ -6,9 +6,9 @@ plugins {
 }
 
 repositories {
-    maven("https://repo.alessiodp.com/releases/") {
+    maven("https://repo.deltapvp.net/") {
         mavenContent {
-            includeGroup("net.byteflux")
+            includeGroup("org.mineorbit.libby")
         }
     }
     maven("https://papermc.io/repo/repository/maven-public/")
@@ -17,6 +17,7 @@ repositories {
 dependencies {
     implementation(libs.bstats)
     implementation(libs.libby)
+    implementation(libs.hexlogger)
     compileOnly(libs.configurate)
     compileOnly(libs.miniplaceholders)
 
@@ -26,12 +27,12 @@ dependencies {
         testImplementation(this)
     }
 
-    testImplementation(libs.configurate)
+    testRuntimeOnly(libs.configurate)
     testImplementation(platform("org.junit:junit-bom:5.9.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(libs.assetrj)
     testImplementation(libs.slf4j)
-    testImplementation(libs.bstats)
+    testRuntimeOnly(libs.bstats)
     testImplementation(libs.mockito)
 }
 
@@ -58,7 +59,9 @@ tasks {
             "org.spongepowered",
             "net.byteflux",
             "io.leangen.geantyref",
-            "org.bstats"
+            "org.bstats",
+            "io.github._4drian3d.velocityhexlogger",
+            "net.kyori.adventure.text.logger.slf4j"
         ).forEach {
             relocate(it, "io.github._4drian3d.kickredirect.libs.$it")
         }

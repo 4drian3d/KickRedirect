@@ -3,7 +3,7 @@ package io.github._4drian3d.kickredirect.enums;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.player.KickedFromServerEvent.ServerKickResult;
 
-import io.github._4drian3d.kickredirect.listener.objects.TestRegisteredServer;
+import io.github._4drian3d.kickredirect.objects.TestRegisteredServer;
 import net.kyori.adventure.text.Component;
 
 public enum KickResultType {

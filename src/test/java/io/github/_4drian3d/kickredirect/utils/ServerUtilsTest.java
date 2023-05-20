@@ -1,11 +1,11 @@
-package io.github._4drian3d.kickredirect;
+package io.github._4drian3d.kickredirect.utils;
 
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import io.github._4drian3d.kickredirect.configuration.Configuration;
 import io.github._4drian3d.kickredirect.configuration.ConfigurationContainer;
 import io.github._4drian3d.kickredirect.enums.SendMode;
-import io.github._4drian3d.kickredirect.listener.objects.TestProxyServer;
+import io.github._4drian3d.kickredirect.objects.TestProxyServer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

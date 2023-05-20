@@ -1,4 +1,4 @@
-package io.github._4drian3d.kickredirect.listener.objects;
+package io.github._4drian3d.kickredirect.objects;
 
 import java.net.InetSocketAddress;
 import java.util.List;

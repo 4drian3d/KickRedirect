@@ -6,7 +6,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
-public interface Formatter {
+public sealed interface Formatter permits MiniPlaceholdersFormatter, RegularFormatter {
     Component format(
         final @NotNull String string
     );

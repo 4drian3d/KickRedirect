@@ -1,4 +1,4 @@
-package io.github._4drian3d.kickredirect.listener.objects;
+package io.github._4drian3d.kickredirect.objects;
 
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.EventManager;
@@ -63,7 +63,7 @@ public class TestProxyServer implements ProxyServer {
 
     @Override
     public CommandManager getCommandManager() {
-        return TestCommandManager.INSTANCE;
+        return null;
     }
 
     @Override
