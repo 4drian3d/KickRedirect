@@ -6,12 +6,12 @@ plugins {
 }
 
 repositories {
-    maven("https://repo.deltapvp.net/") {
+    maven("https://maven.deltapvp.net/") {
         mavenContent {
-            includeGroup("org.mineorbit.libby")
+            includeGroup("net.deltapvp.libby")
         }
     }
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {

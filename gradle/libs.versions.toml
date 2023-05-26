@@ -4,7 +4,7 @@ metadata.format.version = "1.1"
 
 # Compile only
 velocity = "3.2.0-SNAPSHOT"
-libby = "2.0.0"
+libby = "2.0.3"
 bstats = "3.0.2"
 configurate = "4.1.2"
 miniplaceholders = "2.2.0"
@@ -34,7 +34,7 @@ configurate = { module = "org.spongepowered:configurate-hocon", version.ref = "c
 miniplaceholders = { group = "io.github.miniplaceholders", name = "miniplaceholders-api", version.ref = "miniplaceholders" }
 
 # Included Dependencies
-libby = { group = "org.mineorbit.libby", name = "libby-velocity", version.ref = "libby" }
+libby = { group = "net.deltapvp.libby", name = "libby-velocity", version.ref = "libby" }
 hexlogger = { group = "io.github.4drian3d", name = "velocityhexlogger", version = "1.0.2" }
 
 # Test Dependencies
