@@ -58,8 +58,6 @@ public final class Dependencies {
                 .build();
 
         libraryManager.addMavenCentral();
-        libraryManager.loadLibrary(geantyref);
-        libraryManager.loadLibrary(hocon);
-        libraryManager.loadLibrary(confCore);
+        libraryManager.loadLibraries(geantyref, hocon, confCore);
     }
 }
