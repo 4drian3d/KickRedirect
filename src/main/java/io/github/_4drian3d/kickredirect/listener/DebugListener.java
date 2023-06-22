@@ -15,13 +15,14 @@ import io.github._4drian3d.kickredirect.configuration.Messages;
 import io.github._4drian3d.kickredirect.formatter.Formatter;
 import io.github._4drian3d.kickredirect.modules.KickRedirectSource;
 import io.github._4drian3d.kickredirect.utils.DebugInfo;
+import io.github._4drian3d.kickredirect.utils.Registrable;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
 
-public final class DebugListener implements AwaitingEventExecutor<KickedFromServerEvent> {
+public final class DebugListener implements AwaitingEventExecutor<KickedFromServerEvent>, Registrable {
     @Inject
     private KickRedirect plugin;
     @Inject
@@ -78,6 +79,7 @@ public final class DebugListener implements AwaitingEventExecutor<KickedFromServ
         return "NONE";
     }
 
+    @Override
     public void register() {
         eventManager.register(
             plugin,

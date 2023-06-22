@@ -20,6 +20,7 @@ import io.github._4drian3d.kickredirect.enums.KickStep;
 import io.github._4drian3d.kickredirect.formatter.Formatter;
 import io.github._4drian3d.kickredirect.modules.KickRedirectSource;
 import io.github._4drian3d.kickredirect.utils.DebugInfo;
+import io.github._4drian3d.kickredirect.utils.Registrable;
 import io.github._4drian3d.kickredirect.utils.Strings;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -30,7 +31,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-public final class KickListener implements AwaitingEventExecutor<KickedFromServerEvent> {
+public final class KickListener implements AwaitingEventExecutor<KickedFromServerEvent>, Registrable {
     @Inject
     private KickRedirect plugin;
     @Inject
@@ -163,6 +164,7 @@ public final class KickListener implements AwaitingEventExecutor<KickedFromServe
         return Objects.equals(sent.getIfPresent(player.getUniqueId()), server.getServerInfo().getName());
     }
 
+    @Override
     public void register() {
         eventManager.register(
             plugin,

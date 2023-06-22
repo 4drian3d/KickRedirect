@@ -11,8 +11,11 @@ import io.github._4drian3d.kickredirect.listener.DebugListener;
 import io.github._4drian3d.kickredirect.listener.KickListener;
 import io.github._4drian3d.kickredirect.modules.PluginModule;
 import io.github._4drian3d.kickredirect.utils.Constants;
+import io.github._4drian3d.kickredirect.utils.Registrable;
 import io.github._4drian3d.velocityhexlogger.HexLogger;
 import org.bstats.velocity.Metrics;
+
+import java.util.stream.Stream;
 
 import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
 
@@ -51,9 +54,9 @@ public final class KickRedirect {
         injector.getInstance(Dependencies.class).loadDependencies();
         injector = injector.createChildInjector(new PluginModule());
 
-        injector.getInstance(KickRedirectCommand.class).command();
-        injector.getInstance(KickListener.class).register();
-        injector.getInstance(DebugListener.class).register();
+        Stream.of(KickRedirectCommand.class, KickListener.class, DebugListener.class)
+                .map(injector::getInstance)
+                .forEach(Registrable::register);
 
         final long end = System.currentTimeMillis() - start;
         hexLogger.info(miniMessage().deserialize("<gradient:#78edff:#699dff>Fully started plugin in "+end+" ms"));

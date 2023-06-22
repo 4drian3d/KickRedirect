@@ -13,11 +13,12 @@ import io.github._4drian3d.kickredirect.configuration.Configuration;
 import io.github._4drian3d.kickredirect.configuration.ConfigurationContainer;
 import io.github._4drian3d.kickredirect.configuration.Messages;
 import io.github._4drian3d.kickredirect.formatter.Formatter;
+import io.github._4drian3d.kickredirect.utils.Registrable;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.slf4j.Logger;
 
-public final class KickRedirectCommand {
+public final class KickRedirectCommand implements Registrable {
     @Inject
     private KickRedirect plugin;
     @Inject
@@ -31,7 +32,8 @@ public final class KickRedirectCommand {
     @Inject
     private ConfigurationContainer<Messages> messagesContainer;
 
-    public void command() {
+    @Override
+    public void register() {
         final LiteralCommandNode<CommandSource> node = LiteralArgumentBuilder
                 .<CommandSource>literal("kickredirect")
                 .executes(context -> {
