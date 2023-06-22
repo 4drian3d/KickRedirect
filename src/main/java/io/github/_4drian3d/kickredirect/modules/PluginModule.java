@@ -12,7 +12,6 @@ import io.github._4drian3d.kickredirect.configuration.ConfigurationContainer;
 import io.github._4drian3d.kickredirect.configuration.Messages;
 import io.github._4drian3d.kickredirect.formatter.Formatter;
 import io.github._4drian3d.kickredirect.formatter.MiniPlaceholdersFormatter;
-import io.github._4drian3d.kickredirect.formatter.RegularFormatter;
 import io.github._4drian3d.kickredirect.utils.DebugInfo;
 import org.slf4j.Logger;
 
@@ -26,7 +25,7 @@ public final class PluginModule extends AbstractModule {
     private Formatter formatter(final PluginManager pluginManager) {
         return pluginManager.isLoaded("miniplaceholders")
                 ? new MiniPlaceholdersFormatter()
-                : new RegularFormatter();
+                : new Formatter();
     }
 
     @Provides
@@ -35,7 +34,7 @@ public final class PluginModule extends AbstractModule {
             final Logger logger,
             final @DataDirectory Path path
     ) {
-        return ConfigurationContainer.load(logger, path, Messages.class, "messages.conf");
+        return ConfigurationContainer.load(logger, path, Messages.class, "messages");
     }
 
     @Provides
@@ -44,7 +43,7 @@ public final class PluginModule extends AbstractModule {
             final Logger logger,
             final @DataDirectory Path path
     ) {
-        return ConfigurationContainer.load(logger, path, Configuration.class, "config.conf");
+        return ConfigurationContainer.load(logger, path, Configuration.class, "config");
     }
 
     @Provides

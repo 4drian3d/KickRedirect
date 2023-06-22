@@ -5,22 +5,26 @@ import org.jetbrains.annotations.NotNull;
 import io.github.miniplaceholders.api.MiniPlaceholders;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
-public final class MiniPlaceholdersFormatter implements Formatter {
+import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
+
+public final class MiniPlaceholdersFormatter extends Formatter {
 
     @Override
-    public Component format(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(
+    public Component format(final @NotNull String string) {
+        return miniMessage().deserialize(
                 string,
                 MiniPlaceholders.getGlobalPlaceholders()
         );
     }
 
     @Override
-    public Component format(@NotNull String string, @NotNull TagResolver... extraResolver) {
-        return MiniMessage.miniMessage().deserialize(
+    public Component format(
+            final @NotNull String string,
+            final @NotNull TagResolver@NotNull... extraResolver
+    ) {
+        return miniMessage().deserialize(
                 string,
                 TagResolver.builder()
                         .resolver(MiniPlaceholders.getGlobalPlaceholders())
@@ -30,16 +34,22 @@ public final class MiniPlaceholdersFormatter implements Formatter {
     }
 
     @Override
-    public Component format(@NotNull String string, Audience audience) {
-        return MiniMessage.miniMessage().deserialize(
+    public Component format(
+            final @NotNull String string,
+            final @NotNull Audience audience
+    ) {
+        return miniMessage().deserialize(
                 string,
                 MiniPlaceholders.getAudienceGlobalPlaceholders(audience)
         );
     }
 
     @Override
-    public Component format(@NotNull String string, Audience audience, @NotNull TagResolver... extraResolver) {
-        return MiniMessage.miniMessage().deserialize(
+    public Component format(
+            final @NotNull String string,
+            final @NotNull Audience audience,
+            final @NotNull TagResolver@NotNull... extraResolver) {
+        return miniMessage().deserialize(
                 string,
                 TagResolver.builder()
                         .resolver(MiniPlaceholders.getAudienceGlobalPlaceholders(audience))
