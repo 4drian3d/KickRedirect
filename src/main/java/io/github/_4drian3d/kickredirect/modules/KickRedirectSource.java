@@ -4,22 +4,22 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.permission.Tristate;
-import com.velocitypowered.api.proxy.ProxyServer;
+import io.github._4drian3d.velocityhexlogger.HexLogger;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public final class KickRedirectSource implements CommandSource {
     @Inject
-    private ProxyServer proxyServer;
+    private HexLogger hexLogger;
 
     @Override
-    public Tristate getPermissionValue(String permission) {
+    public Tristate getPermissionValue(final String permission) {
         return Tristate.TRUE;
     }
 
     @Override
     public void sendMessage(@NotNull Component message) {
-        proxyServer.getConsoleCommandSource().sendMessage(message);
+        hexLogger.info(message);
     }
 }
