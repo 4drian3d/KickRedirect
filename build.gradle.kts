@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.blossom)
     alias(libs.plugins.shadow)
     alias(libs.plugins.runvelocity)
+    alias(libs.plugins.idea.ext)
 }
 
 repositories {
@@ -36,11 +37,16 @@ dependencies {
     testImplementation(libs.mockito)
 }
 
-blossom {
-    replaceTokenIn("src/main/java/io/github/_4drian3d/kickredirect/utils/Constants.java")
-    replaceToken("{version}", version)
-    replaceToken("{configurate}", libs.versions.configurate.get())
-    replaceToken("{geantyref}", libs.versions.geantyref.get())
+sourceSets {
+    main {
+        blossom {
+            javaSources {
+                property("version", project.version.toString())
+                property("configurate", libs.versions.configurate.get())
+                property("geantyref", libs.versions.geantyref.get())
+            }
+        }
+    }
 }
 
 tasks {
