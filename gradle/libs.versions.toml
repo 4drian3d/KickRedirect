@@ -12,7 +12,7 @@ miniplaceholders = "2.2.1"
 # Plugins
 blossom = "2.1.0"
 shadow = "8.1.1"
-runvelocity = "2.1.0"
+runvelocity = "2.2.0"
 
 # Test versions
 slf4j = "2.0.9"
