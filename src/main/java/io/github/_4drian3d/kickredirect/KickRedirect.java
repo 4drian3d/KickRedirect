@@ -12,7 +12,7 @@ import io.github._4drian3d.kickredirect.listener.KickListener;
 import io.github._4drian3d.kickredirect.modules.PluginModule;
 import io.github._4drian3d.kickredirect.utils.Constants;
 import io.github._4drian3d.kickredirect.utils.Registrable;
-import io.github._4drian3d.velocityhexlogger.HexLogger;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bstats.velocity.Metrics;
 
 import java.util.stream.Stream;
@@ -41,7 +41,7 @@ public final class KickRedirect {
     @Inject
     private Injector injector;
     @Inject
-    private HexLogger hexLogger;
+    private ComponentLogger logger;
 
     @Subscribe
     public void onProxyInitialization(final ProxyInitializeEvent event) {
@@ -49,7 +49,7 @@ public final class KickRedirect {
         final int pluginId = 16944;
         metrics.make(this, pluginId);
 
-        hexLogger.info(miniMessage().deserialize("<gradient:#78edff:#699dff>Starting plugin..."));
+        logger.info(miniMessage().deserialize("<gradient:#78edff:#699dff>Starting plugin..."));
 
         injector.getInstance(Dependencies.class).loadDependencies();
         injector = injector.createChildInjector(new PluginModule());
@@ -59,6 +59,6 @@ public final class KickRedirect {
                 .forEach(Registrable::register);
 
         final long end = System.currentTimeMillis() - start;
-        hexLogger.info(miniMessage().deserialize("<gradient:#78edff:#699dff>Fully started plugin in "+end+" ms"));
+        logger.info(miniMessage().deserialize("<gradient:#78edff:#699dff>Fully started plugin in "+end+" ms"));
     }
 }

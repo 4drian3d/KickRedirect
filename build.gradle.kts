@@ -18,7 +18,6 @@ repositories {
 dependencies {
     implementation(libs.bstats)
     implementation(libs.libby)
-    implementation(libs.hexlogger)
     compileOnly(libs.configurate)
     compileOnly(libs.miniplaceholders)
 
@@ -66,8 +65,6 @@ tasks {
             "net.byteflux",
             "io.leangen.geantyref",
             "org.bstats",
-            "io.github._4drian3d.velocityhexlogger",
-            "net.kyori.adventure.text.logger.slf4j"
         ).forEach {
             relocate(it, "io.github._4drian3d.kickredirect.libs.$it")
         }

@@ -35,7 +35,6 @@ miniplaceholders = { group = "io.github.miniplaceholders", name = "miniplacehold
 
 # Included Dependencies
 libby = { group = "net.deltapvp.libby", name = "libby-velocity", version.ref = "libby" }
-hexlogger = { group = "io.github.4drian3d", name = "velocityhexlogger", version = "1.0.2" }
 
 # Test Dependencies
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
