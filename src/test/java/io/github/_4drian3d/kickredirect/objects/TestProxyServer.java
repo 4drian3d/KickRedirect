@@ -180,6 +180,10 @@ public class TestProxyServer implements ProxyServer {
     }
 
     @Override
+    public void closeListeners() {
+    }
+
+    @Override
     public void shutdown(Component arg0) {
     }
 
