@@ -1,10 +1,7 @@
 package io.github._4drian3d.kickredirect.objects;
 
 import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.permission.Tristate;
@@ -123,6 +120,16 @@ public class TestPlayer implements Player {
 
     @Override
     public @Nullable ResourcePackInfo getPendingResourcePack() {
+        return null;
+    }
+
+    @Override
+    public Collection<ResourcePackInfo> getAppliedResourcePacks() {
+        return null;
+    }
+
+    @Override
+    public Collection<ResourcePackInfo> getPendingResourcePacks() {
         return null;
     }
 
