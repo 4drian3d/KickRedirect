@@ -51,7 +51,6 @@ public final class KickRedirect {
 
         logger.info(miniMessage().deserialize("<gradient:#78edff:#699dff>Starting plugin..."));
 
-        injector.getInstance(Dependencies.class).loadDependencies();
         injector = injector.createChildInjector(new PluginModule());
 
         Stream.of(KickRedirectCommand.class, KickListener.class, DebugListener.class)

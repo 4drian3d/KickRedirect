@@ -7,18 +7,11 @@ plugins {
 }
 
 repositories {
-    maven("https://maven.deltapvp.net/") {
-        mavenContent {
-            includeGroup("net.deltapvp.libby")
-        }
-    }
     maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {
     implementation(libs.bstats)
-    implementation(libs.libby)
-    compileOnly(libs.configurate)
     compileOnly(libs.miniplaceholders)
 
     libs.velocity.run {
@@ -41,8 +34,6 @@ sourceSets {
         blossom {
             javaSources {
                 property("version", project.version.toString())
-                property("configurate", libs.versions.configurate.get())
-                property("geantyref", libs.versions.geantyref.get())
             }
         }
     }
@@ -60,14 +51,7 @@ tasks {
     shadowJar {
         archiveBaseName.set(rootProject.name)
         archiveClassifier.set("")
-        listOf(
-            "org.spongepowered",
-            "net.byteflux",
-            "io.leangen.geantyref",
-            "org.bstats",
-        ).forEach {
-            relocate(it, "io.github._4drian3d.kickredirect.libs.$it")
-        }
+        relocate("org.bstats", "io.github._4drian3d.kickredirect.libs.org.bstats")
     }
 
     test {
