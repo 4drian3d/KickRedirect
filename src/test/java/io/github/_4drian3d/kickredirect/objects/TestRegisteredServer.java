@@ -6,10 +6,12 @@ import java.util.concurrent.CompletableFuture;
 
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
+import com.velocitypowered.api.proxy.messages.PluginMessageEncoder;
 import com.velocitypowered.api.proxy.server.PingOptions;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import com.velocitypowered.api.proxy.server.ServerPing;
+import org.jetbrains.annotations.NotNull;
 
 import static org.mockito.Mockito.mock;
 
@@ -42,6 +44,11 @@ public class TestRegisteredServer implements RegisteredServer {
     @Override
     public boolean sendPluginMessage(ChannelIdentifier arg0, byte[] arg1) {
         return true;
+    }
+
+    @Override
+    public boolean sendPluginMessage(@NotNull ChannelIdentifier channelIdentifier, @NotNull PluginMessageEncoder pluginMessageEncoder) {
+        return false;
     }
 
     @Override
