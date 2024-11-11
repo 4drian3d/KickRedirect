@@ -2,7 +2,6 @@ package io.github._4drian3d.kickredirect.commands;
 
 import com.google.inject.Inject;
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.velocitypowered.api.command.BrigadierCommand;
 import com.velocitypowered.api.command.CommandManager;
@@ -34,8 +33,8 @@ public final class KickRedirectCommand implements Registrable {
 
     @Override
     public void register() {
-        final LiteralCommandNode<CommandSource> node = LiteralArgumentBuilder
-                .<CommandSource>literal("kickredirect")
+        final LiteralCommandNode<CommandSource> node = BrigadierCommand
+                .literalArgumentBuilder("kickredirect")
                 .executes(context -> {
                     context.getSource().sendMessage(
                             formatter.format(
@@ -43,7 +42,7 @@ public final class KickRedirectCommand implements Registrable {
                     return Command.SINGLE_SUCCESS;
                 })
                 .requires(src -> src.hasPermission("kickredirect.command"))
-                .then(LiteralArgumentBuilder.<CommandSource>literal("reload")
+                .then(BrigadierCommand.literalArgumentBuilder("reload")
                         .executes(cmd -> {
                             final CommandSource source = cmd.getSource();
                             source.sendMessage(
