@@ -72,6 +72,11 @@ public class TestPlayer implements Player {
     }
 
     @Override
+    public Optional<String> getRawVirtualHost() {
+        return Optional.empty();
+    }
+
+    @Override
     public boolean isActive() {
         return true;
     }
