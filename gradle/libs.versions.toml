@@ -10,7 +10,7 @@ miniplaceholders = "3.0.0"
 
 # Plugins
 blossom = "2.1.0"
-shadow = "8.1.1"
+shadow = "9.0.2"
 runvelocity = "2.3.1"
 
 # Test versions
@@ -34,6 +34,6 @@ mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito
 [plugins]
 
 blossom = { id = "net.kyori.blossom", version.ref = "blossom" }
-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 runvelocity = { id = "xyz.jpenilla.run-velocity", version.ref = "runvelocity" }
 idea-ext = { id = "org.jetbrains.gradle.plugin.idea-ext", version = "1.1.9" }

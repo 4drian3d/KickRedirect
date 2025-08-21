@@ -21,8 +21,9 @@ dependencies {
     }
 
     testRuntimeOnly(libs.configurate)
-    testImplementation(platform("org.junit:junit-bom:5.11.3"))
+    testImplementation(platform("org.junit:junit-bom:5.13.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(libs.assetrj)
     testImplementation(libs.slf4j)
     testRuntimeOnly(libs.bstats)
