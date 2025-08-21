@@ -4,8 +4,8 @@ Redirect your players to a server after a server shutdown
 
 ## Requirements
 
-- Velocity 3.3.0+
-- Java 17+
+- Velocity 3.4.0+
+- Java 21+
 
 ## Commands
 

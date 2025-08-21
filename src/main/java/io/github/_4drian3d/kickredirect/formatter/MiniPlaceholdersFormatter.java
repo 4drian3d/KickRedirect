@@ -15,7 +15,7 @@ public final class MiniPlaceholdersFormatter extends Formatter {
     public Component format(final @NotNull String string) {
         return miniMessage().deserialize(
                 string,
-                MiniPlaceholders.getGlobalPlaceholders()
+                MiniPlaceholders.globalPlaceholders()
         );
     }
 
@@ -27,7 +27,7 @@ public final class MiniPlaceholdersFormatter extends Formatter {
         return miniMessage().deserialize(
                 string,
                 TagResolver.builder()
-                        .resolver(MiniPlaceholders.getGlobalPlaceholders())
+                        .resolver(MiniPlaceholders.globalPlaceholders())
                         .resolvers(extraResolver)
                         .build()
         );
@@ -40,7 +40,8 @@ public final class MiniPlaceholdersFormatter extends Formatter {
     ) {
         return miniMessage().deserialize(
                 string,
-                MiniPlaceholders.getAudienceGlobalPlaceholders(audience)
+                audience,
+                MiniPlaceholders.audienceGlobalPlaceholders()
         );
     }
 
@@ -51,8 +52,9 @@ public final class MiniPlaceholdersFormatter extends Formatter {
             final @NotNull TagResolver@NotNull... extraResolver) {
         return miniMessage().deserialize(
                 string,
+                audience,
                 TagResolver.builder()
-                        .resolver(MiniPlaceholders.getAudienceGlobalPlaceholders(audience))
+                        .resolver(MiniPlaceholders.audienceGlobalPlaceholders())
                         .resolvers(extraResolver)
                         .build()
         );

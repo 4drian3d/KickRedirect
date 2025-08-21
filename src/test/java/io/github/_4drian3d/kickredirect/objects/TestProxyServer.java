@@ -180,6 +180,11 @@ public class TestProxyServer implements ProxyServer {
     }
 
     @Override
+    public boolean isShuttingDown() {
+        return false;
+    }
+
+    @Override
     public void closeListeners() {
     }
 
