@@ -14,7 +14,7 @@ shadow = "9.0.2"
 runvelocity = "2.3.1"
 
 # Test versions
-slf4j = "2.0.16"
+slf4j = "2.0.17"
 assertj = "3.27.4"
 mockito = "5.14.2"
 
