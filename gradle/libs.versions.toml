@@ -10,7 +10,7 @@ miniplaceholders = "3.0.1"
 
 # Plugins
 blossom = "2.1.0"
-shadow = "9.0.2"
+shadow = "9.1.0"
 runvelocity = "2.3.1"
 
 # Test versions
