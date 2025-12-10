@@ -16,7 +16,7 @@ runvelocity = "3.0.2"
 # Test versions
 slf4j = "2.0.17"
 assertj = "3.27.6"
-mockito = "5.20.0"
+mockito = "5.21.0"
 
 [libraries]
 
